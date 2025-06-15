@@ -16,7 +16,6 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
   const [isResizing, setIsResizing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [resizeDirection, setResizeDirection] = useState<string>('');
-  const [isHovered, setIsHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const startSizeRef = useRef({ width: 0, height: 0 });
   const startMouseRef = useRef({ x: 0, y: 0 });
@@ -137,40 +136,30 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
           cursor: isDragging ? 'grabbing' : 'grab'
         }}
         onMouseDown={handleDragMouseDown}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
       >
         {/* Resize handles en las cuatro esquinas */}
         
         {/* Esquina superior izquierda */}
         <div 
-          className={`absolute top-0 left-0 w-4 h-4 transition-opacity cursor-nw-resize z-10 border-l-2 border-t-2 border-white/80 rounded-tl-2xl ${
-            isHovered || isResizing ? 'opacity-100' : 'opacity-0'
-          }`}
+          className="absolute top-0 left-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-nw-resize z-10 border-l-2 border-t-2 border-white/60 rounded-tl-2xl"
           onMouseDown={(e) => handleResizeMouseDown(e, 'nw')}
         />
 
         {/* Esquina superior derecha */}
         <div 
-          className={`absolute top-0 right-0 w-4 h-4 transition-opacity cursor-ne-resize z-10 border-r-2 border-t-2 border-white/80 rounded-tr-2xl ${
-            isHovered || isResizing ? 'opacity-100' : 'opacity-0'
-          }`}
+          className="absolute top-0 right-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-ne-resize z-10 border-r-2 border-t-2 border-white/60 rounded-tr-2xl"
           onMouseDown={(e) => handleResizeMouseDown(e, 'ne')}
         />
 
         {/* Esquina inferior izquierda */}
         <div 
-          className={`absolute bottom-0 left-0 w-4 h-4 transition-opacity cursor-sw-resize z-10 border-l-2 border-b-2 border-white/80 rounded-bl-2xl ${
-            isHovered || isResizing ? 'opacity-100' : 'opacity-0'
-          }`}
+          className="absolute bottom-0 left-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-sw-resize z-10 border-l-2 border-b-2 border-white/60 rounded-bl-2xl"
           onMouseDown={(e) => handleResizeMouseDown(e, 'sw')}
         />
 
         {/* Esquina inferior derecha */}
         <div 
-          className={`absolute bottom-0 right-0 w-4 h-4 transition-opacity cursor-se-resize z-10 border-r-2 border-b-2 border-white/80 rounded-br-2xl ${
-            isHovered || isResizing ? 'opacity-100' : 'opacity-0'
-          }`}
+          className="absolute bottom-0 right-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-se-resize z-10 border-r-2 border-b-2 border-white/60 rounded-br-2xl"
           onMouseDown={(e) => handleResizeMouseDown(e, 'se')}
         />
 
