@@ -90,7 +90,9 @@ const CallHeader = ({ userName, isRemoteAudioActive = true, isRemoteVideoActive 
             </div>
             
             <div className="text-left md:text-right">
-              <h1 className="text-white text-sm md:text-lg font-semibold">Usuario Remoto</h1>
+              <div className="bg-green-600 rounded-xl px-4 py-2 border border-green-500/30">
+                <span className="text-white text-sm md:text-lg font-medium">Usuario Remoto</span>
+              </div>
             </div>
           </div>
         </div>
