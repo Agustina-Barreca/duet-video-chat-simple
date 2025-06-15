@@ -3,7 +3,8 @@ import { Palette, Minimize, Moon } from "lucide-react";
 import { useTheme, ThemeMode } from "../contexts/ThemeContext";
 
 const ThemeSelector = () => {
-  const { themeMode, setThemeMode } = useTheme();
+  const { themeMode, setThemeMode, getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
 
   const themes = [
     { 
@@ -28,7 +29,7 @@ const ThemeSelector = () => {
 
   return (
     <div className="fixed top-4 left-4 z-50">
-      <div className="bg-black/50 backdrop-blur-sm rounded-lg p-2">
+      <div className={`${themeClasses.cardBackground} backdrop-blur-sm border ${themeClasses.border} rounded-lg p-2`}>
         <div className="flex flex-col gap-2">
           {themes.map(({ mode, name, icon: Icon, description }) => (
             <button
@@ -36,8 +37,8 @@ const ThemeSelector = () => {
               onClick={() => setThemeMode(mode)}
               className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 themeMode === mode
-                  ? 'bg-white/20 text-white'
-                  : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                  ? `${themeClasses.buttonPrimary} ${themeClasses.textPrimary}`
+                  : `${themeClasses.buttonSecondary} ${themeClasses.textSecondary} hover:${themeClasses.buttonPrimary.replace('bg-', 'hover:bg-')}`
               }`}
               title={description}
             >

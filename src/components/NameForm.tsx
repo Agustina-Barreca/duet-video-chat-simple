@@ -3,8 +3,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Mic, MicOff, Video, VideoOff, Focus, Image } from "lucide-react";
+import { User, Mic, MicOff, Video, VideoOff, Focus, Image, Palette, Minimize, Moon } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useTheme, ThemeMode } from "../contexts/ThemeContext";
 
 interface NameFormProps {
   onSubmit: (
@@ -25,11 +26,35 @@ const backgrounds = [
 ];
 
 const NameForm = ({ onSubmit }: NameFormProps) => {
+  const { themeMode, setThemeMode, getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
+  
   const [name, setName] = useState("");
   const [startWithVideo, setStartWithVideo] = useState(true);
   const [startWithAudio, setStartWithAudio] = useState(true);
   const [initialBlurEnabled, setInitialBlurEnabled] = useState(false);
   const [initialBackground, setInitialBackground] = useState<string | null>(null);
+
+  const themes = [
+    { 
+      mode: 'rainbow' as ThemeMode, 
+      name: 'Rainbow', 
+      icon: Palette,
+      description: 'Colorido y vibrante'
+    },
+    { 
+      mode: 'minimalist' as ThemeMode, 
+      name: 'Minimalista', 
+      icon: Minimize,
+      description: 'Limpio y simple'
+    },
+    { 
+      mode: 'dark' as ThemeMode, 
+      name: 'Oscuro', 
+      icon: Moon,
+      description: 'Elegante y moderno'
+    }
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,19 +82,42 @@ const NameForm = ({ onSubmit }: NameFormProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8 w-full max-w-md">
+    <div className={`min-h-screen flex items-center justify-center ${themeClasses.background} transition-all duration-300`}>
+      {/* Selector de tema en la esquina superior izquierda */}
+      <div className="fixed top-4 left-4 z-50">
+        <div className={`${themeClasses.cardBackground} backdrop-blur-sm border ${themeClasses.border} rounded-lg p-2`}>
+          <div className="flex flex-col gap-2">
+            {themes.map(({ mode, name, icon: Icon, description }) => (
+              <button
+                key={mode}
+                onClick={() => setThemeMode(mode)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  themeMode === mode
+                    ? `${themeClasses.buttonPrimary} ${themeClasses.textPrimary}`
+                    : `${themeClasses.buttonSecondary} ${themeClasses.textSecondary} hover:${themeClasses.buttonPrimary.replace('bg-', 'hover:bg-')}`
+                }`}
+                title={description}
+              >
+                <Icon className="w-4 h-4" />
+                <span className="hidden md:inline">{name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className={`${themeClasses.cardBackground} backdrop-blur-sm border ${themeClasses.border} rounded-2xl p-8 w-full max-w-md mx-4`}>
         <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className={`w-16 h-16 bg-gradient-to-br ${themeClasses.accent} rounded-full flex items-center justify-center mx-auto mb-4`}>
             <User className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-2xl font-semibold text-white mb-2">Bienvenido a la videollamada</h2>
-          <p className="text-gray-300">Configura tu entrada a la llamada</p>
+          <h2 className={`text-2xl font-semibold mb-2 ${themeClasses.textPrimary}`}>Bienvenido a la videollamada</h2>
+          <p className={themeClasses.textSecondary}>Configura tu entrada a la llamada</p>
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <Label htmlFor="name" className="text-white text-sm font-medium">
+            <Label htmlFor="name" className={`${themeClasses.textPrimary} text-sm font-medium`}>
               Tu nombre
             </Label>
             <Input
@@ -78,24 +126,24 @@ const NameForm = ({ onSubmit }: NameFormProps) => {
               placeholder="Escribe tu nombre aquí..."
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mt-1 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-green-500 focus:ring-green-500"
+              className={`mt-1 ${themeClasses.cardBackground} border ${themeClasses.border} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:border-green-500 focus:ring-green-500`}
               required
             />
           </div>
 
           <div className="space-y-4">
-            <Label className="text-white text-sm font-medium">
+            <Label className={`${themeClasses.textPrimary} text-sm font-medium`}>
               Configuración inicial
             </Label>
             
-            <div className="flex items-center justify-between bg-white/5 rounded-lg p-3">
+            <div className={`flex items-center justify-between ${themeClasses.buttonSecondary} rounded-lg p-3`}>
               <div className="flex items-center space-x-3">
                 {startWithVideo ? (
                   <Video className="w-5 h-5 text-green-400" />
                 ) : (
                   <VideoOff className="w-5 h-5 text-red-400" />
                 )}
-                <span className="text-white text-sm">Cámara</span>
+                <span className={`${themeClasses.textPrimary} text-sm`}>Cámara</span>
               </div>
               <button
                 type="button"
@@ -110,14 +158,14 @@ const NameForm = ({ onSubmit }: NameFormProps) => {
               </button>
             </div>
 
-            <div className="flex items-center justify-between bg-white/5 rounded-lg p-3">
+            <div className={`flex items-center justify-between ${themeClasses.buttonSecondary} rounded-lg p-3`}>
               <div className="flex items-center space-x-3">
                 {startWithAudio ? (
                   <Mic className="w-5 h-5 text-green-400" />
                 ) : (
                   <MicOff className="w-5 h-5 text-red-400" />
                 )}
-                <span className="text-white text-sm">Micrófono</span>
+                <span className={`${themeClasses.textPrimary} text-sm`}>Micrófono</span>
               </div>
               <button
                 type="button"
@@ -133,10 +181,10 @@ const NameForm = ({ onSubmit }: NameFormProps) => {
             </div>
 
             {/* Control de blur */}
-            <div className="flex items-center justify-between bg-white/5 rounded-lg p-3">
+            <div className={`flex items-center justify-between ${themeClasses.buttonSecondary} rounded-lg p-3`}>
               <div className="flex items-center space-x-3">
                 <Focus className={`w-5 h-5 ${initialBlurEnabled ? 'text-blue-400' : 'text-gray-400'}`} />
-                <span className="text-white text-sm">Difuminar fondo</span>
+                <span className={`${themeClasses.textPrimary} text-sm`}>Difuminar fondo</span>
               </div>
               <button
                 type="button"
@@ -152,13 +200,13 @@ const NameForm = ({ onSubmit }: NameFormProps) => {
             </div>
 
             {/* Control de fondo virtual */}
-            <div className="bg-white/5 rounded-lg p-3">
+            <div className={`${themeClasses.buttonSecondary} rounded-lg p-3`}>
               <div className="flex items-center space-x-3 mb-3">
                 <Image className={`w-5 h-5 ${initialBackground ? 'text-purple-400' : 'text-gray-400'}`} />
-                <span className="text-white text-sm">Fondo virtual</span>
+                <span className={`${themeClasses.textPrimary} text-sm`}>Fondo virtual</span>
               </div>
               <Select onValueChange={handleBackgroundChange} defaultValue="none">
-                <SelectTrigger className="w-full h-9 text-xs bg-white/10 border-white/20 text-white">
+                <SelectTrigger className={`w-full h-9 text-xs ${themeClasses.cardBackground} border ${themeClasses.border} ${themeClasses.textPrimary}`}>
                   <SelectValue placeholder="Seleccionar fondo" />
                 </SelectTrigger>
                 <SelectContent>

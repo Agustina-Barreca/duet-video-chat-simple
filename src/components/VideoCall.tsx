@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import RemoteVideo from "./RemoteVideo";
 import LocalVideo from "./LocalVideo";
@@ -144,29 +145,35 @@ const VideoCall = () => {
         isRemoteVideoActive={isRemoteVideoActive}
       />
       
-      {/* Video principal (remoto) */}
-      <RemoteVideo isVideoOff={!isRemoteVideoActive} />
+      {/* Video principal (remoto) - con z-index bajo para evitar superposiciones */}
+      <div className="relative z-0">
+        <RemoteVideo isVideoOff={!isRemoteVideoActive} />
+      </div>
       
-      {/* Video local flotante */}
-      <LocalVideo 
-        isVideoOff={isVideoOff} 
-        userName={userName}
-        isBlurEnabled={isBlurEnabled}
-        currentBackground={currentBackground}
-      />
+      {/* Video local flotante - con z-index medio */}
+      <div className="relative z-10">
+        <LocalVideo 
+          isVideoOff={isVideoOff} 
+          userName={userName}
+          isBlurEnabled={isBlurEnabled}
+          currentBackground={currentBackground}
+        />
+      </div>
       
-      {/* Controles de llamada */}
-      <CallControls 
-        isMuted={isMuted}
-        isVideoOff={isVideoOff}
-        onToggleMute={toggleMute}
-        onToggleVideo={toggleVideo}
-        onEndCall={handleEndCall}
-        isBlurEnabled={isBlurEnabled}
-        currentBackground={currentBackground}
-        onToggleBlur={toggleBlur}
-        onBackgroundChange={handleBackgroundChange}
-      />
+      {/* Controles de llamada - con z-index alto para estar siempre visibles */}
+      <div className="relative z-20">
+        <CallControls 
+          isMuted={isMuted}
+          isVideoOff={isVideoOff}
+          onToggleMute={toggleMute}
+          onToggleVideo={toggleVideo}
+          onEndCall={handleEndCall}
+          isBlurEnabled={isBlurEnabled}
+          currentBackground={currentBackground}
+          onToggleBlur={toggleBlur}
+          onBackgroundChange={handleBackgroundChange}
+        />
+      </div>
     </div>
   );
 };

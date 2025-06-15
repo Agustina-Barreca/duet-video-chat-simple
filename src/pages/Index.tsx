@@ -1,9 +1,13 @@
 
 import VideoCall from "@/components/VideoCall";
+import { useTheme } from "../contexts/ThemeContext";
 
 const Index = () => {
+  const { getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
+  
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className={`min-h-screen ${themeClasses.background} transition-all duration-300`}>
       <VideoCall />
     </div>
   );
