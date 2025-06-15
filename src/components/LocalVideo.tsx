@@ -1,3 +1,4 @@
+
 import { useState, useRef, useCallback, useMemo, useEffect } from "react";
 import { User, Minimize2, Maximize2 } from "lucide-react";
 
@@ -59,6 +60,7 @@ const LocalVideo = ({
   
   const [position, setPosition] = useState({ x: initialX, y: initialY });
   const [isDragging, setIsDragging] = useState(false);
+  const [hasDragged, setHasDragged] = useState(false); // Para distinguir entre click y drag
   const dragRef = useRef<{ startX: number; startY: number; initialX: number; initialY: number }>({
     startX: 0,
     startY: 0,
@@ -87,6 +89,7 @@ const LocalVideo = ({
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     setIsDragging(true);
+    setHasDragged(false);
     
     dragRef.current = {
       startX: e.clientX,
@@ -98,6 +101,12 @@ const LocalVideo = ({
     const handleMouseMove = (e: MouseEvent) => {
       const deltaX = e.clientX - dragRef.current.startX;
       const deltaY = e.clientY - dragRef.current.startY;
+      
+      // Si se mueve más de 5px, consideramos que está arrastrando
+      if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+        setHasDragged(true);
+      }
+      
       updatePosition(deltaX, deltaY);
     };
 
@@ -114,6 +123,7 @@ const LocalVideo = ({
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     e.preventDefault();
     setIsDragging(true);
+    setHasDragged(false);
     
     const touch = e.touches[0];
     dragRef.current = {
@@ -127,6 +137,12 @@ const LocalVideo = ({
       const touch = e.touches[0];
       const deltaX = touch.clientX - dragRef.current.startX;
       const deltaY = touch.clientY - dragRef.current.startY;
+      
+      // Si se mueve más de 5px, consideramos que está arrastrando
+      if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+        setHasDragged(true);
+      }
+      
       updatePosition(deltaX, deltaY);
     };
 
@@ -145,6 +161,14 @@ const LocalVideo = ({
     setIsMinimized(!isMinimized);
     console.log('Video local', !isMinimized ? 'minimizado' : 'expandido');
   }, [isMinimized]);
+
+  const handleMinimizedClick = useCallback((e: React.MouseEvent) => {
+    // Solo expandir si no se ha arrastrado
+    if (!hasDragged) {
+      handleMinimizeToggle(e);
+    }
+    setHasDragged(false);
+  }, [hasDragged, handleMinimizeToggle]);
 
   const getVideoStyle = () => {
     let style: React.CSSProperties = {};
@@ -192,9 +216,9 @@ const LocalVideo = ({
     <div
       className={containerClasses}
       style={containerStyle}
-      onMouseDown={isMinimized ? handleMinimizeToggle : handleMouseDown}
-      onTouchStart={isMinimized ? undefined : handleTouchStart}
-      onClick={isMinimized ? handleMinimizeToggle : undefined}
+      onMouseDown={isMinimized ? handleMouseDown : handleMouseDown}
+      onTouchStart={isMinimized ? handleTouchStart : handleTouchStart}
+      onClick={isMinimized ? handleMinimizedClick : undefined}
     >
       {isMinimized ? (
         // Modo minimizado - solo mostrar avatar pequeño
