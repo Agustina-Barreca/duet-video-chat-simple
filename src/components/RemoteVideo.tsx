@@ -8,63 +8,93 @@ interface RemoteVideoProps {
 
 const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
   const [size, setSize] = useState({ width: 600, height: 400 });
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isResizing, setIsResizing] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [resizeDirection, setResizeDirection] = useState<string>('');
   const containerRef = useRef<HTMLDivElement>(null);
   const startSizeRef = useRef({ width: 0, height: 0 });
   const startMouseRef = useRef({ x: 0, y: 0 });
+  const startPositionRef = useRef({ x: 0, y: 0 });
 
-  const handleMouseDown = (e: React.MouseEvent, direction: string) => {
+  // Inicializar posición centrada
+  useEffect(() => {
+    const centerX = (window.innerWidth - size.width) / 2;
+    const centerY = (window.innerHeight - size.height) / 2;
+    setPosition({ x: centerX, y: centerY });
+  }, []);
+
+  const handleResizeMouseDown = (e: React.MouseEvent, direction: string) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsResizing(true);
     setResizeDirection(direction);
     startSizeRef.current = { width: size.width, height: size.height };
     startMouseRef.current = { x: e.clientX, y: e.clientY };
   };
 
+  const handleDragMouseDown = (e: React.MouseEvent) => {
+    // Solo iniciar drag si no estamos redimensionando
+    if (isResizing) return;
+    
+    e.preventDefault();
+    setIsDragging(true);
+    startPositionRef.current = { x: position.x, y: position.y };
+    startMouseRef.current = { x: e.clientX, y: e.clientY };
+  };
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (!isResizing) return;
+      if (isResizing) {
+        const deltaX = e.clientX - startMouseRef.current.x;
+        const deltaY = e.clientY - startMouseRef.current.y;
 
-      const deltaX = e.clientX - startMouseRef.current.x;
-      const deltaY = e.clientY - startMouseRef.current.y;
+        let newWidth = startSizeRef.current.width;
+        let newHeight = startSizeRef.current.height;
 
-      let newWidth = startSizeRef.current.width;
-      let newHeight = startSizeRef.current.height;
+        // Calcular nuevas dimensiones basado en la dirección del redimensionado
+        switch (resizeDirection) {
+          case 'se': // Esquina inferior derecha
+            newWidth += deltaX;
+            newHeight += deltaY;
+            break;
+          case 'sw': // Esquina inferior izquierda
+            newWidth -= deltaX;
+            newHeight += deltaY;
+            break;
+          case 'ne': // Esquina superior derecha
+            newWidth += deltaX;
+            newHeight -= deltaY;
+            break;
+          case 'nw': // Esquina superior izquierda
+            newWidth -= deltaX;
+            newHeight -= deltaY;
+            break;
+        }
 
-      // Calcular nuevas dimensiones basado en la dirección del redimensionado
-      switch (resizeDirection) {
-        case 'se': // Esquina inferior derecha
-          newWidth += deltaX;
-          newHeight += deltaY;
-          break;
-        case 'sw': // Esquina inferior izquierda
-          newWidth -= deltaX;
-          newHeight += deltaY;
-          break;
-        case 'ne': // Esquina superior derecha
-          newWidth += deltaX;
-          newHeight -= deltaY;
-          break;
-        case 'nw': // Esquina superior izquierda
-          newWidth -= deltaX;
-          newHeight -= deltaY;
-          break;
+        // Aplicar límites
+        newWidth = Math.max(300, Math.min(1200, newWidth));
+        newHeight = Math.max(200, Math.min(800, newHeight));
+
+        setSize({ width: newWidth, height: newHeight });
+      } else if (isDragging) {
+        const deltaX = e.clientX - startMouseRef.current.x;
+        const deltaY = e.clientY - startMouseRef.current.y;
+
+        const newX = Math.max(0, Math.min(window.innerWidth - size.width, startPositionRef.current.x + deltaX));
+        const newY = Math.max(0, Math.min(window.innerHeight - size.height, startPositionRef.current.y + deltaY));
+
+        setPosition({ x: newX, y: newY });
       }
-
-      // Aplicar límites
-      newWidth = Math.max(300, Math.min(1200, newWidth));
-      newHeight = Math.max(200, Math.min(800, newHeight));
-
-      setSize({ width: newWidth, height: newHeight });
     };
 
     const handleMouseUp = () => {
       setIsResizing(false);
+      setIsDragging(false);
       setResizeDirection('');
     };
 
-    if (isResizing) {
+    if (isResizing || isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
     }
@@ -73,28 +103,32 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isResizing, resizeDirection]);
+  }, [isResizing, isDragging, resizeDirection, size.width, size.height]);
 
   return (
-    <div className="absolute inset-0 p-8 pt-32 pb-24 flex items-center justify-center">
+    <div className="absolute inset-0 p-8 pt-32 pb-24 flex items-center justify-center pointer-events-none">
       <div 
         ref={containerRef}
-        className="relative bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 group"
+        className="absolute bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 group pointer-events-auto"
         style={{ 
           width: `${size.width}px`, 
           height: `${size.height}px`,
+          left: `${position.x}px`,
+          top: `${position.y}px`,
           minWidth: '300px',
           minHeight: '200px',
           maxWidth: '1200px',
-          maxHeight: '800px'
+          maxHeight: '800px',
+          cursor: isDragging ? 'grabbing' : 'grab'
         }}
+        onMouseDown={handleDragMouseDown}
       >
         {/* Resize handles en las cuatro esquinas */}
         
         {/* Esquina superior izquierda */}
         <div 
           className="absolute top-0 left-0 w-6 h-6 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity cursor-nw-resize z-10 rounded-br-lg"
-          onMouseDown={(e) => handleMouseDown(e, 'nw')}
+          onMouseDown={(e) => handleResizeMouseDown(e, 'nw')}
         >
           <div className="absolute top-1 left-1 w-2 h-2 bg-white/40 rounded-full"></div>
         </div>
@@ -102,7 +136,7 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
         {/* Esquina superior derecha */}
         <div 
           className="absolute top-0 right-0 w-6 h-6 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity cursor-ne-resize z-10 rounded-bl-lg"
-          onMouseDown={(e) => handleMouseDown(e, 'ne')}
+          onMouseDown={(e) => handleResizeMouseDown(e, 'ne')}
         >
           <div className="absolute top-1 right-1 w-2 h-2 bg-white/40 rounded-full"></div>
         </div>
@@ -110,7 +144,7 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
         {/* Esquina inferior izquierda */}
         <div 
           className="absolute bottom-0 left-0 w-6 h-6 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity cursor-sw-resize z-10 rounded-tr-lg"
-          onMouseDown={(e) => handleMouseDown(e, 'sw')}
+          onMouseDown={(e) => handleResizeMouseDown(e, 'sw')}
         >
           <div className="absolute bottom-1 left-1 w-2 h-2 bg-white/40 rounded-full"></div>
         </div>
@@ -118,7 +152,7 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
         {/* Esquina inferior derecha */}
         <div 
           className="absolute bottom-0 right-0 w-6 h-6 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity cursor-se-resize z-10 rounded-tl-lg"
-          onMouseDown={(e) => handleMouseDown(e, 'se')}
+          onMouseDown={(e) => handleResizeMouseDown(e, 'se')}
         >
           <div className="absolute bottom-1 right-1 w-2 h-2 bg-white/40 rounded-full"></div>
         </div>
