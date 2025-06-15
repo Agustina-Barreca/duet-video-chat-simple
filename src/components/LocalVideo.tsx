@@ -1,3 +1,4 @@
+
 import { useState, useRef, useCallback, useMemo, useEffect } from "react";
 import { User, Move } from "lucide-react";
 
@@ -169,12 +170,11 @@ const LocalVideo = ({
       {isVideoOff ? (
         <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center relative">
           <div className="text-center">
-            <div className="w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
+            <div className="w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto">
               <User className="w-4 h-4 md:w-6 md:h-6 text-white" />
             </div>
-            <p className="text-white text-[10px] md:text-xs">Cámara off</p>
             {userName && (
-              <p className="text-white text-[10px] md:text-xs font-medium mt-1">{userName}</p>
+              <p className="text-white text-[10px] md:text-xs font-medium mt-1 md:mt-2">{userName}</p>
             )}
           </div>
         </div>
