@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import RemoteVideo from "./RemoteVideo";
 import LocalVideo from "./LocalVideo";
 import CallControls from "./CallControls";
@@ -12,6 +11,29 @@ const VideoCall = () => {
   const [isCallActive, setIsCallActive] = useState(true);
   const [userName, setUserName] = useState<string | null>(null);
   const [showNameForm, setShowNameForm] = useState(true);
+  
+  // Estados simulados del usuario remoto
+  const [isRemoteAudioActive, setIsRemoteAudioActive] = useState(true);
+  const [isRemoteVideoActive, setIsRemoteVideoActive] = useState(true);
+
+  // Simular cambios aleatorios en el estado del usuario remoto
+  useEffect(() => {
+    if (!isCallActive) return;
+
+    const interval = setInterval(() => {
+      // Cambiar estado de audio aleatoriamente cada 10-15 segundos
+      if (Math.random() < 0.1) {
+        setIsRemoteAudioActive(prev => !prev);
+      }
+      
+      // Cambiar estado de video aleatoriamente cada 15-20 segundos
+      if (Math.random() < 0.05) {
+        setIsRemoteVideoActive(prev => !prev);
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [isCallActive]);
 
   const handleNameSubmit = (name: string) => {
     setUserName(name);
@@ -38,6 +60,8 @@ const VideoCall = () => {
     setIsCallActive(true);
     setShowNameForm(true);
     setUserName(null);
+    setIsRemoteAudioActive(true);
+    setIsRemoteVideoActive(true);
   };
 
   // Mostrar formulario de nombre si no se ha ingresado
@@ -68,10 +92,14 @@ const VideoCall = () => {
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
-      <CallHeader userName={userName} />
+      <CallHeader 
+        userName={userName} 
+        isRemoteAudioActive={isRemoteAudioActive}
+        isRemoteVideoActive={isRemoteVideoActive}
+      />
       
       {/* Video principal (remoto) */}
-      <RemoteVideo isVideoOff={false} />
+      <RemoteVideo isVideoOff={!isRemoteVideoActive} />
       
       {/* Video local flotante */}
       <LocalVideo isVideoOff={isVideoOff} userName={userName} />
