@@ -14,8 +14,7 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
             <div className="w-32 h-32 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
               <User className="w-16 h-16 text-white" />
             </div>
-            <h3 className="text-2xl font-semibold text-white mb-2">Usuario Remoto</h3>
-            <p className="text-gray-300">Cámara desactivada</p>
+            <h3 className="text-2xl font-semibold text-white">Usuario Remoto</h3>
           </div>
         </div>
       ) : (
