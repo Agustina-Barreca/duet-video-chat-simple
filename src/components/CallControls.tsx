@@ -30,7 +30,7 @@ const CallControls = ({
     <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
       <div className="flex justify-center items-center space-x-4">
         {/* Control de micrófono */}
-        <Tooltip>
+        <Tooltip delayDuration={300}>
           <TooltipTrigger asChild>
             <button
               onClick={onToggleMute}
@@ -47,13 +47,13 @@ const CallControls = ({
               )}
             </button>
           </TooltipTrigger>
-          <TooltipContent>
-            <p>{isMuted ? "Turn on microphone" : "Mute microphone"}</p>
+          <TooltipContent side="top" align="center">
+            <p>{isMuted ? "Activar micrófono" : "Silenciar micrófono"}</p>
           </TooltipContent>
         </Tooltip>
 
         {/* Control de video */}
-        <Tooltip>
+        <Tooltip delayDuration={300}>
           <TooltipTrigger asChild>
             <button
               onClick={onToggleVideo}
@@ -70,8 +70,8 @@ const CallControls = ({
               )}
             </button>
           </TooltipTrigger>
-          <TooltipContent>
-            <p>{isVideoOff ? "Turn on camera" : "Turn off camera"}</p>
+          <TooltipContent side="top" align="center">
+            <p>{isVideoOff ? "Activar cámara" : "Desactivar cámara"}</p>
           </TooltipContent>
         </Tooltip>
 
@@ -84,7 +84,7 @@ const CallControls = ({
         />
 
         {/* Botón para colgar */}
-        <Tooltip>
+        <Tooltip delayDuration={300}>
           <TooltipTrigger asChild>
             <button
               onClick={onEndCall}
@@ -93,7 +93,7 @@ const CallControls = ({
               <PhoneOff className="w-7 h-7 text-white" />
             </button>
           </TooltipTrigger>
-          <TooltipContent>
+          <TooltipContent side="top" align="center">
             <p>Finalizar llamada</p>
           </TooltipContent>
         </Tooltip>
