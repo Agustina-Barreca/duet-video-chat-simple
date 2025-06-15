@@ -31,10 +31,10 @@ const Tooltip = React.memo(({ text, position = 'top', children }: TooltipProps) 
     borderRadius: '4px',
     whiteSpace: 'nowrap' as const,
     zIndex: 1000,
-    ...(position === 'bottom' && { top: '75%', left: '50%', transform: 'translateX(-50%)', marginTop: '8px' }),
-    ...(position === 'top' && { bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: '8px' }),
-    ...(position === 'left' && { right: '100%', top: '50%', transform: 'translateY(-50%)', marginRight: '8px' }),
-    ...(position === 'right' && { left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: '8px' })
+    ...(position === 'bottom' && { top: '75%', left: '50%', transform: 'translateX(-50%)', marginTop: '12px' }),
+    ...(position === 'top' && { bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: '16px' }),
+    ...(position === 'left' && { right: '100%', top: '50%', transform: 'translateY(-50%)', marginRight: '12px' }),
+    ...(position === 'right' && { left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: '12px' })
   }
 
   const arrowStyle: React.CSSProperties = {
