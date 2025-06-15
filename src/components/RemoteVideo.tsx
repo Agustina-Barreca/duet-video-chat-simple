@@ -1,4 +1,3 @@
-
 import { User } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
@@ -7,7 +6,7 @@ interface RemoteVideoProps {
 }
 
 const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
-  const [size, setSize] = useState({ width: 600, height: 400 });
+  const [size, setSize] = useState({ width: 780, height: 520 }); // Incrementado ~30% desde 600x400
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isResizing, setIsResizing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
