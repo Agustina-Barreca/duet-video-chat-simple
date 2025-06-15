@@ -83,22 +83,6 @@ const CallControls = ({
           </button>
         </Tooltip>
       </div>
-      
-      {/* Indicadores de estado */}
-      <div className="flex justify-center mt-4 space-x-6">
-        {isMuted && (
-          <div className="flex items-center space-x-2 bg-red-500/20 backdrop-blur-sm rounded-full px-3 py-1">
-            <MicOff className="w-4 h-4 text-red-400" />
-            <span className="text-red-400 text-sm">Silenciado</span>
-          </div>
-        )}
-        {isVideoOff && (
-          <div className="flex items-center space-x-2 bg-red-500/20 backdrop-blur-sm rounded-full px-3 py-1">
-            <VideoOff className="w-4 h-4 text-red-400" />
-            <span className="text-red-400 text-sm">Cámara off</span>
-          </div>
-        )}
-      </div>
     </div>
   );
 };
