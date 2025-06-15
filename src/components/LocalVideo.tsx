@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { User, Move } from "lucide-react";
 
@@ -32,7 +31,6 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
     e.preventDefault();
     setIsDragging(true);
     
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
     dragRef.current = {
       startX: e.clientX,
       startY: e.clientY,
@@ -60,6 +58,39 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
     document.addEventListener('mouseup', handleMouseUp);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+    
+    const touch = e.touches[0];
+    dragRef.current = {
+      startX: touch.clientX,
+      startY: touch.clientY,
+      initialX: position.x,
+      initialY: position.y
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - dragRef.current.startX;
+      const deltaY = touch.clientY - dragRef.current.startY;
+      
+      const newX = Math.max(0, Math.min(window.innerWidth - videoWidth, dragRef.current.initialX + deltaX));
+      const newY = Math.max(0, Math.min(window.innerHeight - videoHeight, dragRef.current.initialY + deltaY));
+      
+      setPosition({ x: newX, y: newY });
+    };
+
+    const handleTouchEnd = () => {
+      setIsDragging(false);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+
+    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('touchend', handleTouchEnd);
+  };
+
   return (
     <div
       className={`fixed z-20 w-48 h-36 md:w-48 md:h-36 sm:w-32 sm:h-24 rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl cursor-move transition-transform hover:scale-105 ${
@@ -68,9 +99,11 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
       style={{ 
         left: `${position.x}px`,
         top: `${position.y}px`,
-        userSelect: 'none'
+        userSelect: 'none',
+        touchAction: 'none'
       }}
       onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
     >
       {isVideoOff ? (
         <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
