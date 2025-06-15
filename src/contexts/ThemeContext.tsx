@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export type ThemeMode = 'rainbow' | 'minimalist' | 'dark' | 'professional';
@@ -61,14 +60,14 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
         };
       case 'minimalist':
         return {
-          background: 'bg-gradient-to-br from-stone-200 via-neutral-100 to-stone-200',
-          cardBackground: 'bg-stone-50/95 backdrop-blur-sm border border-stone-300/60',
-          textPrimary: 'text-stone-800',
-          textSecondary: 'text-stone-600',
-          buttonPrimary: 'bg-stone-700 hover:bg-stone-800 text-white',
-          buttonSecondary: 'bg-stone-200/80 hover:bg-stone-300/80',
-          accent: 'from-stone-600 to-stone-700',
-          border: 'border-stone-300/60'
+          background: 'bg-gradient-to-br from-neutral-800 via-gray-700 to-stone-800',
+          cardBackground: 'bg-neutral-800/95 backdrop-blur-sm border border-neutral-600/50',
+          textPrimary: 'text-neutral-100',
+          textSecondary: 'text-neutral-300',
+          buttonPrimary: 'bg-neutral-600 hover:bg-neutral-700 text-white',
+          buttonSecondary: 'bg-neutral-700/80 hover:bg-neutral-600/80',
+          accent: 'from-neutral-500 to-neutral-600',
+          border: 'border-neutral-600/50'
         };
       case 'dark':
         return {
