@@ -39,14 +39,14 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     switch (themeMode) {
       case 'rainbow':
         return {
-          background: 'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900',
-          cardBackground: 'bg-gradient-to-br from-slate-800 to-slate-900',
+          background: 'bg-gradient-to-br from-indigo-900 via-purple-800 to-pink-800',
+          cardBackground: 'bg-gradient-to-br from-slate-800/90 to-indigo-900/80 backdrop-blur-sm',
           textPrimary: 'text-white',
-          textSecondary: 'text-gray-300',
+          textSecondary: 'text-purple-200',
           buttonPrimary: 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600',
           buttonSecondary: 'bg-white/10 hover:bg-white/20',
           accent: 'from-purple-500 to-pink-500',
-          border: 'border-white/30'
+          border: 'border-purple-400/30'
         };
       case 'professional':
         return {
@@ -61,25 +61,25 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
         };
       case 'minimalist':
         return {
-          background: 'bg-gradient-to-br from-slate-100 via-gray-100 to-slate-200',
-          cardBackground: 'bg-white/90 backdrop-blur-sm',
-          textPrimary: 'text-slate-800',
-          textSecondary: 'text-slate-600',
-          buttonPrimary: 'bg-slate-800 hover:bg-slate-900 text-white',
-          buttonSecondary: 'bg-slate-200/80 hover:bg-slate-300/80',
-          accent: 'from-slate-600 to-slate-700',
-          border: 'border-slate-300/50'
+          background: 'bg-gradient-to-br from-stone-200 via-neutral-100 to-stone-200',
+          cardBackground: 'bg-stone-50/95 backdrop-blur-sm border border-stone-300/60',
+          textPrimary: 'text-stone-800',
+          textSecondary: 'text-stone-600',
+          buttonPrimary: 'bg-stone-700 hover:bg-stone-800 text-white',
+          buttonSecondary: 'bg-stone-200/80 hover:bg-stone-300/80',
+          accent: 'from-stone-600 to-stone-700',
+          border: 'border-stone-300/60'
         };
       case 'dark':
         return {
-          background: 'bg-gradient-to-br from-gray-900 via-slate-900 to-black',
-          cardBackground: 'bg-gradient-to-br from-gray-800/90 to-slate-900/90',
+          background: 'bg-gradient-to-br from-slate-900 via-zinc-900 to-neutral-900',
+          cardBackground: 'bg-gradient-to-br from-zinc-800/90 to-slate-800/90 backdrop-blur-sm',
           textPrimary: 'text-white',
-          textSecondary: 'text-gray-300',
-          buttonPrimary: 'bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800',
-          buttonSecondary: 'bg-gray-700/60 hover:bg-gray-600/60',
-          accent: 'from-slate-500 to-slate-600',
-          border: 'border-gray-600/50'
+          textSecondary: 'text-zinc-300',
+          buttonPrimary: 'bg-gradient-to-r from-zinc-600 to-neutral-600 hover:from-zinc-700 hover:to-neutral-700',
+          buttonSecondary: 'bg-zinc-700/60 hover:bg-zinc-600/60',
+          accent: 'from-zinc-500 to-neutral-600',
+          border: 'border-zinc-600/50'
         };
       default:
         return getThemeClasses();
