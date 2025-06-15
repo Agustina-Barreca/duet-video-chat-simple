@@ -1,11 +1,15 @@
 
 import React, { useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
 
-const Tooltip = React.memo(({ text, position, children }) => {
+interface TooltipProps {
+  text: string;
+  position?: 'bottom' | 'top' | 'left' | 'right';
+  children: React.ReactNode;
+}
+
+const Tooltip = React.memo(({ text, position = 'top', children }: TooltipProps) => {
   const [isVisible, setIsVisible] = useState(false)
 
-  // Handle mouse enter and leave events
   const handleMouseEnter = useCallback(() => {
     setIsVisible(true)
   }, [])
@@ -14,13 +18,13 @@ const Tooltip = React.memo(({ text, position, children }) => {
     setIsVisible(false)
   }, [])
 
-  const tooltipStyle = {
-    position: 'absolute',
+  const tooltipStyle: React.CSSProperties = {
+    position: 'absolute' as const,
     backgroundColor: 'black',
     color: 'white',
     padding: '8px',
     borderRadius: '4px',
-    whiteSpace: 'nowrap',
+    whiteSpace: 'nowrap' as const,
     zIndex: 1000,
     ...(position === 'bottom' && { top: '75%', left: '50%', transform: 'translateX(-50%)', marginTop: '8px' }),
     ...(position === 'top' && { bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: '8px' }),
@@ -28,11 +32,11 @@ const Tooltip = React.memo(({ text, position, children }) => {
     ...(position === 'right' && { left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: '8px' })
   }
 
-  const arrowStyle = {
-    position: 'absolute',
+  const arrowStyle: React.CSSProperties = {
+    position: 'absolute' as const,
     width: '0',
     height: '0',
-    borderStyle: 'solid',
+    borderStyle: 'solid' as const,
     ...(position === 'bottom' && { bottom: '100%', left: '50%', transform: 'translateX(-50%)', borderWidth: '0 6px 6px 6px', borderColor: 'transparent transparent black transparent' }),
     ...(position === 'top' && { top: '100%', left: '50%', transform: 'translateX(-50%)', borderWidth: '6px 6px 0 6px', borderColor: 'black transparent transparent transparent' }),
     ...(position === 'left' && { left: '100%', top: '50%', transform: 'translateY(-50%)', borderWidth: '6px 0 6px 6px', borderColor: 'transparent transparent transparent black' }),
@@ -56,12 +60,11 @@ const Tooltip = React.memo(({ text, position, children }) => {
   )
 })
 
-Tooltip.propTypes = {
-  children: PropTypes.node,
-  text: PropTypes.string,
-  position: PropTypes.string
-}
-
 Tooltip.displayName = 'Tooltip'
 
-export { Tooltip };
+// Exports para compatibilidad con shadcn/ui
+const TooltipProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+const TooltipTrigger = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+const TooltipContent = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+
+export { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent };
