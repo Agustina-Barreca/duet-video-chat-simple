@@ -62,9 +62,28 @@ const Tooltip = React.memo(({ text, position = 'top', children }: TooltipProps) 
 
 Tooltip.displayName = 'Tooltip'
 
-// Exports para compatibilidad con shadcn/ui
-const TooltipProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>;
-const TooltipTrigger = ({ children }: { children: React.ReactNode }) => <>{children}</>;
-const TooltipContent = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+// Componentes compatibles con shadcn/ui
+interface TooltipProviderProps {
+  children: React.ReactNode;
+  delayDuration?: number;
+}
+
+const TooltipProvider = ({ children }: TooltipProviderProps) => <>{children}</>;
+
+interface TooltipTriggerProps {
+  children: React.ReactNode;
+  asChild?: boolean;
+}
+
+const TooltipTrigger = ({ children }: TooltipTriggerProps) => <>{children}</>;
+
+interface TooltipContentProps {
+  children: React.ReactNode;
+  side?: string;
+  align?: string;
+  hidden?: boolean;
+}
+
+const TooltipContent = ({ children }: TooltipContentProps) => <>{children}</>;
 
 export { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent };
