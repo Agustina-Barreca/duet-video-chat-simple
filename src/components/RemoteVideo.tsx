@@ -1,3 +1,4 @@
+
 import { User } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useTheme } from "../contexts/ThemeContext";
@@ -10,7 +11,7 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
   const { getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
   
-  const [size, setSize] = useState({ width: 780, height: 520 }); // Incrementado ~30% desde 600x400
+  const [size, setSize] = useState({ width: 780, height: 520 });
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isResizing, setIsResizing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -34,6 +35,7 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
     setResizeDirection(direction);
     startSizeRef.current = { width: size.width, height: size.height };
     startMouseRef.current = { x: e.clientX, y: e.clientY };
+    startPositionRef.current = { x: position.x, y: position.y };
   };
 
   const handleDragMouseDown = (e: React.MouseEvent) => {
@@ -79,7 +81,16 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
         newWidth = Math.max(300, Math.min(1200, newWidth));
         newHeight = Math.max(200, Math.min(800, newHeight));
 
+        // Calcular la diferencia de tamaño para mantener centrado
+        const widthDiff = newWidth - startSizeRef.current.width;
+        const heightDiff = newHeight - startSizeRef.current.height;
+
+        // Calcular nueva posición para mantener el centro
+        const newX = Math.max(0, Math.min(window.innerWidth - newWidth, startPositionRef.current.x - widthDiff / 2));
+        const newY = Math.max(0, Math.min(window.innerHeight - newHeight, startPositionRef.current.y - heightDiff / 2));
+
         setSize({ width: newWidth, height: newHeight });
+        setPosition({ x: newX, y: newY });
       } else if (isDragging) {
         const deltaX = e.clientX - startMouseRef.current.x;
         const deltaY = e.clientY - startMouseRef.current.y;
