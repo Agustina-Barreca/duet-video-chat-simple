@@ -33,7 +33,7 @@ const VideoEffectsControls = ({
   return (
     <div className="flex gap-2">
       {/* Control de blur */}
-      <Tooltip delayDuration={300}>
+      <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
           <button
             onClick={onToggleBlur}
@@ -46,13 +46,13 @@ const VideoEffectsControls = ({
             <Focus className="w-5 h-5 text-white" />
           </button>
         </TooltipTrigger>
-        <TooltipContent side="top" align="center">
+        <TooltipContent side="top" align="center" sideOffset={12}>
           <p>{isBlurEnabled ? "Desactivar desenfoque" : "Desenfocar fondo"}</p>
         </TooltipContent>
       </Tooltip>
 
       {/* Control de fondo */}
-      <Tooltip delayDuration={300}>
+      <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
           <div>
             <Popover>
@@ -87,7 +87,7 @@ const VideoEffectsControls = ({
             </Popover>
           </div>
         </TooltipTrigger>
-        <TooltipContent side="top" align="center">
+        <TooltipContent side="top" align="center" sideOffset={12}>
           <p>Cambiar fondo virtual</p>
         </TooltipContent>
       </Tooltip>
