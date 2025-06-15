@@ -1,5 +1,5 @@
 
-import { Palette, Minimize, Moon, Settings } from "lucide-react";
+import { Palette, Minimize, Moon, Settings, Briefcase } from "lucide-react";
 import { useTheme, ThemeMode } from "../contexts/ThemeContext";
 import {
   DropdownMenu,
@@ -20,6 +20,12 @@ const ThemeSelector = () => {
       description: 'Colorido y vibrante'
     },
     { 
+      mode: 'professional' as ThemeMode, 
+      name: 'Professional', 
+      icon: Briefcase,
+      description: 'Elegante y profesional'
+    },
+    { 
       mode: 'minimalist' as ThemeMode, 
       name: 'Minimalista', 
       icon: Minimize,
@@ -29,7 +35,7 @@ const ThemeSelector = () => {
       mode: 'dark' as ThemeMode, 
       name: 'Oscuro', 
       icon: Moon,
-      description: 'Elegante y moderno'
+      description: 'Moderno y elegante'
     }
   ];
 
