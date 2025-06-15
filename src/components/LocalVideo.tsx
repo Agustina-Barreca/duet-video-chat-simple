@@ -7,13 +7,17 @@ interface LocalVideoProps {
 }
 
 const LocalVideo = ({ isVideoOff }: LocalVideoProps) => {
-  const [position, setPosition] = useState({ x: 20, y: 20 });
+  // Calcular posición inicial en la esquina inferior derecha
+  const initialX = window.innerWidth - 192 - 20; // ancho del video (192px) + margen (20px)
+  const initialY = window.innerHeight - 144 - 20; // alto del video (144px) + margen (20px)
+  
+  const [position, setPosition] = useState({ x: initialX, y: initialY });
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef<{ startX: number; startY: number; initialX: number; initialY: number }>({
     startX: 0,
     startY: 0,
-    initialX: 20,
-    initialY: 20
+    initialX: initialX,
+    initialY: initialY
   });
 
   const handleMouseDown = (e: React.MouseEvent) => {
