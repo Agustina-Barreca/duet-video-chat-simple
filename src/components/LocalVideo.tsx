@@ -8,12 +8,13 @@ interface LocalVideoProps {
 }
 
 const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
-  // Calcular posición inicial - en móviles más arriba para evitar controles
+  // Calcular posición inicial - bien arriba de los controles remotos
   const isMobile = window.innerWidth < 768;
   const videoWidth = isMobile ? 128 : 192; // w-32 = 128px, w-48 = 192px
   const videoHeight = isMobile ? 96 : 144; // h-24 = 96px, h-36 = 144px
   const margin = 20;
-  const bottomOffset = isMobile ? 120 : 20; // Más espacio en móviles para evitar controles
+  // Aumentar significativamente el espacio desde abajo para evitar controles
+  const bottomOffset = isMobile ? 180 : 80; // Mucho más espacio en móviles
   
   const initialX = window.innerWidth - videoWidth - margin;
   const initialY = window.innerHeight - videoHeight - bottomOffset;
@@ -61,7 +62,7 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
 
   return (
     <div
-      className={`fixed z-10 w-48 h-36 md:w-48 md:h-36 sm:w-32 sm:h-24 rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl cursor-move transition-transform hover:scale-105 ${
+      className={`fixed z-20 w-48 h-36 md:w-48 md:h-36 sm:w-32 sm:h-24 rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl cursor-move transition-transform hover:scale-105 ${
         isDragging ? 'scale-105 shadow-3xl' : ''
       }`}
       style={{ 
