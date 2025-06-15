@@ -2,7 +2,7 @@
 import React, { useState, useCallback } from 'react';
 
 interface TooltipProps {
-  text: string;
+  text?: string;
   position?: 'bottom' | 'top' | 'left' | 'right';
   children: React.ReactNode;
 }
@@ -17,6 +17,11 @@ const Tooltip = React.memo(({ text, position = 'top', children }: TooltipProps) 
   const handleMouseLeave = useCallback(() => {
     setIsVisible(false)
   }, [])
+
+  // If no text is provided, just render children (for shadcn/ui compatibility)
+  if (!text) {
+    return <>{children}</>;
+  }
 
   const tooltipStyle: React.CSSProperties = {
     position: 'absolute' as const,
