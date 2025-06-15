@@ -2,7 +2,7 @@
 import { Focus, Image } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip } from "@/components/ui/tooltip";
 
 interface VideoEffectsControlsProps {
   isBlurEnabled: boolean;
@@ -33,63 +33,53 @@ const VideoEffectsControls = ({
   return (
     <div className="flex gap-2">
       {/* Control de blur */}
-      <Tooltip delayDuration={0}>
-        <TooltipTrigger asChild>
-          <button
-            onClick={onToggleBlur}
-            className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 ${
-              isBlurEnabled 
-                ? 'bg-blue-500 hover:bg-blue-600' 
-                : 'bg-gray-600/80 hover:bg-gray-500/80'
-            }`}
-          >
-            <Focus className="w-5 h-5 text-white" />
-          </button>
-        </TooltipTrigger>
-        <TooltipContent side="top" align="center" sideOffset={12}>
-          <p>{isBlurEnabled ? "Desactivar desenfoque" : "Desenfocar fondo"}</p>
-        </TooltipContent>
+      <Tooltip text={isBlurEnabled ? "Desactivar desenfoque" : "Desenfocar fondo"} position="top">
+        <button
+          onClick={onToggleBlur}
+          className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 ${
+            isBlurEnabled 
+              ? 'bg-blue-500 hover:bg-blue-600' 
+              : 'bg-gray-600/80 hover:bg-gray-500/80'
+          }`}
+        >
+          <Focus className="w-5 h-5 text-white" />
+        </button>
       </Tooltip>
 
       {/* Control de fondo */}
-      <Tooltip delayDuration={0}>
-        <TooltipTrigger asChild>
-          <div>
-            <Popover>
-              <PopoverTrigger asChild>
-                <button
-                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 ${
-                    currentBackground 
-                      ? 'bg-purple-500 hover:bg-purple-600' 
-                      : 'bg-gray-600/80 hover:bg-gray-500/80'
-                  }`}
-                >
-                  <Image className="w-5 h-5 text-white" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="w-56 p-3" side="top" align="center">
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium">Cambiar fondo</h4>
-                  <Select onValueChange={handleBackgroundChange} defaultValue="none">
-                    <SelectTrigger className="w-full h-9 text-xs">
-                      <SelectValue placeholder="Seleccionar fondo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {backgrounds.map((bg) => (
-                        <SelectItem key={bg.id} value={bg.id} className="text-xs">
-                          {bg.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </PopoverContent>
-            </Popover>
-          </div>
-        </TooltipTrigger>
-        <TooltipContent side="top" align="center" sideOffset={12}>
-          <p>Cambiar fondo virtual</p>
-        </TooltipContent>
+      <Tooltip text="Cambiar fondo virtual" position="top">
+        <div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 ${
+                  currentBackground 
+                    ? 'bg-purple-500 hover:bg-purple-600' 
+                    : 'bg-gray-600/80 hover:bg-gray-500/80'
+                }`}
+              >
+                <Image className="w-5 h-5 text-white" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-56 p-3" side="top" align="center">
+              <div className="space-y-3">
+                <h4 className="text-sm font-medium">Cambiar fondo</h4>
+                <Select onValueChange={handleBackgroundChange} defaultValue="none">
+                  <SelectTrigger className="w-full h-9 text-xs">
+                    <SelectValue placeholder="Seleccionar fondo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {backgrounds.map((bg) => (
+                      <SelectItem key={bg.id} value={bg.id} className="text-xs">
+                        {bg.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
       </Tooltip>
     </div>
   );

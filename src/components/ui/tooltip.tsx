@@ -1,29 +1,67 @@
 
-import * as React from "react"
-import * as TooltipPrimitive from "@radix-ui/react-tooltip"
+import React, { useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 
-import { cn } from "@/lib/utils"
+const Tooltip = React.memo(({ text, position, children }) => {
+  const [isVisible, setIsVisible] = useState(false)
 
-const TooltipProvider = TooltipPrimitive.Provider
+  // Handle mouse enter and leave events
+  const handleMouseEnter = useCallback(() => {
+    setIsVisible(true)
+  }, [])
 
-const Tooltip = TooltipPrimitive.Root
+  const handleMouseLeave = useCallback(() => {
+    setIsVisible(false)
+  }, [])
 
-const TooltipTrigger = TooltipPrimitive.Trigger
+  const tooltipStyle = {
+    position: 'absolute',
+    backgroundColor: 'black',
+    color: 'white',
+    padding: '8px',
+    borderRadius: '4px',
+    whiteSpace: 'nowrap',
+    zIndex: 1000,
+    ...(position === 'bottom' && { top: '75%', left: '50%', transform: 'translateX(-50%)', marginTop: '8px' }),
+    ...(position === 'top' && { bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: '8px' }),
+    ...(position === 'left' && { right: '100%', top: '50%', transform: 'translateY(-50%)', marginRight: '8px' }),
+    ...(position === 'right' && { left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: '8px' })
+  }
 
-const TooltipContent = React.forwardRef<
-  React.ElementRef<typeof TooltipPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
->(({ className, sideOffset = 4, ...props }, ref) => (
-  <TooltipPrimitive.Content
-    ref={ref}
-    sideOffset={sideOffset}
-    className={cn(
-      "z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-      className
-    )}
-    {...props}
-  />
-))
-TooltipContent.displayName = TooltipPrimitive.Content.displayName
+  const arrowStyle = {
+    position: 'absolute',
+    width: '0',
+    height: '0',
+    borderStyle: 'solid',
+    ...(position === 'bottom' && { bottom: '100%', left: '50%', transform: 'translateX(-50%)', borderWidth: '0 6px 6px 6px', borderColor: 'transparent transparent black transparent' }),
+    ...(position === 'top' && { top: '100%', left: '50%', transform: 'translateX(-50%)', borderWidth: '6px 6px 0 6px', borderColor: 'black transparent transparent transparent' }),
+    ...(position === 'left' && { left: '100%', top: '50%', transform: 'translateY(-50%)', borderWidth: '6px 0 6px 6px', borderColor: 'transparent transparent transparent black' }),
+    ...(position === 'right' && { right: '100%', top: '50%', transform: 'translateY(-50%)', borderWidth: '6px 6px 6px 0', borderColor: 'transparent black transparent transparent' })
+  }
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
+  return (
+    <div
+      style={{ position: 'relative', display: 'inline-block' }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {children}
+      {isVisible && (
+        <div className='zoom-tooltip-text' style={tooltipStyle}>
+          {text}
+          <div style={arrowStyle} />
+        </div>
+      )}
+    </div>
+  )
+})
+
+Tooltip.propTypes = {
+  children: PropTypes.node,
+  text: PropTypes.string,
+  position: PropTypes.string
+}
+
+Tooltip.displayName = 'Tooltip'
+
+export { Tooltip };
