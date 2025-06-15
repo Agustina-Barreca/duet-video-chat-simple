@@ -111,25 +111,25 @@ const LocalVideoContainer = ({
         <>
           {/* Esquina superior izquierda */}
           <div 
-            className="absolute top-0 left-0 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-nw-resize z-10 border-l-2 border-t-2 border-white/60"
+            className="absolute top-0 left-0 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-nw-resize z-10 border-l-2 border-t-2 border-white/60 rounded-tl-xl"
             onMouseDown={(e) => handleResizeMouseDown(e, 'nw')}
           />
 
           {/* Esquina superior derecha */}
           <div 
-            className="absolute top-0 right-0 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-ne-resize z-10 border-r-2 border-t-2 border-white/60"
+            className="absolute top-0 right-0 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-ne-resize z-10 border-r-2 border-t-2 border-white/60 rounded-tr-xl"
             onMouseDown={(e) => handleResizeMouseDown(e, 'ne')}
           />
 
           {/* Esquina inferior izquierda */}
           <div 
-            className="absolute bottom-0 left-0 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-sw-resize z-10 border-l-2 border-b-2 border-white/60"
+            className="absolute bottom-0 left-0 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-sw-resize z-10 border-l-2 border-b-2 border-white/60 rounded-bl-xl"
             onMouseDown={(e) => handleResizeMouseDown(e, 'sw')}
           />
 
           {/* Esquina inferior derecha */}
           <div 
-            className="absolute bottom-0 right-0 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-se-resize z-10 border-r-2 border-b-2 border-white/60"
+            className="absolute bottom-0 right-0 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-se-resize z-10 border-r-2 border-b-2 border-white/60 rounded-br-xl"
             onMouseDown={(e) => handleResizeMouseDown(e, 'se')}
           />
         </>
