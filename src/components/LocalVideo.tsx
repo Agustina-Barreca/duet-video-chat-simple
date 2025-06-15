@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { User, Move } from "lucide-react";
 
 interface LocalVideoProps {
@@ -9,15 +9,32 @@ interface LocalVideoProps {
 const LocalVideo = ({ isVideoOff }: LocalVideoProps) => {
   const [position, setPosition] = useState({ x: 20, y: 20 });
   const [isDragging, setIsDragging] = useState(false);
+  const dragRef = useRef<{ startX: number; startY: number; initialX: number; initialY: number }>({
+    startX: 0,
+    startY: 0,
+    initialX: 20,
+    initialY: 20
+  });
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
     setIsDragging(true);
-    const startX = e.clientX - position.x;
-    const startY = e.clientY - position.y;
+    
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    dragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      initialX: position.x,
+      initialY: position.y
+    };
 
     const handleMouseMove = (e: MouseEvent) => {
-      const newX = Math.max(0, Math.min(window.innerWidth - 200, e.clientX - startX));
-      const newY = Math.max(0, Math.min(window.innerHeight - 150, e.clientY - startY));
+      const deltaX = e.clientX - dragRef.current.startX;
+      const deltaY = e.clientY - dragRef.current.startY;
+      
+      const newX = Math.max(0, Math.min(window.innerWidth - 192, dragRef.current.initialX + deltaX));
+      const newY = Math.max(0, Math.min(window.innerHeight - 144, dragRef.current.initialY + deltaY));
+      
       setPosition({ x: newX, y: newY });
     };
 
@@ -33,13 +50,13 @@ const LocalVideo = ({ isVideoOff }: LocalVideoProps) => {
 
   return (
     <div
-      className={`absolute z-20 w-48 h-36 rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl cursor-move transition-transform hover:scale-105 ${
-        isDragging ? 'scale-105' : ''
+      className={`fixed z-20 w-48 h-36 rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl cursor-move transition-transform hover:scale-105 ${
+        isDragging ? 'scale-105 shadow-3xl' : ''
       }`}
       style={{ 
-        right: `${position.x}px`,
-        bottom: `${position.y}px`,
-        transform: isDragging ? 'scale(1.05)' : 'scale(1)'
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        userSelect: 'none'
       }}
       onMouseDown={handleMouseDown}
     >
