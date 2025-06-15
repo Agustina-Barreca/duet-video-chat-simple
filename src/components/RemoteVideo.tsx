@@ -7,7 +7,7 @@ interface RemoteVideoProps {
 
 const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
   return (
-    <div className="absolute inset-0 p-8 pt-24 pb-24">
+    <div className="absolute inset-0 p-8 pt-32 pb-24">
       <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10">
         {isVideoOff ? (
           <div className="w-full h-full flex items-center justify-center">
