@@ -13,6 +13,10 @@ const VideoCall = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const [showNameForm, setShowNameForm] = useState(true);
   
+  // Nuevos estados para efectos de video
+  const [isBlurEnabled, setIsBlurEnabled] = useState(false);
+  const [currentBackground, setCurrentBackground] = useState<string | null>(null);
+  
   // Estados simulados del usuario remoto
   const [isRemoteAudioActive, setIsRemoteAudioActive] = useState(true);
   const [isRemoteVideoActive, setIsRemoteVideoActive] = useState(true);
@@ -61,6 +65,24 @@ const VideoCall = () => {
     console.log("Video", isVideoOff ? "activado" : "desactivado");
   };
 
+  const toggleBlur = () => {
+    setIsBlurEnabled(!isBlurEnabled);
+    // Si se activa el blur, desactivar el fondo personalizado
+    if (!isBlurEnabled) {
+      setCurrentBackground(null);
+    }
+    console.log("Blur background:", !isBlurEnabled ? "activado" : "desactivado");
+  };
+
+  const handleBackgroundChange = (background: string | null) => {
+    setCurrentBackground(background);
+    // Si se selecciona un fondo personalizado, desactivar el blur
+    if (background) {
+      setIsBlurEnabled(false);
+    }
+    console.log('Background changed to:', background || 'none');
+  };
+
   const startNewCall = () => {
     setIsCallActive(true);
     setShowNameForm(true);
@@ -68,6 +90,8 @@ const VideoCall = () => {
     // Resetear todos los estados a sus valores por defecto
     setIsMuted(false);
     setIsVideoOff(false);
+    setIsBlurEnabled(false);
+    setCurrentBackground(null);
     setIsRemoteAudioActive(true);
     setIsRemoteVideoActive(true);
   };
@@ -110,7 +134,12 @@ const VideoCall = () => {
       <RemoteVideo isVideoOff={!isRemoteVideoActive} />
       
       {/* Video local flotante */}
-      <LocalVideo isVideoOff={isVideoOff} userName={userName} />
+      <LocalVideo 
+        isVideoOff={isVideoOff} 
+        userName={userName}
+        isBlurEnabled={isBlurEnabled}
+        currentBackground={currentBackground}
+      />
       
       {/* Controles de llamada */}
       <CallControls 
@@ -119,6 +148,10 @@ const VideoCall = () => {
         onToggleMute={toggleMute}
         onToggleVideo={toggleVideo}
         onEndCall={handleEndCall}
+        isBlurEnabled={isBlurEnabled}
+        currentBackground={currentBackground}
+        onToggleBlur={toggleBlur}
+        onBackgroundChange={handleBackgroundChange}
       />
     </div>
   );

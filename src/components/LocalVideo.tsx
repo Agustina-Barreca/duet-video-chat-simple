@@ -1,15 +1,21 @@
 import { useState, useRef, useCallback, useMemo } from "react";
 import { User, Move } from "lucide-react";
-import LocalVideoControls from "./LocalVideoControls";
 
 interface LocalVideoProps {
   isVideoOff: boolean;
   userName: string | null;
+  isBlurEnabled?: boolean;
+  currentBackground?: string | null;
 }
 
-const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
-  const [isBlurEnabled, setIsBlurEnabled] = useState(false);
-  const [currentBackground, setCurrentBackground] = useState<string | null>(null);
+const LocalVideo = ({ 
+  isVideoOff, 
+  userName, 
+  isBlurEnabled = false, 
+  currentBackground = null 
+}: LocalVideoProps) => {
+  const [isBlurEnabledState, setIsBlurEnabled] = useState(isBlurEnabled);
+  const [currentBackgroundState, setCurrentBackground] = useState(currentBackground);
 
   // Optimizar cálculos de posición inicial con useMemo
   const { videoWidth, videoHeight, initialX, initialY } = useMemo(() => {
@@ -120,13 +126,13 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
   const getVideoStyle = () => {
     let style: React.CSSProperties = {};
     
-    if (isBlurEnabled) {
+    if (isBlurEnabledState) {
       style.filter = 'blur(8px)';
       style.backdropFilter = 'blur(10px)';
     }
     
-    if (currentBackground) {
-      style.backgroundImage = `url(${currentBackground})`;
+    if (currentBackgroundState) {
+      style.backgroundImage = `url(${currentBackgroundState})`;
       style.backgroundSize = 'cover';
       style.backgroundPosition = 'center';
     }
@@ -150,12 +156,6 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
     >
       {isVideoOff ? (
         <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center relative">
-          <LocalVideoControls
-            onBlurToggle={handleBlurToggle}
-            onBackgroundChange={handleBackgroundChange}
-            isBlurEnabled={isBlurEnabled}
-            currentBackground={currentBackground}
-          />
           <div className="text-center">
             <div className="w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
               <User className="w-4 h-4 md:w-6 md:h-6 text-white" />
@@ -168,15 +168,8 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
         </div>
       ) : (
         <div className="w-full h-full relative" style={getVideoStyle()}>
-          <LocalVideoControls
-            onBlurToggle={handleBlurToggle}
-            onBackgroundChange={handleBackgroundChange}
-            isBlurEnabled={isBlurEnabled}
-            currentBackground={currentBackground}
-          />
-          
           {/* Overlay con efectos aplicados */}
-          <div className={`absolute inset-0 ${currentBackground ? 'bg-black/20' : 'bg-gradient-to-br from-green-500 via-blue-500 to-purple-500'} ${currentBackground ? '' : 'opacity-90'}`}></div>
+          <div className={`absolute inset-0 ${currentBackgroundState ? 'bg-black/20' : 'bg-gradient-to-br from-green-500 via-blue-500 to-purple-500'} ${currentBackgroundState ? '' : 'opacity-90'}`}></div>
           
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center">
