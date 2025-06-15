@@ -1,5 +1,6 @@
 
 import { Mic, MicOff, Video, VideoOff, PhoneOff } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import VideoEffectsControls from "./VideoEffectsControls";
 
 interface CallControlsProps {
@@ -29,36 +30,50 @@ const CallControls = ({
     <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
       <div className="flex justify-center items-center space-x-4">
         {/* Control de micrófono */}
-        <button
-          onClick={onToggleMute}
-          className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 ${
-            isMuted 
-              ? 'bg-red-500 hover:bg-red-600' 
-              : 'bg-white/20 hover:bg-white/30 backdrop-blur-sm'
-          }`}
-        >
-          {isMuted ? (
-            <MicOff className="w-6 h-6 text-white" />
-          ) : (
-            <Mic className="w-6 h-6 text-white" />
-          )}
-        </button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={onToggleMute}
+              className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 ${
+                isMuted 
+                  ? 'bg-red-500 hover:bg-red-600' 
+                  : 'bg-white/20 hover:bg-white/30 backdrop-blur-sm'
+              }`}
+            >
+              {isMuted ? (
+                <MicOff className="w-6 h-6 text-white" />
+              ) : (
+                <Mic className="w-6 h-6 text-white" />
+              )}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{isMuted ? "Turn on microphone" : "Mute microphone"}</p>
+          </TooltipContent>
+        </Tooltip>
 
         {/* Control de video */}
-        <button
-          onClick={onToggleVideo}
-          className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 ${
-            isVideoOff 
-              ? 'bg-red-500 hover:bg-red-600' 
-              : 'bg-white/20 hover:bg-white/30 backdrop-blur-sm'
-          }`}
-        >
-          {isVideoOff ? (
-            <VideoOff className="w-6 h-6 text-white" />
-          ) : (
-            <Video className="w-6 h-6 text-white" />
-          )}
-        </button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={onToggleVideo}
+              className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 ${
+                isVideoOff 
+                  ? 'bg-red-500 hover:bg-red-600' 
+                  : 'bg-white/20 hover:bg-white/30 backdrop-blur-sm'
+              }`}
+            >
+              {isVideoOff ? (
+                <VideoOff className="w-6 h-6 text-white" />
+              ) : (
+                <Video className="w-6 h-6 text-white" />
+              )}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{isVideoOff ? "Turn on camera" : "Turn off camera"}</p>
+          </TooltipContent>
+        </Tooltip>
 
         {/* Controles de efectos de video */}
         <VideoEffectsControls
@@ -69,12 +84,19 @@ const CallControls = ({
         />
 
         {/* Botón para colgar */}
-        <button
-          onClick={onEndCall}
-          className="w-16 h-16 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-lg"
-        >
-          <PhoneOff className="w-7 h-7 text-white" />
-        </button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={onEndCall}
+              className="w-16 h-16 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-lg"
+            >
+              <PhoneOff className="w-7 h-7 text-white" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Finalizar llamada</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
       
       {/* Indicadores de estado */}
