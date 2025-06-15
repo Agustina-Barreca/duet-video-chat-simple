@@ -1,4 +1,3 @@
-
 import { useState, useRef, useCallback, useMemo, useEffect } from "react";
 import { User, Move } from "lucide-react";
 
@@ -183,14 +182,12 @@ const LocalVideo = ({
           {/* Overlay con efectos aplicados */}
           <div className={`absolute inset-0 ${currentBackgroundState ? 'bg-black/20' : 'bg-gradient-to-br from-green-500 via-blue-500 to-purple-500'} ${currentBackgroundState ? '' : 'opacity-90'}`}></div>
           
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              <div className="w-8 h-8 md:w-12 md:h-12 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2 border-2 border-white/50">
-                <User className="w-4 h-4 md:w-6 md:h-6 text-white" />
-              </div>
-              <p className="text-white text-[10px] md:text-xs font-medium">{userName || "Tú"}</p>
+          {/* Nombre del usuario en la esquina inferior izquierda cuando el video está activado */}
+          {userName && (
+            <div className="absolute bottom-1 left-1 md:bottom-2 md:left-2 bg-black/50 backdrop-blur-sm px-1.5 py-0.5 md:px-2 md:py-1 rounded text-white text-[10px] md:text-xs font-medium">
+              {userName}
             </div>
-          </div>
+          )}
           
           <div className="absolute top-1 right-1 md:top-2 md:right-2 opacity-0 hover:opacity-100 transition-opacity">
             <Move className="w-3 h-3 md:w-4 md:h-4 text-white/70" />
