@@ -55,7 +55,7 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
 
   return (
     <div
-      className={`fixed z-20 w-48 h-36 rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl cursor-move transition-transform hover:scale-105 ${
+      className={`fixed z-10 w-48 h-36 md:w-48 md:h-36 sm:w-32 sm:h-24 rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl cursor-move transition-transform hover:scale-105 ${
         isDragging ? 'scale-105 shadow-3xl' : ''
       }`}
       style={{ 
@@ -68,12 +68,12 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
       {isVideoOff ? (
         <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
           <div className="text-center">
-            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
-              <User className="w-6 h-6 text-white" />
+            <div className="w-12 h-12 sm:w-8 sm:h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
+              <User className="w-6 h-6 sm:w-4 sm:h-4 text-white" />
             </div>
-            <p className="text-white text-xs">Cámara off</p>
+            <p className="text-white text-xs sm:text-[10px]">Cámara off</p>
             {userName && (
-              <p className="text-white text-xs font-medium mt-1">{userName}</p>
+              <p className="text-white text-xs sm:text-[10px] font-medium mt-1">{userName}</p>
             )}
           </div>
         </div>
@@ -83,16 +83,16 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
           <div className="absolute inset-0 bg-gradient-to-br from-green-500 via-blue-500 to-purple-500 opacity-90"></div>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center">
-              <div className="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-2 border-2 border-white/50">
-                <User className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 sm:w-8 sm:h-8 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-2 border-2 border-white/50">
+                <User className="w-6 h-6 sm:w-4 sm:h-4 text-white" />
               </div>
-              <p className="text-white text-xs font-medium">{userName || "Tú"}</p>
+              <p className="text-white text-xs sm:text-[10px] font-medium">{userName || "Tú"}</p>
             </div>
           </div>
           
           {/* Indicador de que se puede arrastrar */}
           <div className="absolute top-2 right-2 opacity-0 hover:opacity-100 transition-opacity">
-            <Move className="w-4 h-4 text-white/70" />
+            <Move className="w-4 h-4 sm:w-3 sm:h-3 text-white/70" />
           </div>
         </div>
       )}
