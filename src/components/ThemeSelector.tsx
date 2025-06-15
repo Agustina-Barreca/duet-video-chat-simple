@@ -62,10 +62,10 @@ const ThemeSelector = () => {
             <DropdownMenuItem
               key={mode}
               onClick={() => setThemeMode(mode)}
-              className={`flex items-center gap-3 px-3 py-2 cursor-pointer ${
+              className={`flex items-center gap-3 px-3 py-2 cursor-pointer transition-colors ${
                 themeMode === mode
-                  ? `${themeClasses.buttonPrimary} ${themeClasses.textPrimary}`
-                  : `${themeClasses.textSecondary} hover:${themeClasses.buttonSecondary}`
+                  ? `bg-blue-500/20 ${themeClasses.textPrimary} border-l-2 border-blue-400`
+                  : `${themeClasses.textSecondary} hover:${themeClasses.buttonSecondary} hover:${themeClasses.textPrimary}`
               }`}
             >
               <Icon className="w-4 h-4" />

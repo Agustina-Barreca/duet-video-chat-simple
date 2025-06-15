@@ -45,30 +45,30 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
           textSecondary: 'text-gray-300',
           buttonPrimary: 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600',
           buttonSecondary: 'bg-white/10 hover:bg-white/20',
-          accent: 'from-green-500 to-blue-500',
+          accent: 'from-purple-500 to-pink-500',
           border: 'border-white/30'
         };
       case 'professional':
         return {
-          background: 'bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-800',
-          cardBackground: 'bg-gradient-to-br from-slate-800/90 to-indigo-900/90',
+          background: 'bg-gradient-to-br from-slate-800 via-gray-800 to-slate-900',
+          cardBackground: 'bg-gradient-to-br from-slate-700/90 to-slate-800/90',
           textPrimary: 'text-white',
-          textSecondary: 'text-blue-200',
-          buttonPrimary: 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700',
-          buttonSecondary: 'bg-white/10 hover:bg-white/20',
-          accent: 'from-blue-500 to-indigo-600',
-          border: 'border-blue-300/30'
+          textSecondary: 'text-slate-300',
+          buttonPrimary: 'bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800',
+          buttonSecondary: 'bg-white/10 hover:bg-white/15',
+          accent: 'from-slate-500 to-slate-600',
+          border: 'border-slate-400/30'
         };
       case 'minimalist':
         return {
-          background: 'bg-gray-50',
-          cardBackground: 'bg-white/95',
-          textPrimary: 'text-gray-900',
-          textSecondary: 'text-gray-600',
-          buttonPrimary: 'bg-gray-900 hover:bg-gray-800',
-          buttonSecondary: 'bg-gray-200 hover:bg-gray-300',
-          accent: 'from-gray-700 to-gray-800',
-          border: 'border-gray-300'
+          background: 'bg-gradient-to-br from-slate-100 via-gray-100 to-slate-200',
+          cardBackground: 'bg-white/90 backdrop-blur-sm',
+          textPrimary: 'text-slate-800',
+          textSecondary: 'text-slate-600',
+          buttonPrimary: 'bg-slate-800 hover:bg-slate-900 text-white',
+          buttonSecondary: 'bg-slate-200/80 hover:bg-slate-300/80',
+          accent: 'from-slate-600 to-slate-700',
+          border: 'border-slate-300/50'
         };
       case 'dark':
         return {
@@ -76,9 +76,9 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
           cardBackground: 'bg-gradient-to-br from-gray-800/90 to-slate-900/90',
           textPrimary: 'text-white',
           textSecondary: 'text-gray-300',
-          buttonPrimary: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700',
+          buttonPrimary: 'bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800',
           buttonSecondary: 'bg-gray-700/60 hover:bg-gray-600/60',
-          accent: 'from-emerald-500 to-teal-500',
+          accent: 'from-slate-500 to-slate-600',
           border: 'border-gray-600/50'
         };
       default:
