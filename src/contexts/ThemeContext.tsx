@@ -50,14 +50,14 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
         };
       case 'professional':
         return {
-          background: 'bg-gradient-to-br from-slate-900 via-blue-900 to-teal-900',
-          cardBackground: 'bg-gradient-to-br from-slate-800/95 to-blue-900/90 backdrop-blur-sm',
-          textPrimary: 'text-white',
-          textSecondary: 'text-blue-200/80',
-          buttonPrimary: 'bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700',
-          buttonSecondary: 'bg-blue-500/10 hover:bg-blue-500/20',
-          accent: 'from-teal-500 to-blue-600',
-          border: 'border-teal-400/30'
+          background: 'bg-slate-900',
+          cardBackground: 'bg-slate-800/95 border border-slate-700/50',
+          textPrimary: 'text-slate-100',
+          textSecondary: 'text-slate-400',
+          buttonPrimary: 'bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-900/20',
+          buttonSecondary: 'bg-slate-700/80 hover:bg-slate-600/80 border border-slate-600/50',
+          accent: 'from-blue-500 to-blue-600',
+          border: 'border-slate-600/40'
         };
       case 'minimalist':
         return {
