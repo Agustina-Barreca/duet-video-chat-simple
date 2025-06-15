@@ -37,7 +37,9 @@ const LocalVideoContainer = ({
     isMinimized,
     videoWidth,
     videoHeight,
-    minimizedSize
+    minimizedSize,
+    position,
+    setPosition
   });
 
   const {
