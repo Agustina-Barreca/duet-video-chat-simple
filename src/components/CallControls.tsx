@@ -27,8 +27,8 @@ const CallControls = ({
   onBackgroundChange
 }: CallControlsProps) => {
   return (
-    <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-      <div className="flex justify-center items-center space-x-4">
+    <div className="fixed bottom-0 left-0 right-0 p-6 z-50 pointer-events-none">
+      <div className="flex justify-center items-center space-x-4 pointer-events-auto">
         {/* Control de micrófono */}
         <Tooltip text={isMuted ? "Activar micrófono" : "Silenciar micrófono"} position="top">
           <button
