@@ -1,3 +1,4 @@
+
 import { useState, useRef, useCallback, useMemo, useEffect } from "react";
 import { User, Move, Minimize2, Maximize2 } from "lucide-react";
 
@@ -66,13 +67,17 @@ const LocalVideo = ({
     initialY: initialY
   });
 
-  // Actualizar posición cuando se minimiza/maximiza
+  // Actualizar posición cuando se minimiza/maximiza con transición suave
   useEffect(() => {
-    if (isMinimized) {
-      setPosition({ x: minimizedX, y: minimizedY });
-    } else {
-      setPosition({ x: initialX, y: initialY });
-    }
+    const timer = setTimeout(() => {
+      if (isMinimized) {
+        setPosition({ x: minimizedX, y: minimizedY });
+      } else {
+        setPosition({ x: initialX, y: initialY });
+      }
+    }, 50); // Pequeño delay para permitir que la transición CSS tome efecto
+
+    return () => clearTimeout(timer);
   }, [isMinimized, minimizedX, minimizedY, initialX, initialY]);
 
   // Optimizar handlers con useCallback
@@ -165,10 +170,10 @@ const LocalVideo = ({
   };
 
   const containerClasses = isMinimized 
-    ? `fixed z-20 rounded-full overflow-hidden border-2 border-white/30 shadow-2xl cursor-pointer select-none transition-all duration-300 ${
+    ? `fixed z-20 rounded-full overflow-hidden border-2 border-white/30 shadow-2xl cursor-pointer select-none transition-all duration-500 ease-in-out ${
         isDragging ? 'scale-105 shadow-3xl' : 'hover:scale-110'
       }`
-    : `fixed z-20 w-32 h-24 md:w-48 md:h-36 rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl cursor-move select-none transition-all duration-300 group ${
+    : `fixed z-20 w-32 h-24 md:w-48 md:h-36 rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl cursor-move select-none transition-all duration-500 ease-in-out group ${
         isDragging ? 'scale-105 shadow-3xl' : 'hover:scale-105'
       }`;
 
@@ -179,13 +184,15 @@ const LocalVideo = ({
         width: `${minimizedSize}px`,
         height: `${minimizedSize}px`,
         touchAction: 'none',
-        willChange: isDragging ? 'transform' : 'auto'
+        willChange: 'transform, width, height, left, top',
+        transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
       }
     : { 
         left: `${position.x}px`,
         top: `${position.y}px`,
         touchAction: 'none',
-        willChange: isDragging ? 'transform' : 'auto'
+        willChange: 'transform, width, height, left, top',
+        transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
       };
 
   return (
