@@ -56,10 +56,8 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
 
         let newWidth = startSizeRef.current.width;
         let newHeight = startSizeRef.current.height;
-        let newX = startPositionRef.current.x;
-        let newY = startPositionRef.current.y;
 
-        // Calcular nuevas dimensiones y posición basado en la dirección del redimensionado
+        // Calcular nuevas dimensiones basado en la dirección del redimensionado
         switch (resizeDirection) {
           case 'se': // Esquina inferior derecha
             newWidth += deltaX;
@@ -68,18 +66,14 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
           case 'sw': // Esquina inferior izquierda
             newWidth -= deltaX;
             newHeight += deltaY;
-            newX += deltaX;
             break;
           case 'ne': // Esquina superior derecha
             newWidth += deltaX;
             newHeight -= deltaY;
-            newY += deltaY;
             break;
           case 'nw': // Esquina superior izquierda
             newWidth -= deltaX;
             newHeight -= deltaY;
-            newX += deltaX;
-            newY += deltaY;
             break;
         }
 
@@ -87,40 +81,13 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
         newWidth = Math.max(300, Math.min(1200, newWidth));
         newHeight = Math.max(200, Math.min(800, newHeight));
 
-        // Validar límites del viewport
-        if (newX < 0) {
-          if (resizeDirection === 'sw' || resizeDirection === 'nw') {
-            newWidth += newX;
-          }
-          newX = 0;
-        }
-        
-        if (newY < 0) {
-          if (resizeDirection === 'ne' || resizeDirection === 'nw') {
-            newHeight += newY;
-          }
-          newY = 0;
-        }
-        
-        if (newX + newWidth > window.innerWidth) {
-          if (resizeDirection === 'se' || resizeDirection === 'ne') {
-            newWidth = window.innerWidth - newX;
-          } else {
-            newX = window.innerWidth - newWidth;
-          }
-        }
-        
-        if (newY + newHeight > window.innerHeight) {
-          if (resizeDirection === 'se' || resizeDirection === 'sw') {
-            newHeight = window.innerHeight - newY;
-          } else {
-            newY = window.innerHeight - newHeight;
-          }
-        }
+        // Calcular la diferencia de tamaño para mantener centrado
+        const widthDiff = newWidth - startSizeRef.current.width;
+        const heightDiff = newHeight - startSizeRef.current.height;
 
-        // Aplicar límites mínimos finales
-        newWidth = Math.max(300, newWidth);
-        newHeight = Math.max(200, newHeight);
+        // Calcular nueva posición para mantener el centro
+        const newX = Math.max(0, Math.min(window.innerWidth - newWidth, startPositionRef.current.x - widthDiff / 2));
+        const newY = Math.max(0, Math.min(window.innerHeight - newHeight, startPositionRef.current.y - heightDiff / 2));
 
         setSize({ width: newWidth, height: newHeight });
         setPosition({ x: newX, y: newY });
@@ -170,34 +137,30 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
         }}
         onMouseDown={handleDragMouseDown}
       >
-        {/* Resize handles en las cuatro esquinas - Mejorados */}
+        {/* Resize handles en las cuatro esquinas */}
         
         {/* Esquina superior izquierda */}
         <div 
-          className="absolute -top-1 -left-1 w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity cursor-nw-resize z-20 bg-white/20 border-2 border-white/60 rounded-tl-lg"
+          className="absolute top-0 left-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-nw-resize z-10 border-l-2 border-t-2 border-white/60 rounded-tl-2xl"
           onMouseDown={(e) => handleResizeMouseDown(e, 'nw')}
-          style={{ pointerEvents: 'auto' }}
         />
 
         {/* Esquina superior derecha */}
         <div 
-          className="absolute -top-1 -right-1 w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity cursor-ne-resize z-20 bg-white/20 border-2 border-white/60 rounded-tr-lg"
+          className="absolute top-0 right-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-ne-resize z-10 border-r-2 border-t-2 border-white/60 rounded-tr-2xl"
           onMouseDown={(e) => handleResizeMouseDown(e, 'ne')}
-          style={{ pointerEvents: 'auto' }}
         />
 
         {/* Esquina inferior izquierda */}
         <div 
-          className="absolute -bottom-1 -left-1 w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity cursor-sw-resize z-20 bg-white/20 border-2 border-white/60 rounded-bl-lg"
+          className="absolute bottom-0 left-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-sw-resize z-10 border-l-2 border-b-2 border-white/60 rounded-bl-2xl"
           onMouseDown={(e) => handleResizeMouseDown(e, 'sw')}
-          style={{ pointerEvents: 'auto' }}
         />
 
         {/* Esquina inferior derecha */}
         <div 
-          className="absolute -bottom-1 -right-1 w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity cursor-se-resize z-20 bg-white/20 border-2 border-white/60 rounded-br-lg"
+          className="absolute bottom-0 right-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-se-resize z-10 border-r-2 border-b-2 border-white/60 rounded-br-2xl"
           onMouseDown={(e) => handleResizeMouseDown(e, 'se')}
-          style={{ pointerEvents: 'auto' }}
         />
 
         {isVideoOff ? (
