@@ -1,5 +1,6 @@
 
-import { Mic, MicOff, Video, VideoOff, Phone, PhoneOff } from "lucide-react";
+import { Mic, MicOff, Video, VideoOff, PhoneOff } from "lucide-react";
+import VideoEffectsControls from "./VideoEffectsControls";
 
 interface CallControlsProps {
   isMuted: boolean;
@@ -7,6 +8,10 @@ interface CallControlsProps {
   onToggleMute: () => void;
   onToggleVideo: () => void;
   onEndCall: () => void;
+  isBlurEnabled: boolean;
+  currentBackground: string | null;
+  onToggleBlur: () => void;
+  onBackgroundChange: (background: string | null) => void;
 }
 
 const CallControls = ({ 
@@ -14,7 +19,11 @@ const CallControls = ({
   isVideoOff, 
   onToggleMute, 
   onToggleVideo, 
-  onEndCall 
+  onEndCall,
+  isBlurEnabled,
+  currentBackground,
+  onToggleBlur,
+  onBackgroundChange
 }: CallControlsProps) => {
   return (
     <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
@@ -50,6 +59,14 @@ const CallControls = ({
             <Video className="w-6 h-6 text-white" />
           )}
         </button>
+
+        {/* Controles de efectos de video */}
+        <VideoEffectsControls
+          isBlurEnabled={isBlurEnabled}
+          currentBackground={currentBackground}
+          onToggleBlur={onToggleBlur}
+          onBackgroundChange={onBackgroundChange}
+        />
 
         {/* Botón para colgar */}
         <button
