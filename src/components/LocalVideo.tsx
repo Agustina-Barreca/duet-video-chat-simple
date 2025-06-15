@@ -169,7 +169,7 @@ const LocalVideo = ({
     ? `fixed z-20 rounded-full overflow-hidden border-2 border-white/30 shadow-2xl cursor-pointer select-none transition-all duration-300 ${
         isDragging ? 'scale-105 shadow-3xl' : 'hover:scale-110'
       }`
-    : `fixed z-20 w-32 h-24 md:w-48 md:h-36 rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl cursor-move select-none transition-all duration-300 ${
+    : `fixed z-20 w-32 h-24 md:w-48 md:h-36 rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl cursor-move select-none transition-all duration-300 group ${
         isDragging ? 'scale-105 shadow-3xl' : 'hover:scale-105'
       }`;
 
@@ -230,16 +230,16 @@ const LocalVideo = ({
             </div>
           )}
           
-          {/* Botón de minimizar en la esquina superior derecha */}
+          {/* Botón de minimizar en la esquina superior derecha - visible en hover del contenedor */}
           <button
             onClick={handleMinimizeToggle}
-            className="absolute top-1 right-1 md:top-2 md:right-2 w-6 h-6 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-10"
+            className="absolute top-1 right-1 md:top-2 md:right-2 w-6 h-6 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
           >
             <Minimize2 className="w-3 h-3 text-white" />
           </button>
           
           {/* Icono de mover */}
-          <div className="absolute top-1 left-1 md:top-2 md:left-2 opacity-0 hover:opacity-100 transition-opacity">
+          <div className="absolute top-1 left-1 md:top-2 md:left-2 opacity-0 group-hover:opacity-100 transition-opacity">
             <Move className="w-3 h-3 md:w-4 md:h-4 text-white/70" />
           </div>
         </>
