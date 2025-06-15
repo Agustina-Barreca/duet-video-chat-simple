@@ -111,35 +111,27 @@ const LocalVideoContainer = ({
         <>
           {/* Esquina superior izquierda */}
           <div 
-            className="absolute top-0 left-0 w-4 h-4 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity cursor-nw-resize z-10 rounded-br-lg"
+            className="absolute top-0 left-0 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-nw-resize z-10 border-l-2 border-t-2 border-white/60"
             onMouseDown={(e) => handleResizeMouseDown(e, 'nw')}
-          >
-            <div className="absolute top-0.5 left-0.5 w-1.5 h-1.5 bg-white/40 rounded-full"></div>
-          </div>
+          />
 
           {/* Esquina superior derecha */}
           <div 
-            className="absolute top-0 right-0 w-4 h-4 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity cursor-ne-resize z-10 rounded-bl-lg"
+            className="absolute top-0 right-0 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-ne-resize z-10 border-r-2 border-t-2 border-white/60"
             onMouseDown={(e) => handleResizeMouseDown(e, 'ne')}
-          >
-            <div className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-white/40 rounded-full"></div>
-          </div>
+          />
 
           {/* Esquina inferior izquierda */}
           <div 
-            className="absolute bottom-0 left-0 w-4 h-4 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity cursor-sw-resize z-10 rounded-tr-lg"
+            className="absolute bottom-0 left-0 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-sw-resize z-10 border-l-2 border-b-2 border-white/60"
             onMouseDown={(e) => handleResizeMouseDown(e, 'sw')}
-          >
-            <div className="absolute bottom-0.5 left-0.5 w-1.5 h-1.5 bg-white/40 rounded-full"></div>
-          </div>
+          />
 
           {/* Esquina inferior derecha */}
           <div 
-            className="absolute bottom-0 right-0 w-4 h-4 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity cursor-se-resize z-10 rounded-tl-lg"
+            className="absolute bottom-0 right-0 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-se-resize z-10 border-r-2 border-b-2 border-white/60"
             onMouseDown={(e) => handleResizeMouseDown(e, 'se')}
-          >
-            <div className="absolute bottom-0.5 right-0.5 w-1.5 h-1.5 bg-white/40 rounded-full"></div>
-          </div>
+          />
         </>
       )}
 

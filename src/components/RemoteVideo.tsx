@@ -126,35 +126,27 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
         
         {/* Esquina superior izquierda */}
         <div 
-          className="absolute top-0 left-0 w-6 h-6 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity cursor-nw-resize z-10 rounded-br-lg"
+          className="absolute top-0 left-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-nw-resize z-10 border-l-2 border-t-2 border-white/60"
           onMouseDown={(e) => handleResizeMouseDown(e, 'nw')}
-        >
-          <div className="absolute top-1 left-1 w-2 h-2 bg-white/40 rounded-full"></div>
-        </div>
+        />
 
         {/* Esquina superior derecha */}
         <div 
-          className="absolute top-0 right-0 w-6 h-6 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity cursor-ne-resize z-10 rounded-bl-lg"
+          className="absolute top-0 right-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-ne-resize z-10 border-r-2 border-t-2 border-white/60"
           onMouseDown={(e) => handleResizeMouseDown(e, 'ne')}
-        >
-          <div className="absolute top-1 right-1 w-2 h-2 bg-white/40 rounded-full"></div>
-        </div>
+        />
 
         {/* Esquina inferior izquierda */}
         <div 
-          className="absolute bottom-0 left-0 w-6 h-6 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity cursor-sw-resize z-10 rounded-tr-lg"
+          className="absolute bottom-0 left-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-sw-resize z-10 border-l-2 border-b-2 border-white/60"
           onMouseDown={(e) => handleResizeMouseDown(e, 'sw')}
-        >
-          <div className="absolute bottom-1 left-1 w-2 h-2 bg-white/40 rounded-full"></div>
-        </div>
+        />
 
         {/* Esquina inferior derecha */}
         <div 
-          className="absolute bottom-0 right-0 w-6 h-6 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity cursor-se-resize z-10 rounded-tl-lg"
+          className="absolute bottom-0 right-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-se-resize z-10 border-r-2 border-b-2 border-white/60"
           onMouseDown={(e) => handleResizeMouseDown(e, 'se')}
-        >
-          <div className="absolute bottom-1 right-1 w-2 h-2 bg-white/40 rounded-full"></div>
-        </div>
+        />
 
         {isVideoOff ? (
           <div className="w-full h-full flex items-center justify-center">
