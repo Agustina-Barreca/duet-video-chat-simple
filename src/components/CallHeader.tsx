@@ -60,15 +60,9 @@ const CallHeader = ({ userName, isRemoteAudioActive = true, isRemoteVideoActive 
           </div>
         </div>
 
-        {/* Fila inferior en mobile: nombre de usuario y estados detallados */}
+        {/* Fila inferior en mobile: estados detallados */}
         <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-          {userName && (
-            <div className="flex items-center space-x-2 bg-green-500/20 backdrop-blur-sm rounded-lg px-2 py-1 md:px-3 md:py-2 border border-green-500/30 order-2 md:order-1">
-              <span className="text-green-400 text-xs md:text-sm font-medium">{userName}</span>
-            </div>
-          )}
-          
-          <div className="flex flex-col items-start md:items-end space-y-2 order-1 md:order-2">
+          <div className="flex flex-col items-start md:items-end space-y-2">
             {/* Estados de audio/video - solo en desktop */}
             <div className="hidden md:flex items-center space-x-2">
               <div className={`flex items-center space-x-1 px-2 py-1 rounded-md ${isRemoteAudioActive ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
@@ -90,7 +84,7 @@ const CallHeader = ({ userName, isRemoteAudioActive = true, isRemoteVideoActive 
             </div>
             
             <div className="text-left md:text-right">
-              <div className="bg-green-600 rounded-xl px-4 py-2 border border-green-500/30">
+              <div className="bg-black/40 backdrop-blur-sm rounded-lg px-3 py-1 border border-white/20">
                 <span className="text-white text-sm md:text-lg font-medium">Usuario Remoto</span>
               </div>
             </div>
