@@ -1,5 +1,6 @@
 
 import { User } from "lucide-react";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface LocalVideoContentProps {
   isVideoOff: boolean;
@@ -16,6 +17,9 @@ const LocalVideoContent = ({
   currentBackground,
   isMinimized
 }: LocalVideoContentProps) => {
+  const { getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
+
   const getVideoStyle = () => {
     let style: React.CSSProperties = {};
     
@@ -36,7 +40,7 @@ const LocalVideoContent = ({
 
   if (isMinimized) {
     return (
-      <div className="w-full h-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center">
+      <div className={`w-full h-full bg-gradient-to-br ${themeClasses.accent} flex items-center justify-center`}>
         <User className="w-6 h-6 text-white" />
       </div>
     );
@@ -44,13 +48,13 @@ const LocalVideoContent = ({
 
   if (isVideoOff) {
     return (
-      <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center relative">
+      <div className={`w-full h-full ${themeClasses.cardBackground} flex items-center justify-center relative`}>
         <div className="text-center">
-          <div className="w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto">
+          <div className={`w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br ${themeClasses.accent} rounded-full flex items-center justify-center mx-auto`}>
             <User className="w-4 h-4 md:w-6 md:h-6 text-white" />
           </div>
           {userName && (
-            <p className="text-white text-[10px] md:text-xs font-medium mt-1 md:mt-2">{userName}</p>
+            <p className={`text-[10px] md:text-xs font-medium mt-1 md:mt-2 ${themeClasses.textPrimary}`}>{userName}</p>
           )}
         </div>
       </div>
@@ -60,7 +64,7 @@ const LocalVideoContent = ({
   return (
     <div className="w-full h-full relative" style={getVideoStyle()}>
       {/* Overlay con efectos aplicados */}
-      <div className={`absolute inset-0 ${currentBackground ? 'bg-black/20' : 'bg-gradient-to-br from-green-500 via-blue-500 to-purple-500'} ${currentBackground ? '' : 'opacity-90'}`}></div>
+      <div className={`absolute inset-0 ${currentBackground ? 'bg-black/20' : `bg-gradient-to-br ${themeClasses.accent}`} ${currentBackground ? '' : 'opacity-90'}`}></div>
       
       {/* Nombre del usuario en la esquina inferior izquierda cuando el video está activado */}
       {userName && (

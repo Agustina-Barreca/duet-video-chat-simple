@@ -1,12 +1,15 @@
-
 import { User } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface RemoteVideoProps {
   isVideoOff: boolean;
 }
 
 const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
+  const { getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
+  
   const [size, setSize] = useState({ width: 780, height: 520 }); // Incrementado ~30% desde 600x400
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isResizing, setIsResizing] = useState(false);
@@ -109,7 +112,7 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
     <div className="absolute inset-0 p-8 pt-32 pb-24 flex items-center justify-center pointer-events-none">
       <div 
         ref={containerRef}
-        className="absolute bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-white/10 group pointer-events-auto"
+        className={`absolute rounded-2xl overflow-hidden shadow-2xl group pointer-events-auto ${themeClasses.cardBackground} ${themeClasses.border} border`}
         style={{ 
           width: `${size.width}px`, 
           height: `${size.height}px`,
@@ -152,16 +155,16 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
         {isVideoOff ? (
           <div className="w-full h-full flex items-center justify-center">
             <div className="text-center">
-              <div className="w-32 h-32 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className={`w-32 h-32 bg-gradient-to-br ${themeClasses.accent} rounded-full flex items-center justify-center mx-auto mb-4`}>
                 <User className="w-16 h-16 text-white" />
               </div>
-              <h3 className="text-2xl font-semibold text-white">Usuario Remoto</h3>
+              <h3 className={`text-2xl font-semibold ${themeClasses.textPrimary}`}>Usuario Remoto</h3>
             </div>
           </div>
         ) : (
           <div className="w-full h-full relative overflow-hidden">
             {/* Simulación de video con gradiente animado */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 opacity-80 animate-pulse"></div>
+            <div className={`absolute inset-0 bg-gradient-to-br ${themeClasses.accent} opacity-80 animate-pulse`}></div>
             
             {/* Efecto de brillo para simular movimiento */}
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 animate-[slide_3s_ease-in-out_infinite]"></div>

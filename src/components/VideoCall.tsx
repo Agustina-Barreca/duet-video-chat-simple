@@ -4,8 +4,13 @@ import LocalVideo from "./LocalVideo";
 import CallControls from "./CallControls";
 import CallHeader from "./CallHeader";
 import NameForm from "./NameForm";
+import ThemeSelector from "./ThemeSelector";
+import { useTheme } from "../contexts/ThemeContext";
 
 const VideoCall = () => {
+  const { getThemeClasses } = useTheme();
+  const themeClasses = getThemeClasses();
+  
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
   const [isCallActive, setIsCallActive] = useState(true);
@@ -110,14 +115,14 @@ const VideoCall = () => {
 
   if (!isCallActive) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className={`min-h-screen flex items-center justify-center ${themeClasses.background}`}>
         <div className="text-center">
           <div className="w-24 h-24 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
             <div className="w-8 h-8 bg-white rounded-sm"></div>
           </div>
-          <h2 className="text-2xl font-semibold text-white mb-2">Llamada terminada</h2>
-          <p className="text-gray-300 mb-2">La videollamada ha finalizado</p>
-          <p className="text-gray-400 text-sm mb-6">Hasta luego, {userName}</p>
+          <h2 className={`text-2xl font-semibold mb-2 ${themeClasses.textPrimary}`}>Llamada terminada</h2>
+          <p className={`mb-2 ${themeClasses.textSecondary}`}>La videollamada ha finalizado</p>
+          <p className={`text-sm mb-6 ${themeClasses.textSecondary}`}>Hasta luego, {userName}</p>
           <button 
             onClick={startNewCall}
             className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg transition-colors"
@@ -130,7 +135,9 @@ const VideoCall = () => {
   }
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
+    <div className={`relative min-h-screen overflow-hidden ${themeClasses.background}`}>
+      <ThemeSelector />
+      
       <CallHeader 
         userName={userName} 
         isRemoteAudioActive={isRemoteAudioActive}
