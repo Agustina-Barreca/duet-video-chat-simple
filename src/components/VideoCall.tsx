@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import RemoteVideo from "./RemoteVideo";
 import LocalVideo from "./LocalVideo";
@@ -40,13 +39,21 @@ const VideoCall = () => {
     return () => clearInterval(interval);
   }, [isCallActive]);
 
-  const handleNameSubmit = (name: string, startWithVideo: boolean, startWithAudio: boolean) => {
+  const handleNameSubmit = (
+    name: string, 
+    startWithVideo: boolean, 
+    startWithAudio: boolean,
+    initialBlurEnabled: boolean,
+    initialBackground: string | null
+  ) => {
     setUserName(name);
     setShowNameForm(false);
     // Configurar estados iniciales basados en las preferencias del usuario
     setIsVideoOff(!startWithVideo);
     setIsMuted(!startWithAudio);
-    console.log(`Iniciando llamada - Video: ${startWithVideo ? 'activado' : 'desactivado'}, Audio: ${startWithAudio ? 'activado' : 'silenciado'}`);
+    setIsBlurEnabled(initialBlurEnabled);
+    setCurrentBackground(initialBackground);
+    console.log(`Iniciando llamada - Video: ${startWithVideo ? 'activado' : 'desactivado'}, Audio: ${startWithAudio ? 'activado' : 'silenciado'}, Blur: ${initialBlurEnabled ? 'activado' : 'desactivado'}, Background: ${initialBackground || 'ninguno'}`);
   };
 
   const handleEndCall = () => {
