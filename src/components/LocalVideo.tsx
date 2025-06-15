@@ -8,9 +8,15 @@ interface LocalVideoProps {
 }
 
 const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
-  // Calcular posición inicial en la esquina inferior derecha
-  const initialX = window.innerWidth - 192 - 20; // ancho del video (192px) + margen (20px)
-  const initialY = window.innerHeight - 144 - 20; // alto del video (144px) + margen (20px)
+  // Calcular posición inicial - en móviles más arriba para evitar controles
+  const isMobile = window.innerWidth < 768;
+  const videoWidth = isMobile ? 128 : 192; // w-32 = 128px, w-48 = 192px
+  const videoHeight = isMobile ? 96 : 144; // h-24 = 96px, h-36 = 144px
+  const margin = 20;
+  const bottomOffset = isMobile ? 120 : 20; // Más espacio en móviles para evitar controles
+  
+  const initialX = window.innerWidth - videoWidth - margin;
+  const initialY = window.innerHeight - videoHeight - bottomOffset;
   
   const [position, setPosition] = useState({ x: initialX, y: initialY });
   const [isDragging, setIsDragging] = useState(false);
@@ -37,8 +43,8 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
       const deltaX = e.clientX - dragRef.current.startX;
       const deltaY = e.clientY - dragRef.current.startY;
       
-      const newX = Math.max(0, Math.min(window.innerWidth - 192, dragRef.current.initialX + deltaX));
-      const newY = Math.max(0, Math.min(window.innerHeight - 144, dragRef.current.initialY + deltaY));
+      const newX = Math.max(0, Math.min(window.innerWidth - videoWidth, dragRef.current.initialX + deltaX));
+      const newY = Math.max(0, Math.min(window.innerHeight - videoHeight, dragRef.current.initialY + deltaY));
       
       setPosition({ x: newX, y: newY });
     };
