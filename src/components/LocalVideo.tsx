@@ -1,6 +1,6 @@
-
 import { useState, useRef, useCallback, useMemo } from "react";
 import { User, Move } from "lucide-react";
+import LocalVideoControls from "./LocalVideoControls";
 
 interface LocalVideoProps {
   isVideoOff: boolean;
@@ -8,6 +8,9 @@ interface LocalVideoProps {
 }
 
 const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
+  const [isBlurEnabled, setIsBlurEnabled] = useState(false);
+  const [currentBackground, setCurrentBackground] = useState<string | null>(null);
+
   // Optimizar cálculos de posición inicial con useMemo
   const { videoWidth, videoHeight, initialX, initialY } = useMemo(() => {
     const isMobile = window.innerWidth < 768;
@@ -100,6 +103,37 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
     document.addEventListener('touchend', handleTouchEnd);
   }, [position.x, position.y, updatePosition]);
 
+  const handleBlurToggle = useCallback((enabled: boolean) => {
+    setIsBlurEnabled(enabled);
+    console.log('Blur background:', enabled ? 'activado' : 'desactivado');
+  }, []);
+
+  const handleBackgroundChange = useCallback((background: string | null) => {
+    setCurrentBackground(background);
+    // Si se selecciona un fondo personalizado, desactivar el blur
+    if (background) {
+      setIsBlurEnabled(false);
+    }
+    console.log('Background changed to:', background || 'none');
+  }, []);
+
+  const getVideoStyle = () => {
+    let style: React.CSSProperties = {};
+    
+    if (isBlurEnabled) {
+      style.filter = 'blur(8px)';
+      style.backdropFilter = 'blur(10px)';
+    }
+    
+    if (currentBackground) {
+      style.backgroundImage = `url(${currentBackground})`;
+      style.backgroundSize = 'cover';
+      style.backgroundPosition = 'center';
+    }
+    
+    return style;
+  };
+
   return (
     <div
       className={`fixed z-20 w-32 h-24 md:w-48 md:h-36 rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl cursor-move select-none ${
@@ -115,7 +149,13 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
       onTouchStart={handleTouchStart}
     >
       {isVideoOff ? (
-        <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
+        <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center relative">
+          <LocalVideoControls
+            onBlurToggle={handleBlurToggle}
+            onBackgroundChange={handleBackgroundChange}
+            isBlurEnabled={isBlurEnabled}
+            currentBackground={currentBackground}
+          />
           <div className="text-center">
             <div className="w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
               <User className="w-4 h-4 md:w-6 md:h-6 text-white" />
@@ -127,8 +167,17 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
           </div>
         </div>
       ) : (
-        <div className="w-full h-full relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-green-500 via-blue-500 to-purple-500 opacity-90"></div>
+        <div className="w-full h-full relative" style={getVideoStyle()}>
+          <LocalVideoControls
+            onBlurToggle={handleBlurToggle}
+            onBackgroundChange={handleBackgroundChange}
+            isBlurEnabled={isBlurEnabled}
+            currentBackground={currentBackground}
+          />
+          
+          {/* Overlay con efectos aplicados */}
+          <div className={`absolute inset-0 ${currentBackground ? 'bg-black/20' : 'bg-gradient-to-br from-green-500 via-blue-500 to-purple-500'} ${currentBackground ? '' : 'opacity-90'}`}></div>
+          
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center">
               <div className="w-8 h-8 md:w-12 md:h-12 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2 border-2 border-white/50">
