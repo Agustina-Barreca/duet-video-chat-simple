@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useMemo } from "react";
+import { useState, useRef, useCallback, useMemo, useEffect } from "react";
 import { User, Move } from "lucide-react";
 
 interface LocalVideoProps {
@@ -14,18 +14,29 @@ const LocalVideo = ({
   isBlurEnabled = false, 
   currentBackground = null 
 }: LocalVideoProps) => {
+  // Estados locales que se sincronizan con los props
   const [isBlurEnabledState, setIsBlurEnabled] = useState(isBlurEnabled);
   const [currentBackgroundState, setCurrentBackground] = useState(currentBackground);
+
+  // Sincronizar estados locales con props cuando cambien
+  useEffect(() => {
+    setIsBlurEnabled(isBlurEnabled);
+    console.log('LocalVideo: Blur updated to:', isBlurEnabled);
+  }, [isBlurEnabled]);
+
+  useEffect(() => {
+    setCurrentBackground(currentBackground);
+    console.log('LocalVideo: Background updated to:', currentBackground);
+  }, [currentBackground]);
 
   // Optimizar cálculos de posición inicial con useMemo
   const { videoWidth, videoHeight, initialX, initialY } = useMemo(() => {
     const isMobile = window.innerWidth < 768;
     const width = isMobile ? 128 : 192;
     const height = isMobile ? 96 : 144;
-    const margin = 16; // Reducir margen para mejor posicionamiento
+    const margin = 16;
     const bottomOffset = isMobile ? 160 : 70;
     
-    // Asegurar que el video no se salga de la pantalla
     const x = Math.min(window.innerWidth - width - margin, window.innerWidth - width - margin);
     const y = window.innerHeight - height - bottomOffset;
     
@@ -135,6 +146,7 @@ const LocalVideo = ({
       style.backgroundImage = `url(${currentBackgroundState})`;
       style.backgroundSize = 'cover';
       style.backgroundPosition = 'center';
+      style.backgroundRepeat = 'no-repeat';
     }
     
     return style;
