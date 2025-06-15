@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+
+import { useState, useRef, useCallback, useMemo } from "react";
 import { User, Move } from "lucide-react";
 
 interface LocalVideoProps {
@@ -7,16 +8,25 @@ interface LocalVideoProps {
 }
 
 const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
-  // Calcular posición inicial - bien arriba de los controles remotos
-  const isMobile = window.innerWidth < 768;
-  const videoWidth = isMobile ? 128 : 192; // w-32 = 128px, w-48 = 192px
-  const videoHeight = isMobile ? 96 : 144; // h-24 = 96px, h-36 = 144px
-  const margin = 20;
-  // Aumentar significativamente el espacio desde abajo para evitar controles
-  const bottomOffset = isMobile ? 180 : 80; // Mucho más espacio en móviles
-  
-  const initialX = window.innerWidth - videoWidth - margin;
-  const initialY = window.innerHeight - videoHeight - bottomOffset;
+  // Optimizar cálculos de posición inicial con useMemo
+  const { videoWidth, videoHeight, initialX, initialY } = useMemo(() => {
+    const isMobile = window.innerWidth < 768;
+    const width = isMobile ? 128 : 192;
+    const height = isMobile ? 96 : 144;
+    const margin = 16; // Reducir margen para mejor posicionamiento
+    const bottomOffset = isMobile ? 160 : 70;
+    
+    // Asegurar que el video no se salga de la pantalla
+    const x = Math.min(window.innerWidth - width - margin, window.innerWidth - width - margin);
+    const y = window.innerHeight - height - bottomOffset;
+    
+    return {
+      videoWidth: width,
+      videoHeight: height,
+      initialX: x,
+      initialY: y
+    };
+  }, []);
   
   const [position, setPosition] = useState({ x: initialX, y: initialY });
   const [isDragging, setIsDragging] = useState(false);
@@ -27,7 +37,14 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
     initialY: initialY
   });
 
-  const handleMouseDown = (e: React.MouseEvent) => {
+  // Optimizar handlers con useCallback
+  const updatePosition = useCallback((deltaX: number, deltaY: number) => {
+    const newX = Math.max(0, Math.min(window.innerWidth - videoWidth, dragRef.current.initialX + deltaX));
+    const newY = Math.max(0, Math.min(window.innerHeight - videoHeight, dragRef.current.initialY + deltaY));
+    setPosition({ x: newX, y: newY });
+  }, [videoWidth, videoHeight]);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     setIsDragging(true);
     
@@ -41,11 +58,7 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
     const handleMouseMove = (e: MouseEvent) => {
       const deltaX = e.clientX - dragRef.current.startX;
       const deltaY = e.clientY - dragRef.current.startY;
-      
-      const newX = Math.max(0, Math.min(window.innerWidth - videoWidth, dragRef.current.initialX + deltaX));
-      const newY = Math.max(0, Math.min(window.innerHeight - videoHeight, dragRef.current.initialY + deltaY));
-      
-      setPosition({ x: newX, y: newY });
+      updatePosition(deltaX, deltaY);
     };
 
     const handleMouseUp = () => {
@@ -56,9 +69,9 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-  };
+  }, [position.x, position.y, updatePosition]);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
     e.preventDefault();
     setIsDragging(true);
     
@@ -74,11 +87,7 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
       const touch = e.touches[0];
       const deltaX = touch.clientX - dragRef.current.startX;
       const deltaY = touch.clientY - dragRef.current.startY;
-      
-      const newX = Math.max(0, Math.min(window.innerWidth - videoWidth, dragRef.current.initialX + deltaX));
-      const newY = Math.max(0, Math.min(window.innerHeight - videoHeight, dragRef.current.initialY + deltaY));
-      
-      setPosition({ x: newX, y: newY });
+      updatePosition(deltaX, deltaY);
     };
 
     const handleTouchEnd = () => {
@@ -89,18 +98,18 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
 
     document.addEventListener('touchmove', handleTouchMove);
     document.addEventListener('touchend', handleTouchEnd);
-  };
+  }, [position.x, position.y, updatePosition]);
 
   return (
     <div
-      className={`fixed z-20 w-48 h-36 md:w-48 md:h-36 sm:w-32 sm:h-24 rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl cursor-move transition-transform hover:scale-105 ${
-        isDragging ? 'scale-105 shadow-3xl' : ''
+      className={`fixed z-20 w-32 h-24 md:w-48 md:h-36 rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl cursor-move select-none ${
+        isDragging ? 'scale-105 shadow-3xl' : 'hover:scale-105 transition-transform'
       }`}
       style={{ 
         left: `${position.x}px`,
         top: `${position.y}px`,
-        userSelect: 'none',
-        touchAction: 'none'
+        touchAction: 'none',
+        willChange: isDragging ? 'transform' : 'auto'
       }}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
@@ -108,31 +117,29 @@ const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
       {isVideoOff ? (
         <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
           <div className="text-center">
-            <div className="w-12 h-12 sm:w-8 sm:h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
-              <User className="w-6 h-6 sm:w-4 sm:h-4 text-white" />
+            <div className="w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2">
+              <User className="w-4 h-4 md:w-6 md:h-6 text-white" />
             </div>
-            <p className="text-white text-xs sm:text-[10px]">Cámara off</p>
+            <p className="text-white text-[10px] md:text-xs">Cámara off</p>
             {userName && (
-              <p className="text-white text-xs sm:text-[10px] font-medium mt-1">{userName}</p>
+              <p className="text-white text-[10px] md:text-xs font-medium mt-1">{userName}</p>
             )}
           </div>
         </div>
       ) : (
         <div className="w-full h-full relative">
-          {/* Simulación de video local con gradiente diferente */}
           <div className="absolute inset-0 bg-gradient-to-br from-green-500 via-blue-500 to-purple-500 opacity-90"></div>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center">
-              <div className="w-12 h-12 sm:w-8 sm:h-8 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-2 border-2 border-white/50">
-                <User className="w-6 h-6 sm:w-4 sm:h-4 text-white" />
+              <div className="w-8 h-8 md:w-12 md:h-12 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-1 md:mb-2 border-2 border-white/50">
+                <User className="w-4 h-4 md:w-6 md:h-6 text-white" />
               </div>
-              <p className="text-white text-xs sm:text-[10px] font-medium">{userName || "Tú"}</p>
+              <p className="text-white text-[10px] md:text-xs font-medium">{userName || "Tú"}</p>
             </div>
           </div>
           
-          {/* Indicador de que se puede arrastrar */}
-          <div className="absolute top-2 right-2 opacity-0 hover:opacity-100 transition-opacity">
-            <Move className="w-4 h-4 sm:w-3 sm:h-3 text-white/70" />
+          <div className="absolute top-1 right-1 md:top-2 md:right-2 opacity-0 hover:opacity-100 transition-opacity">
+            <Move className="w-3 h-3 md:w-4 md:h-4 text-white/70" />
           </div>
         </div>
       )}
