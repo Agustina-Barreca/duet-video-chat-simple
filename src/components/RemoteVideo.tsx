@@ -137,33 +137,29 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
         }}
         onMouseDown={handleDragMouseDown}
       >
-        {/* Resize handles en las cuatro esquinas con z-index alto */}
+        {/* Resize handles en las cuatro esquinas */}
         
         {/* Esquina superior izquierda */}
         <div 
-          className="absolute top-0 left-0 w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity cursor-nw-resize bg-white/20 border-2 border-white/60 rounded-tl-2xl backdrop-blur-sm"
-          style={{ zIndex: 50 }}
+          className="absolute top-0 left-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-nw-resize z-10 border-l-2 border-t-2 border-white/60 rounded-tl-2xl"
           onMouseDown={(e) => handleResizeMouseDown(e, 'nw')}
         />
 
         {/* Esquina superior derecha */}
         <div 
-          className="absolute top-0 right-0 w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity cursor-ne-resize bg-white/20 border-2 border-white/60 rounded-tr-2xl backdrop-blur-sm"
-          style={{ zIndex: 50 }}
+          className="absolute top-0 right-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-ne-resize z-10 border-r-2 border-t-2 border-white/60 rounded-tr-2xl"
           onMouseDown={(e) => handleResizeMouseDown(e, 'ne')}
         />
 
         {/* Esquina inferior izquierda */}
         <div 
-          className="absolute bottom-0 left-0 w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity cursor-sw-resize bg-white/20 border-2 border-white/60 rounded-bl-2xl backdrop-blur-sm"
-          style={{ zIndex: 50 }}
+          className="absolute bottom-0 left-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-sw-resize z-10 border-l-2 border-b-2 border-white/60 rounded-bl-2xl"
           onMouseDown={(e) => handleResizeMouseDown(e, 'sw')}
         />
 
         {/* Esquina inferior derecha */}
         <div 
-          className="absolute bottom-0 right-0 w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity cursor-se-resize bg-white/20 border-2 border-white/60 rounded-br-2xl backdrop-blur-sm"
-          style={{ zIndex: 50 }}
+          className="absolute bottom-0 right-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-se-resize z-10 border-r-2 border-b-2 border-white/60 rounded-br-2xl"
           onMouseDown={(e) => handleResizeMouseDown(e, 'se')}
         />
 

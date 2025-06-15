@@ -26,8 +26,8 @@ const CallHeader = ({ userName, isRemoteAudioActive = true, isRemoteVideoActive 
   };
 
   return (
-    <div className="absolute top-0 left-0 right-0 p-3 md:p-6 pointer-events-none" style={{ zIndex: 30 }}>
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center space-y-3 md:space-y-0 pointer-events-auto">
+    <div className="absolute top-0 left-0 right-0 z-10 p-3 md:p-6">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center space-y-3 md:space-y-0">
         {/* Fila superior en mobile: indicadores de estado */}
         <div className="flex items-center justify-between md:justify-start md:space-x-4">
           <div className="flex items-center space-x-2 md:space-x-4">
