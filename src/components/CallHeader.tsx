@@ -2,7 +2,11 @@
 import { Clock, Wifi } from "lucide-react";
 import { useState, useEffect } from "react";
 
-const CallHeader = () => {
+interface CallHeaderProps {
+  userName: string | null;
+}
+
+const CallHeader = ({ userName }: CallHeaderProps) => {
   const [callDuration, setCallDuration] = useState(0);
 
   useEffect(() => {
@@ -31,6 +35,11 @@ const CallHeader = () => {
             <Wifi className="w-4 h-4 text-green-400" />
             <span className="text-white text-sm">Conectado</span>
           </div>
+          {userName && (
+            <div className="flex items-center space-x-2 bg-green-500/20 backdrop-blur-sm rounded-lg px-3 py-2 border border-green-500/30">
+              <span className="text-green-400 text-sm font-medium">{userName}</span>
+            </div>
+          )}
         </div>
         
         <div className="text-right">

@@ -4,9 +4,10 @@ import { User, Move } from "lucide-react";
 
 interface LocalVideoProps {
   isVideoOff: boolean;
+  userName: string | null;
 }
 
-const LocalVideo = ({ isVideoOff }: LocalVideoProps) => {
+const LocalVideo = ({ isVideoOff, userName }: LocalVideoProps) => {
   // Calcular posición inicial en la esquina inferior derecha
   const initialX = window.innerWidth - 192 - 20; // ancho del video (192px) + margen (20px)
   const initialY = window.innerHeight - 144 - 20; // alto del video (144px) + margen (20px)
@@ -71,6 +72,9 @@ const LocalVideo = ({ isVideoOff }: LocalVideoProps) => {
               <User className="w-6 h-6 text-white" />
             </div>
             <p className="text-white text-xs">Cámara off</p>
+            {userName && (
+              <p className="text-white text-xs font-medium mt-1">{userName}</p>
+            )}
           </div>
         </div>
       ) : (
@@ -82,7 +86,7 @@ const LocalVideo = ({ isVideoOff }: LocalVideoProps) => {
               <div className="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-2 border-2 border-white/50">
                 <User className="w-6 h-6 text-white" />
               </div>
-              <p className="text-white text-xs font-medium">Tú</p>
+              <p className="text-white text-xs font-medium">{userName || "Tú"}</p>
             </div>
           </div>
           
