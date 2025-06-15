@@ -13,10 +13,9 @@ export const useLocalVideoPosition = (isMinimized: boolean) => {
     const x = Math.min(window.innerWidth - width - margin, window.innerWidth - width - margin);
     const y = window.innerHeight - height - bottomOffset;
     
-    // Posición para el modo minimizado (esquina superior derecha, pero alejado del selector de tema)
+    // Posición para el modo minimizado (esquina superior derecha, fuera del video remoto)
     const minSize = 60;
-    // Dejamos más espacio a la derecha para el selector de tema (aprox 120px + margen)
-    const minX = window.innerWidth - minSize - margin - 140; // Ajustado para evitar superposición
+    const minX = window.innerWidth - minSize - margin;
     const minY = margin + 80; // Debajo del header
     
     return {

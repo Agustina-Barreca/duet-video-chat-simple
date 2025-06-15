@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import RemoteVideo from "./RemoteVideo";
 import LocalVideo from "./LocalVideo";
@@ -136,6 +137,8 @@ const VideoCall = () => {
 
   return (
     <div className={`relative min-h-screen overflow-hidden ${themeClasses.background}`}>
+      <ThemeSelector />
+      
       <CallHeader 
         userName={userName} 
         isRemoteAudioActive={isRemoteAudioActive}
