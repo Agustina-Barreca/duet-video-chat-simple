@@ -21,14 +21,6 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
         <div className="w-full h-full relative overflow-hidden rounded-lg">
           {/* Simulación de video con gradiente animado */}
           <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 opacity-80 animate-pulse"></div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              <div className="w-32 h-32 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-white/30">
-                <User className="w-16 h-16 text-white" />
-              </div>
-              <h3 className="text-2xl font-semibold text-white">Usuario Remoto</h3>
-            </div>
-          </div>
           
           {/* Efecto de brillo para simular movimiento */}
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 animate-[slide_3s_ease-in-out_infinite]"></div>
