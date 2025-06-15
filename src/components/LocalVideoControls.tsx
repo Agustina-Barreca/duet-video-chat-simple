@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Blur, Image, X } from "lucide-react";
+import { Focus, Image, X } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Toggle } from "@/components/ui/toggle";
@@ -59,7 +59,7 @@ const LocalVideoControls = ({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Blur className="w-4 h-4" />
+                <Focus className="w-4 h-4" />
                 <span className="text-sm">Difuminar fondo</span>
               </div>
               <Toggle
