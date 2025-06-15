@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import RemoteVideo from "./RemoteVideo";
 import LocalVideo from "./LocalVideo";
@@ -6,6 +5,7 @@ import CallControls from "./CallControls";
 import CallHeader from "./CallHeader";
 import NameForm from "./NameForm";
 import ThemeSelector from "./ThemeSelector";
+import FloatingChat from "./FloatingChat";
 import { useTheme } from "../contexts/ThemeContext";
 
 const VideoCall = () => {
@@ -174,6 +174,9 @@ const VideoCall = () => {
           onBackgroundChange={handleBackgroundChange}
         />
       </div>
+      
+      {/* Chat flotante */}
+      <FloatingChat />
     </div>
   );
 };
