@@ -1,6 +1,12 @@
 
-import { Palette, Minimize, Moon } from "lucide-react";
+import { Palette, Minimize, Moon, Settings } from "lucide-react";
 import { useTheme, ThemeMode } from "../contexts/ThemeContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const ThemeSelector = () => {
   const { themeMode, setThemeMode, getThemeClasses } = useTheme();
@@ -27,27 +33,44 @@ const ThemeSelector = () => {
     }
   ];
 
+  const currentTheme = themes.find(theme => theme.mode === themeMode);
+  const CurrentIcon = currentTheme?.icon || Settings;
+
   return (
-    <div className="fixed top-4 left-4 z-50">
-      <div className={`${themeClasses.cardBackground} backdrop-blur-sm border ${themeClasses.border} rounded-lg p-2`}>
-        <div className="flex flex-col gap-2">
+    <div className="fixed bottom-4 left-4 z-50">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            className={`${themeClasses.cardBackground} backdrop-blur-sm border ${themeClasses.border} rounded-full p-3 hover:scale-105 transition-all duration-200 shadow-lg`}
+            title="Cambiar tema"
+          >
+            <CurrentIcon className={`w-5 h-5 ${themeClasses.textPrimary}`} />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent 
+          side="top" 
+          align="start"
+          className={`${themeClasses.cardBackground} border ${themeClasses.border} backdrop-blur-sm`}
+        >
           {themes.map(({ mode, name, icon: Icon, description }) => (
-            <button
+            <DropdownMenuItem
               key={mode}
               onClick={() => setThemeMode(mode)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2 cursor-pointer ${
                 themeMode === mode
                   ? `${themeClasses.buttonPrimary} ${themeClasses.textPrimary}`
-                  : `${themeClasses.buttonSecondary} ${themeClasses.textSecondary} hover:${themeClasses.buttonPrimary.replace('bg-', 'hover:bg-')}`
+                  : `${themeClasses.textSecondary} hover:${themeClasses.buttonSecondary}`
               }`}
-              title={description}
             >
               <Icon className="w-4 h-4" />
-              <span className="hidden md:inline">{name}</span>
-            </button>
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">{name}</span>
+                <span className="text-xs opacity-70">{description}</span>
+              </div>
+            </DropdownMenuItem>
           ))}
-        </div>
-      </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };
