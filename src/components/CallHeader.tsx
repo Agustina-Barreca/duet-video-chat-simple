@@ -91,7 +91,6 @@ const CallHeader = ({ userName, isRemoteAudioActive = true, isRemoteVideoActive 
             
             <div className="text-left md:text-right">
               <h1 className="text-white text-sm md:text-lg font-semibold">Usuario Remoto</h1>
-              <p className="text-gray-300 text-xs md:text-sm">En llamada</p>
             </div>
           </div>
         </div>
