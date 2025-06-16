@@ -1,14 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, Minus, X, Send, FileText, Play } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useDraggable } from '../hooks/useDraggable';
 import { useResizable } from '../hooks/useResizable';
-import ChatCarousel from './ChatCarousel';
 import SatisfactionSurvey from './SatisfactionSurvey';
 import FullScreenViewer from './FullScreenViewer';
-import EmojiPicker from './EmojiPicker';
-import FileUpload, { FileAttachment } from './FileUpload';
-import ChatForm from './ChatForm';
+import { FileAttachment } from './FileUpload';
+import ChatHeader from './chat/ChatHeader';
+import ChatMessage from './chat/ChatMessage';
+import ChatInput from './chat/ChatInput';
+import ChatResizeHandles from './chat/ChatResizeHandles';
 
 interface Message {
   id: number;
@@ -30,6 +31,20 @@ const FloatingChat = () => {
   const [showFullScreen, setShowFullScreen] = useState(false);
   const [fullScreenContent, setFullScreenContent] = useState<{type: 'image' | 'carousel', data: string | string[]}>({type: 'image', data: ''});
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [newMessage, setNewMessage] = useState('');
+
+  // Inicializar posición considerando viewport
+  const { position, dragRef, handleMouseDown, isDragging } = useDraggable({
+    x: Math.max(20, window.innerWidth - 370), // Asegurar margen mínimo
+    y: Math.max(20, Math.min(100, window.innerHeight - 520)), // Asegurar que quepa en pantalla
+  });
+
+  const { size, handleResizeStart, isResizing } = useResizable(
+    { width: 350, height: 500 },
+    { width: 320, height: 400 },
+    position
+  );
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -77,17 +92,6 @@ const FloatingChat = () => {
       type: 'form'
     }
   ]);
-  const [newMessage, setNewMessage] = useState('');
-
-  const { position, dragRef, handleMouseDown, isDragging } = useDraggable({
-    x: window.innerWidth - 350,
-    y: 100,
-  });
-
-  const { size, handleResizeStart, isResizing } = useResizable(
-    { width: 350, height: 500 },
-    { width: 320, height: 400 }
-  );
 
   // Función para hacer scroll al final
   const scrollToBottom = () => {
@@ -206,134 +210,6 @@ const FloatingChat = () => {
     }, 1000);
   };
 
-  const renderMessage = (message: Message) => {
-    const isUser = message.sender === 'user';
-    
-    if (message.type === 'carousel') {
-      return (
-        <div className="flex justify-start mb-3">
-          <div className="max-w-[90%]">
-            <ChatCarousel onImageClick={handleCarouselClick} />
-          </div>
-        </div>
-      );
-    }
-
-    if (message.type === 'form') {
-      return (
-        <div className="flex justify-start mb-3">
-          <div className="max-w-[95%]">
-            <ChatForm onSubmit={handleFormSubmit} />
-          </div>
-        </div>
-      );
-    }
-
-    if (message.type === 'files' && message.content) {
-      const files = message.content as FileAttachment[];
-      return (
-        <div className="flex justify-end mb-3">
-          <div className="max-w-[90%] w-full space-y-2">
-            {files.map((file) => (
-              <div key={file.id} className={`flex items-center gap-3 p-3 rounded-lg ${themeClasses.buttonPrimary} text-white`}>
-                {file.preview ? (
-                  <img src={file.preview} alt="" className="w-12 h-12 object-cover rounded flex-shrink-0" />
-                ) : (
-                  <div className="w-12 h-12 flex items-center justify-center rounded bg-white/20 flex-shrink-0">
-                    <FileText className="w-6 h-6" />
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{file.file.name}</p>
-                  <p className="text-xs opacity-80">
-                    {(file.file.size / 1024 / 1024).toFixed(2)} MB
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
-
-    if (message.type === 'image' && typeof message.content === 'string') {
-      return (
-        <div className="flex justify-start mb-3">
-          <div className="max-w-[80%]">
-            <img
-              src={message.content}
-              alt="Imagen compartida"
-              onClick={() => handleImageClick(message.content as string)}
-              className="rounded-lg max-w-full h-auto cursor-pointer hover:opacity-90 transition-opacity"
-              title="Click para ver en tamaño completo"
-            />
-          </div>
-        </div>
-      );
-    }
-
-    if (message.type === 'video' && typeof message.content === 'string') {
-      return (
-        <div className="flex justify-start mb-3">
-          <div className="max-w-[80%]">
-            <div className="relative bg-black rounded-lg overflow-hidden">
-              <video
-                src={message.content}
-                controls
-                className="w-full h-auto"
-                style={{ maxHeight: '200px' }}
-              >
-                Tu navegador no soporta el elemento de video.
-              </video>
-              <div className="absolute top-2 left-2 bg-black/50 rounded-full p-1">
-                <Play className="w-4 h-4 text-white" />
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    if (message.type === 'pdf' && typeof message.content === 'string') {
-      return (
-        <div className="flex justify-start mb-3">
-          <div className="max-w-[80%]">
-            <a
-              href={message.content}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`flex items-center gap-2 p-3 rounded-lg border ${themeClasses.border} ${themeClasses.buttonSecondary} hover:opacity-90 transition-opacity`}
-            >
-              <FileText className={`w-5 h-5 ${themeClasses.textPrimary}`} />
-              <div>
-                <div className={`text-sm font-medium ${themeClasses.textPrimary}`}>
-                  Documento PDF
-                </div>
-                <div className={`text-xs ${themeClasses.textSecondary}`}>
-                  Haz clic para abrir
-                </div>
-              </div>
-            </a>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3`}>
-        <div
-          className={`max-w-[80%] p-3 rounded-lg text-sm ${
-            isUser
-              ? `${themeClasses.buttonPrimary} text-white`
-              : `${themeClasses.buttonSecondary} ${themeClasses.textPrimary}`
-          }`}
-        >
-          {message.text}
-        </div>
-      </div>
-    );
-  };
-
   // Si el chat no está abierto, mostrar solo el icono flotante
   if (!isOpen) {
     return (
@@ -360,40 +236,18 @@ const FloatingChat = () => {
           isDragging ? 'cursor-grabbing' : 'cursor-auto'
         } ${isResizing ? 'select-none' : ''}`}
         style={{
-          left: position.x,
-          top: position.y,
+          left: Math.max(0, Math.min(position.x, window.innerWidth - size.width)),
+          top: Math.max(0, Math.min(position.y, window.innerHeight - size.height)),
           width: isMinimized ? 'auto' : Math.max(size.width, 320),
           height: isMinimized ? 'auto' : size.height,
         }}
       >
-        {/* Header del chat */}
-        <div
-          className={`${themeClasses.buttonSecondary} px-4 py-3 border-b ${themeClasses.border} cursor-grab active:cursor-grabbing flex items-center justify-between`}
+        <ChatHeader
+          isMinimized={isMinimized}
+          onMinimize={() => setIsMinimized(!isMinimized)}
+          onClose={handleCloseChat}
           onMouseDown={handleMouseDown}
-        >
-          <div className="flex items-center gap-2">
-            <MessageCircle className={`w-4 h-4 ${themeClasses.textPrimary}`} />
-            <span className={`text-sm font-medium ${themeClasses.textPrimary}`}>
-              Chat
-            </span>
-          </div>
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => setIsMinimized(!isMinimized)}
-              className={`p-1 rounded hover:bg-white/10 ${themeClasses.textSecondary} hover:${themeClasses.textPrimary} transition-colors`}
-              title={isMinimized ? 'Maximizar' : 'Minimizar'}
-            >
-              <Minus className="w-4 h-4" />
-            </button>
-            <button
-              onClick={handleCloseChat}
-              className={`p-1 rounded hover:bg-white/10 ${themeClasses.textSecondary} hover:${themeClasses.textPrimary} transition-colors`}
-              title="Cerrar chat"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
+        />
 
         {/* Contenido del chat - solo se muestra si no está minimizado */}
         {!isMinimized && (
@@ -401,74 +255,29 @@ const FloatingChat = () => {
             {/* Área de mensajes */}
             <div className="flex-1 p-4 overflow-y-auto" style={{ maxHeight: size.height - 120 }}>
               {messages.map((message) => (
-                <div key={message.id}>
-                  {renderMessage(message)}
-                </div>
+                <ChatMessage
+                  key={message.id}
+                  message={message}
+                  onImageClick={handleImageClick}
+                  onCarouselClick={handleCarouselClick}
+                  onFormSubmit={handleFormSubmit}
+                />
               ))}
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input de mensaje */}
-            <div className={`border-t ${themeClasses.border} p-3`}>
-              <form onSubmit={handleSendMessage} className="flex gap-2">
-                <input
-                  type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Escribe tu mensaje... 💬"
-                  className={`flex-1 px-3 py-2 text-sm rounded border ${themeClasses.border} ${themeClasses.cardBackground} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:outline-none focus:ring-1 focus:ring-blue-500`}
-                />
-                <div className="flex items-center gap-1 flex-shrink-0">
-                  <FileUpload onFilesSelected={handleFilesSelected} />
-                  <EmojiPicker 
-                    onEmojiSelect={handleEmojiSelect}
-                    isOpen={showEmojiPicker}
-                    onToggle={() => setShowEmojiPicker(!showEmojiPicker)}
-                  />
-                  <button
-                    type="submit"
-                    disabled={!newMessage.trim()}
-                    className={`${themeClasses.buttonPrimary} p-2 rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed`}
-                  >
-                    <Send className="w-4 h-4 text-white" />
-                  </button>
-                </div>
-              </form>
-            </div>
+            <ChatInput
+              newMessage={newMessage}
+              showEmojiPicker={showEmojiPicker}
+              onMessageChange={setNewMessage}
+              onSubmit={handleSendMessage}
+              onKeyDown={handleKeyDown}
+              onEmojiSelect={handleEmojiSelect}
+              onEmojiToggle={() => setShowEmojiPicker(!showEmojiPicker)}
+              onFilesSelected={handleFilesSelected}
+            />
 
-            {/* Handles de redimensionamiento en las esquinas */}
-            <div
-              className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize opacity-50 hover:opacity-100"
-              onMouseDown={handleResizeStart('se')}
-            >
-              <div className="absolute bottom-1 right-1 w-0 h-0 border-l-2 border-b-2 border-gray-400"></div>
-              <div className="absolute bottom-0.5 right-0.5 w-0 h-0 border-l-2 border-b-2 border-gray-400"></div>
-            </div>
-            
-            <div
-              className="absolute bottom-0 left-0 w-4 h-4 cursor-sw-resize opacity-50 hover:opacity-100"
-              onMouseDown={handleResizeStart('sw')}
-            >
-              <div className="absolute bottom-1 left-1 w-0 h-0 border-r-2 border-b-2 border-gray-400"></div>
-              <div className="absolute bottom-0.5 left-0.5 w-0 h-0 border-r-2 border-b-2 border-gray-400"></div>
-            </div>
-            
-            <div
-              className="absolute top-0 right-0 w-4 h-4 cursor-ne-resize opacity-50 hover:opacity-100"
-              onMouseDown={handleResizeStart('ne')}
-            >
-              <div className="absolute top-1 right-1 w-0 h-0 border-l-2 border-t-2 border-gray-400"></div>
-              <div className="absolute top-0.5 right-0.5 w-0 h-0 border-l-2 border-t-2 border-gray-400"></div>
-            </div>
-            
-            <div
-              className="absolute top-0 left-0 w-4 h-4 cursor-nw-resize opacity-50 hover:opacity-100"
-              onMouseDown={handleResizeStart('nw')}
-            >
-              <div className="absolute top-1 left-1 w-0 h-0 border-r-2 border-t-2 border-gray-400"></div>
-              <div className="absolute top-0.5 left-0.5 w-0 h-0 border-r-2 border-t-2 border-gray-400"></div>
-            </div>
+            <ChatResizeHandles onResizeStart={handleResizeStart} />
           </>
         )}
       </div>

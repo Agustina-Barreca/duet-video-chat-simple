@@ -6,9 +6,14 @@ interface Size {
   height: number;
 }
 
+interface Position {
+  x: number;
+  y: number;
+}
+
 type ResizeHandle = 'se' | 'sw' | 'ne' | 'nw';
 
-export const useResizable = (initialSize: Size, minSize: Size) => {
+export const useResizable = (initialSize: Size, minSize: Size, position?: Position) => {
   const [size, setSize] = useState<Size>(initialSize);
   const [isResizing, setIsResizing] = useState(false);
   const [resizeHandle, setResizeHandle] = useState<ResizeHandle | null>(null);
@@ -18,7 +23,7 @@ export const useResizable = (initialSize: Size, minSize: Size) => {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (!isResizing || !resizeHandle) return;
+      if (!isResizing || !resizeHandle || !position) return;
 
       const deltaX = e.clientX - startPos.current.x;
       const deltaY = e.clientY - startPos.current.y;
@@ -26,6 +31,7 @@ export const useResizable = (initialSize: Size, minSize: Size) => {
       let newWidth = startSize.current.width;
       let newHeight = startSize.current.height;
 
+      // Calcular nuevas dimensiones según el handle
       switch (resizeHandle) {
         case 'se':
           newWidth = startSize.current.width + deltaX;
@@ -45,9 +51,32 @@ export const useResizable = (initialSize: Size, minSize: Size) => {
           break;
       }
 
+      // Aplicar tamaños mínimos
+      newWidth = Math.max(minSize.width, newWidth);
+      newHeight = Math.max(minSize.height, newHeight);
+
+      // Verificar límites del viewport
+      const maxWidth = window.innerWidth - position.x - 20; // 20px de margen
+      const maxHeight = window.innerHeight - position.y - 20; // 20px de margen
+
+      // Para handles que afectan posición (sw, ne, nw), considerar posición actual
+      if (resizeHandle === 'sw' || resizeHandle === 'nw') {
+        const maxWidthLeft = position.x + startSize.current.width - minSize.width;
+        newWidth = Math.min(newWidth, maxWidthLeft);
+      } else {
+        newWidth = Math.min(newWidth, maxWidth);
+      }
+
+      if (resizeHandle === 'ne' || resizeHandle === 'nw') {
+        const maxHeightTop = position.y + startSize.current.height - minSize.height;
+        newHeight = Math.min(newHeight, maxHeightTop);
+      } else {
+        newHeight = Math.min(newHeight, maxHeight);
+      }
+
       setSize({
-        width: Math.max(minSize.width, newWidth),
-        height: Math.max(minSize.height, newHeight),
+        width: newWidth,
+        height: newHeight,
       });
     };
 
@@ -65,7 +94,7 @@ export const useResizable = (initialSize: Size, minSize: Size) => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isResizing, resizeHandle, minSize]);
+  }, [isResizing, resizeHandle, minSize, position]);
 
   const handleResizeStart = (handle: ResizeHandle) => (e: React.MouseEvent) => {
     e.preventDefault();

@@ -114,7 +114,10 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
-    setIsDragOver(false);
+    // Solo ocultar si realmente salimos del área de drag
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setIsDragOver(false);
+    }
   }, []);
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -137,28 +140,93 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
   };
 
   return (
-    <div className="relative">
-      <button
-        onClick={() => fileInputRef.current?.click()}
-        className={`p-2 rounded hover:bg-white/10 ${themeClasses.textSecondary} hover:${themeClasses.textPrimary} transition-colors`}
-        title="Adjuntar archivo"
-      >
-        <Paperclip className="w-4 h-4" />
-      </button>
-      
-      <input
-        ref={fileInputRef}
-        type="file"
-        multiple
-        onChange={handleFileSelect}
-        className="hidden"
-        accept="image/*,video/*,.pdf,.doc,.docx,.txt"
-      />
+    <>
+      <div className="relative">
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          className={`p-2 rounded hover:bg-white/10 ${themeClasses.textSecondary} hover:${themeClasses.textPrimary} transition-colors`}
+          title="Adjuntar archivo"
+        >
+          <Paperclip className="w-4 h-4" />
+        </button>
+        
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          onChange={handleFileSelect}
+          className="hidden"
+          accept="image/*,video/*,.pdf,.doc,.docx,.txt"
+        />
 
-      {/* Zona de drag & drop */}
+        {/* Lista de archivos adjuntos - posicionado correctamente */}
+        {attachments.length > 0 && (
+          <div className={`absolute bottom-full right-0 mb-2 ${themeClasses.cardBackground} border ${themeClasses.border} rounded-lg p-3 w-80 max-h-60 overflow-y-auto shadow-xl z-50`}>
+            <div className="space-y-2">
+              {attachments.map((attachment) => (
+                <div key={attachment.id} className={`flex items-center gap-3 p-2 rounded ${themeClasses.buttonSecondary}`}>
+                  {attachment.preview ? (
+                    <img src={attachment.preview} alt="" className="w-10 h-10 object-cover rounded" />
+                  ) : (
+                    <div className={`w-10 h-10 flex items-center justify-center rounded ${themeClasses.buttonSecondary}`}>
+                      {getFileIcon(attachment.file)}
+                    </div>
+                  )}
+                  
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm ${themeClasses.textPrimary} truncate`}>
+                      {attachment.file.name}
+                    </p>
+                    <p className={`text-xs ${themeClasses.textSecondary}`}>
+                      {(attachment.file.size / 1024 / 1024).toFixed(2)} MB
+                    </p>
+                    
+                    {attachment.status === 'uploading' && (
+                      <div className="flex items-center gap-2 mt-1">
+                        <div className="flex-1 bg-gray-600 rounded-full h-1">
+                          <div 
+                            className="bg-blue-500 h-1 rounded-full transition-all duration-200"
+                            style={{ width: `${attachment.progress || 0}%` }}
+                          />
+                        </div>
+                        <Loader2 className="w-3 h-3 animate-spin text-blue-500" />
+                      </div>
+                    )}
+                    
+                    {attachment.status === 'error' && (
+                      <div className="flex items-center gap-1 mt-1">
+                        <AlertCircle className="w-3 h-3 text-red-500" />
+                        <span className="text-xs text-red-500">Error al cargar</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <button
+                    onClick={() => removeAttachment(attachment.id)}
+                    className={`p-1 rounded hover:bg-white/10 ${themeClasses.textSecondary} hover:text-red-400 transition-colors`}
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+            
+            {attachments.some(att => att.status === 'uploaded') && (
+              <button
+                onClick={sendAttachments}
+                className={`w-full mt-3 ${themeClasses.buttonPrimary} text-white py-2 rounded text-sm font-medium hover:opacity-90 transition-opacity`}
+              >
+                Enviar archivos ({attachments.filter(att => att.status === 'uploaded').length})
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Zona de drag & drop - portal a body para evitar problemas de z-index */}
       {isDragOver && (
         <div
-          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+          className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center"
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -172,77 +240,14 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
         </div>
       )}
 
-      {/* Lista de archivos adjuntos */}
-      {attachments.length > 0 && (
-        <div className={`absolute bottom-full left-0 mb-2 ${themeClasses.cardBackground} border ${themeClasses.border} rounded-lg p-3 w-80 max-h-60 overflow-y-auto shadow-xl`}>
-          <div className="space-y-2">
-            {attachments.map((attachment) => (
-              <div key={attachment.id} className={`flex items-center gap-3 p-2 rounded ${themeClasses.buttonSecondary}`}>
-                {attachment.preview ? (
-                  <img src={attachment.preview} alt="" className="w-10 h-10 object-cover rounded" />
-                ) : (
-                  <div className={`w-10 h-10 flex items-center justify-center rounded ${themeClasses.buttonSecondary}`}>
-                    {getFileIcon(attachment.file)}
-                  </div>
-                )}
-                
-                <div className="flex-1 min-w-0">
-                  <p className={`text-sm ${themeClasses.textPrimary} truncate`}>
-                    {attachment.file.name}
-                  </p>
-                  <p className={`text-xs ${themeClasses.textSecondary}`}>
-                    {(attachment.file.size / 1024 / 1024).toFixed(2)} MB
-                  </p>
-                  
-                  {attachment.status === 'uploading' && (
-                    <div className="flex items-center gap-2 mt-1">
-                      <div className="flex-1 bg-gray-600 rounded-full h-1">
-                        <div 
-                          className="bg-blue-500 h-1 rounded-full transition-all duration-200"
-                          style={{ width: `${attachment.progress || 0}%` }}
-                        />
-                      </div>
-                      <Loader2 className="w-3 h-3 animate-spin text-blue-500" />
-                    </div>
-                  )}
-                  
-                  {attachment.status === 'error' && (
-                    <div className="flex items-center gap-1 mt-1">
-                      <AlertCircle className="w-3 h-3 text-red-500" />
-                      <span className="text-xs text-red-500">Error al cargar</span>
-                    </div>
-                  )}
-                </div>
-                
-                <button
-                  onClick={() => removeAttachment(attachment.id)}
-                  className={`p-1 rounded hover:bg-white/10 ${themeClasses.textSecondary} hover:text-red-400 transition-colors`}
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-          
-          {attachments.some(att => att.status === 'uploaded') && (
-            <button
-              onClick={sendAttachments}
-              className={`w-full mt-3 ${themeClasses.buttonPrimary} text-white py-2 rounded text-sm font-medium hover:opacity-90 transition-opacity`}
-            >
-              Enviar archivos ({attachments.filter(att => att.status === 'uploaded').length})
-            </button>
-          )}
-        </div>
-      )}
-
-      {/* Overlay para drag & drop en toda la aplicación */}
+      {/* Overlay global para drag & drop */}
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         className="fixed inset-0 pointer-events-none z-40"
       />
-    </div>
+    </>
   );
 };
 
