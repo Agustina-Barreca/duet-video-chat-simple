@@ -239,7 +239,7 @@ const FloatingChat = () => {
       );
     }
 
-    if (message.type === 'image') {
+    if (message.type === 'image' && typeof message.content === 'string') {
       return (
         <div className="flex justify-start mb-3">
           <div className="max-w-[80%]">
@@ -255,7 +255,7 @@ const FloatingChat = () => {
       );
     }
 
-    if (message.type === 'video') {
+    if (message.type === 'video' && typeof message.content === 'string') {
       return (
         <div className="flex justify-start mb-3">
           <div className="max-w-[80%]">
@@ -277,7 +277,7 @@ const FloatingChat = () => {
       );
     }
 
-    if (message.type === 'pdf') {
+    if (message.type === 'pdf' && typeof message.content === 'string') {
       return (
         <div className="flex justify-start mb-3">
           <div className="max-w-[80%]">
