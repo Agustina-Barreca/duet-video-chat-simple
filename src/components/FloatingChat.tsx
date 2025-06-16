@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, Minus, X, Send, FileText, Play } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useDraggable } from '../hooks/useDraggable';
@@ -23,6 +22,7 @@ interface Message {
 const FloatingChat = () => {
   const { getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const [isMinimized, setIsMinimized] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -85,9 +85,19 @@ const FloatingChat = () => {
   });
 
   const { size, handleResizeStart, isResizing } = useResizable(
-    { width: 300, height: 500 },
-    { width: 250, height: 400 }
+    { width: 350, height: 500 },
+    { width: 320, height: 400 }
   );
+
+  // Función para hacer scroll al final
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Scroll automático cuando cambian los mensajes
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,6 +123,13 @@ const FloatingChat = () => {
       };
       setMessages(prev => [...prev, autoReply]);
     }, 1000);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage(e);
+    }
   };
 
   const handleCloseChat = () => {
@@ -216,13 +233,13 @@ const FloatingChat = () => {
       const files = message.content as FileAttachment[];
       return (
         <div className="flex justify-end mb-3">
-          <div className="max-w-[80%] space-y-2">
+          <div className="max-w-[90%] w-full space-y-2">
             {files.map((file) => (
               <div key={file.id} className={`flex items-center gap-3 p-3 rounded-lg ${themeClasses.buttonPrimary} text-white`}>
                 {file.preview ? (
-                  <img src={file.preview} alt="" className="w-12 h-12 object-cover rounded" />
+                  <img src={file.preview} alt="" className="w-12 h-12 object-cover rounded flex-shrink-0" />
                 ) : (
-                  <div className="w-12 h-12 flex items-center justify-center rounded bg-white/20">
+                  <div className="w-12 h-12 flex items-center justify-center rounded bg-white/20 flex-shrink-0">
                     <FileText className="w-6 h-6" />
                   </div>
                 )}
@@ -345,7 +362,7 @@ const FloatingChat = () => {
         style={{
           left: position.x,
           top: position.y,
-          width: isMinimized ? 'auto' : size.width,
+          width: isMinimized ? 'auto' : Math.max(size.width, 320),
           height: isMinimized ? 'auto' : size.height,
         }}
       >
@@ -388,6 +405,7 @@ const FloatingChat = () => {
                   {renderMessage(message)}
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Input de mensaje */}
@@ -397,10 +415,11 @@ const FloatingChat = () => {
                   type="text"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyDown={handleKeyDown}
                   placeholder="Escribe tu mensaje... 💬"
                   className={`flex-1 px-3 py-2 text-sm rounded border ${themeClasses.border} ${themeClasses.cardBackground} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:outline-none focus:ring-1 focus:ring-blue-500`}
                 />
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 flex-shrink-0">
                   <FileUpload onFilesSelected={handleFilesSelected} />
                   <EmojiPicker 
                     onEmojiSelect={handleEmojiSelect}
