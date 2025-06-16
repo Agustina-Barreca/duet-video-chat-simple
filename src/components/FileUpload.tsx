@@ -159,9 +159,9 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
           accept="image/*,video/*,.pdf,.doc,.docx,.txt"
         />
 
-        {/* Lista de archivos adjuntos - posicionado correctamente */}
+        {/* Lista de archivos adjuntos - posicionado correctamente arriba del botón */}
         {attachments.length > 0 && (
-          <div className={`absolute bottom-full right-0 mb-2 ${themeClasses.cardBackground} border ${themeClasses.border} rounded-lg p-3 w-80 max-h-60 overflow-y-auto shadow-xl z-50`}>
+          <div className={`absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 ${themeClasses.cardBackground} border ${themeClasses.border} rounded-lg p-3 w-80 max-h-60 overflow-y-auto shadow-xl z-50`}>
             <div className="space-y-2">
               {attachments.map((attachment) => (
                 <div key={attachment.id} className={`flex items-center gap-3 p-2 rounded ${themeClasses.buttonSecondary}`}>
