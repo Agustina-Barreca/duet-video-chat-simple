@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Mic, MicOff, Video, VideoOff, Focus, Image } from "lucide-react";
+import { User, Mic, MicOff, Video, VideoOff, Focus, Image, Loader2, AlertCircle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useTheme } from "../contexts/ThemeContext";
 import ThemeSelector from "./ThemeSelector";
@@ -16,6 +15,15 @@ interface NameFormProps {
     initialBlurEnabled: boolean,
     initialBackground: string | null
   ) => void;
+  onValidationRequired?: (userData: {
+    name: string;
+    startWithVideo: boolean;
+    startWithAudio: boolean;
+    initialBlurEnabled: boolean;
+    initialBackground: string | null;
+  }) => Promise<boolean>;
+  isValidating?: boolean;
+  validationError?: string | null;
 }
 
 const backgrounds = [
@@ -26,7 +34,7 @@ const backgrounds = [
   { id: 'workspace', name: 'Espacio de trabajo', url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1920&h=1080&fit=crop' },
 ];
 
-const NameForm = ({ onSubmit }: NameFormProps) => {
+const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, validationError = null }: NameFormProps) => {
   const { getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
   
@@ -36,10 +44,28 @@ const NameForm = ({ onSubmit }: NameFormProps) => {
   const [initialBlurEnabled, setInitialBlurEnabled] = useState(false);
   const [initialBackground, setInitialBackground] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (name.trim()) {
-      onSubmit(name.trim(), startWithVideo, startWithAudio, initialBlurEnabled, initialBackground);
+    if (!name.trim()) return;
+
+    const userData = {
+      name: name.trim(),
+      startWithVideo,
+      startWithAudio,
+      initialBlurEnabled,
+      initialBackground
+    };
+
+    // Si hay validación requerida, llamarla primero
+    if (onValidationRequired) {
+      console.log('Iniciando validación para:', userData);
+      const isValid = await onValidationRequired(userData);
+      if (isValid) {
+        onSubmit(userData.name, userData.startWithVideo, userData.startWithAudio, userData.initialBlurEnabled, userData.initialBackground);
+      }
+    } else {
+      // Si no hay validación, proceder directamente
+      onSubmit(userData.name, userData.startWithVideo, userData.startWithAudio, userData.initialBlurEnabled, userData.initialBackground);
     }
   };
 
@@ -73,6 +99,17 @@ const NameForm = ({ onSubmit }: NameFormProps) => {
           <h2 className={`text-2xl font-semibold mb-2 ${themeClasses.textPrimary}`}>Bienvenido a la videollamada</h2>
           <p className={themeClasses.textSecondary}>Configura tu entrada a la llamada</p>
         </div>
+
+        {/* Error de validación */}
+        {validationError && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-red-400" />
+              <p className="text-red-400 text-sm font-medium">Error de validación</p>
+            </div>
+            <p className="text-red-300 text-sm mt-1">{validationError}</p>
+          </div>
+        )}
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -87,6 +124,7 @@ const NameForm = ({ onSubmit }: NameFormProps) => {
               onChange={(e) => setName(e.target.value)}
               className={`mt-1 ${themeClasses.cardBackground} border ${themeClasses.border} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:border-green-500 focus:ring-green-500`}
               required
+              disabled={isValidating}
             />
           </div>
 
@@ -107,9 +145,10 @@ const NameForm = ({ onSubmit }: NameFormProps) => {
               <button
                 type="button"
                 onClick={() => setStartWithVideo(!startWithVideo)}
+                disabled={isValidating}
                 className={`w-12 h-6 rounded-full transition-colors relative ${
                   startWithVideo ? 'bg-green-500' : 'bg-gray-600'
-                }`}
+                } ${isValidating ? 'opacity-50' : ''}`}
               >
                 <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-transform ${
                   startWithVideo ? 'translate-x-7' : 'translate-x-1'
@@ -129,9 +168,10 @@ const NameForm = ({ onSubmit }: NameFormProps) => {
               <button
                 type="button"
                 onClick={() => setStartWithAudio(!startWithAudio)}
+                disabled={isValidating}
                 className={`w-12 h-6 rounded-full transition-colors relative ${
                   startWithAudio ? 'bg-green-500' : 'bg-gray-600'
-                }`}
+                } ${isValidating ? 'opacity-50' : ''}`}
               >
                 <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-transform ${
                   startWithAudio ? 'translate-x-7' : 'translate-x-1'
@@ -148,9 +188,10 @@ const NameForm = ({ onSubmit }: NameFormProps) => {
               <button
                 type="button"
                 onClick={handleBlurToggle}
+                disabled={isValidating}
                 className={`w-12 h-6 rounded-full transition-colors relative ${
                   initialBlurEnabled ? 'bg-blue-500' : 'bg-gray-600'
-                }`}
+                } ${isValidating ? 'opacity-50' : ''}`}
               >
                 <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-transform ${
                   initialBlurEnabled ? 'translate-x-7' : 'translate-x-1'
@@ -164,8 +205,8 @@ const NameForm = ({ onSubmit }: NameFormProps) => {
                 <Image className={`w-5 h-5 ${initialBackground ? 'text-purple-400' : 'text-gray-400'}`} />
                 <span className={`${themeClasses.textPrimary} text-sm`}>Fondo virtual</span>
               </div>
-              <Select onValueChange={handleBackgroundChange} defaultValue="none">
-                <SelectTrigger className={`w-full h-9 text-xs ${themeClasses.cardBackground} border ${themeClasses.border} ${themeClasses.textPrimary}`}>
+              <Select onValueChange={handleBackgroundChange} defaultValue="none" disabled={isValidating}>
+                <SelectTrigger className={`w-full h-9 text-xs ${themeClasses.cardBackground} border ${themeClasses.border} ${themeClasses.textPrimary} ${isValidating ? 'opacity-50' : ''}`}>
                   <SelectValue placeholder="Seleccionar fondo" />
                 </SelectTrigger>
                 <SelectContent>
@@ -182,9 +223,16 @@ const NameForm = ({ onSubmit }: NameFormProps) => {
           <Button 
             type="submit" 
             className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3"
-            disabled={!name.trim()}
+            disabled={!name.trim() || isValidating}
           >
-            Iniciar llamada
+            {isValidating ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Validando acceso...
+              </>
+            ) : (
+              'Iniciar llamada'
+            )}
           </Button>
         </form>
       </div>

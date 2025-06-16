@@ -18,6 +18,10 @@ const VideoCall = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const [showNameForm, setShowNameForm] = useState(true);
   
+  // Estados para el flujo de validación
+  const [isValidating, setIsValidating] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
+  
   // Nuevos estados para efectos de video
   const [isBlurEnabled, setIsBlurEnabled] = useState(false);
   const [currentBackground, setCurrentBackground] = useState<string | null>(null);
@@ -44,6 +48,42 @@ const VideoCall = () => {
 
     return () => clearInterval(interval);
   }, [isCallActive]);
+
+  // Función de validación que puedes reemplazar con tu API
+  const handleValidation = async (userData: {
+    name: string;
+    startWithVideo: boolean;
+    startWithAudio: boolean;
+    initialBlurEnabled: boolean;
+    initialBackground: string | null;
+  }): Promise<boolean> => {
+    setIsValidating(true);
+    setValidationError(null);
+
+    try {
+      // Aquí es donde tú integrarás tu API de validación
+      // Simulación de delay para mostrar el estado de carga
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // TEMPORAL: Simulación de validación exitosa
+      // Reemplaza esta lógica con tu llamada real a la API
+      const isValid = true; // Tu API debería retornar si el usuario tiene acceso
+      
+      if (isValid) {
+        console.log('Validación exitosa para:', userData);
+        return true;
+      } else {
+        setValidationError('No tienes acceso a esta videollamada en este momento.');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error en la validación:', error);
+      setValidationError('Error de conexión. Por favor, inténtalo de nuevo.');
+      return false;
+    } finally {
+      setIsValidating(false);
+    }
+  };
 
   const handleNameSubmit = (
     name: string, 
@@ -107,11 +147,21 @@ const VideoCall = () => {
     setCurrentBackground(null);
     setIsRemoteAudioActive(true);
     setIsRemoteVideoActive(true);
+    // Resetear estados de validación
+    setIsValidating(false);
+    setValidationError(null);
   };
 
   // Mostrar formulario de nombre si no se ha ingresado
   if (showNameForm) {
-    return <NameForm onSubmit={handleNameSubmit} />;
+    return (
+      <NameForm 
+        onSubmit={handleNameSubmit}
+        onValidationRequired={handleValidation}
+        isValidating={isValidating}
+        validationError={validationError}
+      />
+    );
   }
 
   if (!isCallActive) {
