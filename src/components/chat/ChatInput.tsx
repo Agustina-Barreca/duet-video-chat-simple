@@ -30,7 +30,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
   const themeClasses = getThemeClasses();
 
   return (
-    <div className={`border-t ${themeClasses.border} p-3`}>
+    <div className={`relative border-t ${themeClasses.border} p-3`}>
       <form onSubmit={onSubmit} className="flex gap-2">
         <input
           type="text"

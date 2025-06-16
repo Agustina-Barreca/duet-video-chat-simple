@@ -72,39 +72,39 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
   };
 
   return (
-    <>
-      <div className="relative">
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          className={`p-2 rounded hover:bg-white/10 ${themeClasses.textSecondary} hover:${themeClasses.textPrimary} transition-colors`}
-          title="Adjuntar archivo"
-        >
-          <Paperclip className="w-4 h-4" />
-        </button>
-        
-        <input
-          ref={fileInputRef}
-          type="file"
-          multiple
-          onChange={handleFileSelect}
-          className="hidden"
-          accept="image/*,video/*,.pdf,.doc,.docx,.txt"
-        />
-
-        <FileAttachmentsList
-          attachments={attachments}
-          onRemove={removeAttachment}
-          onSend={handleSendAttachments}
-        />
-      </div>
-
-      <DragDropOverlay
-        isVisible={isDragOver}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
+    <div className="relative">
+      <button
+        onClick={() => fileInputRef.current?.click()}
+        className={`p-2 rounded hover:bg-white/10 ${themeClasses.textSecondary} hover:${themeClasses.textPrimary} transition-colors`}
+        title="Adjuntar archivo"
+      >
+        <Paperclip className="w-4 h-4" />
+      </button>
+      
+      <input
+        ref={fileInputRef}
+        type="file"
+        multiple
+        onChange={handleFileSelect}
+        className="hidden"
+        accept="image/*,video/*,.pdf,.doc,.docx,.txt"
       />
-    </>
+
+      <FileAttachmentsList
+        attachments={attachments}
+        onRemove={removeAttachment}
+        onSend={handleSendAttachments}
+      />
+
+      {isDragOver && (
+        <DragDropOverlay
+          isVisible={isDragOver}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+        />
+      )}
+    </div>
   );
 };
 

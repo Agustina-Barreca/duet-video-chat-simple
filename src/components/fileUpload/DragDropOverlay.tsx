@@ -23,28 +23,23 @@ const DragDropOverlay: React.FC<DragDropOverlayProps> = ({
 
   return (
     <>
-      {/* Zona de drag & drop - portal a body para evitar problemas de z-index */}
+      {/* Overlay dentro del contexto del chat */}
       <div
-        className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center"
+        className="absolute inset-0 bg-black/50 z-[60] flex items-center justify-center"
         onDrop={onDrop}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
+        style={{
+          borderRadius: '0.5rem', // Coincide con el rounded-lg del chat
+        }}
       >
-        <div className={`${themeClasses.cardBackground} border-2 border-dashed ${themeClasses.border} rounded-lg p-8 text-center`}>
-          <Upload className={`w-12 h-12 mx-auto mb-4 ${themeClasses.textSecondary}`} />
-          <p className={`${themeClasses.textPrimary} text-lg font-medium`}>
+        <div className={`${themeClasses.cardBackground} border-2 border-dashed ${themeClasses.border} rounded-lg p-6 text-center mx-4`}>
+          <Upload className={`w-10 h-10 mx-auto mb-3 ${themeClasses.textSecondary}`} />
+          <p className={`${themeClasses.textPrimary} text-sm font-medium`}>
             Suelta los archivos aquí
           </p>
         </div>
       </div>
-
-      {/* Overlay global para drag & drop */}
-      <div
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-        onDragLeave={onDragLeave}
-        className="fixed inset-0 pointer-events-none z-40"
-      />
     </>
   );
 };
