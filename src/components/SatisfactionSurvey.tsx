@@ -40,37 +40,37 @@ const SatisfactionSurvey: React.FC<SatisfactionSurveyProps> = ({ onClose, onComp
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className={`${themeClasses.cardBackground} border ${themeClasses.border} rounded-lg p-6 w-96 max-w-[90vw]`}>
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+      <div className={`${themeClasses.cardBackground} border-2 ${themeClasses.border} rounded-xl p-8 w-[480px] max-w-[90vw] shadow-2xl`}>
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
             {currentStep === 2 && (
               <button
                 onClick={handlePreviousStep}
-                className={`p-1 rounded hover:bg-white/10 ${themeClasses.textSecondary} hover:${themeClasses.textPrimary} transition-colors`}
+                className={`p-2 rounded-lg hover:bg-white/20 ${themeClasses.textPrimary} transition-colors`}
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-5 h-5" />
               </button>
             )}
-            <h3 className={`text-lg font-semibold ${themeClasses.textPrimary}`}>
+            <h3 className={`text-xl font-bold ${themeClasses.textPrimary}`}>
               Encuesta de Satisfacción ({currentStep}/2)
             </h3>
           </div>
           <button
             onClick={onClose}
-            className={`p-1 rounded hover:bg-white/10 ${themeClasses.textSecondary} hover:${themeClasses.textPrimary} transition-colors`}
+            className={`p-2 rounded-lg hover:bg-white/20 ${themeClasses.textPrimary} transition-colors`}
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Step 1: NPS y CSAT */}
         {currentStep === 1 && (
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* NPS Question */}
             <div>
-              <label className={`block text-sm font-medium mb-3 ${themeClasses.textPrimary}`}>
+              <label className={`block text-base font-semibold mb-4 ${themeClasses.textPrimary}`}>
                 ¿Qué tan probable es que recomiendes nuestro servicio? (0-10)
               </label>
               <Slider
@@ -79,18 +79,18 @@ const SatisfactionSurvey: React.FC<SatisfactionSurveyProps> = ({ onClose, onComp
                 max={10}
                 min={0}
                 step={1}
-                className="w-full"
+                className="w-full mb-3"
               />
-              <div className="flex justify-between text-xs mt-2">
-                <span className={themeClasses.textSecondary}>Muy improbable (0)</span>
-                <span className={`font-medium ${themeClasses.textPrimary}`}>{npsScore[0]}</span>
-                <span className={themeClasses.textSecondary}>Muy probable (10)</span>
+              <div className="flex justify-between text-sm mt-3">
+                <span className={`${themeClasses.textPrimary} font-medium`}>Muy improbable (0)</span>
+                <span className={`font-bold text-lg ${themeClasses.textPrimary} bg-blue-500/20 px-3 py-1 rounded-full`}>{npsScore[0]}</span>
+                <span className={`${themeClasses.textPrimary} font-medium`}>Muy probable (10)</span>
               </div>
             </div>
 
             {/* CSAT Question */}
             <div>
-              <label className={`block text-sm font-medium mb-3 ${themeClasses.textPrimary}`}>
+              <label className={`block text-base font-semibold mb-4 ${themeClasses.textPrimary}`}>
                 ¿Qué tan satisfecho estás con nuestro servicio? (1-5)
               </label>
               <Slider
@@ -99,20 +99,21 @@ const SatisfactionSurvey: React.FC<SatisfactionSurveyProps> = ({ onClose, onComp
                 max={5}
                 min={1}
                 step={1}
-                className="w-full"
+                className="w-full mb-3"
               />
-              <div className="flex justify-between text-xs mt-2">
-                <span className={themeClasses.textSecondary}>Muy insatisfecho (1)</span>
-                <span className={`font-medium ${themeClasses.textPrimary}`}>{csatScore[0]}</span>
-                <span className={themeClasses.textSecondary}>Muy satisfecho (5)</span>
+              <div className="flex justify-between text-sm mt-3">
+                <span className={`${themeClasses.textPrimary} font-medium`}>Muy insatisfecho (1)</span>
+                <span className={`font-bold text-lg ${themeClasses.textPrimary} bg-green-500/20 px-3 py-1 rounded-full`}>{csatScore[0]}</span>
+                <span className={`${themeClasses.textPrimary} font-medium`}>Muy satisfecho (5)</span>
               </div>
             </div>
 
             <Button
               onClick={handleNextStep}
-              className="w-full"
+              size="lg"
+              className="w-full text-base font-semibold py-3"
             >
-              Siguiente
+              Siguiente →
             </Button>
           </div>
         )}
@@ -122,20 +123,20 @@ const SatisfactionSurvey: React.FC<SatisfactionSurveyProps> = ({ onClose, onComp
           <div className="space-y-6">
             {/* Binary Question */}
             <div>
-              <label className={`block text-sm font-medium mb-3 ${themeClasses.textPrimary}`}>
+              <label className={`block text-base font-semibold mb-4 ${themeClasses.textPrimary}`}>
                 ¿Volverías a usar nuestro servicio?
               </label>
-              <RadioGroup value={binaryAnswer} onValueChange={setBinaryAnswer}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="si" id="si" />
-                  <label htmlFor="si" className={`text-sm ${themeClasses.textPrimary}`}>
-                    Sí
+              <RadioGroup value={binaryAnswer} onValueChange={setBinaryAnswer} className="space-y-4">
+                <div className={`flex items-center space-x-3 p-3 rounded-lg border-2 ${binaryAnswer === 'si' ? 'border-green-500 bg-green-500/10' : `border-transparent ${themeClasses.buttonSecondary}`} transition-all`}>
+                  <RadioGroupItem value="si" id="si" className="text-green-500" />
+                  <label htmlFor="si" className={`text-base font-medium ${themeClasses.textPrimary} cursor-pointer flex-1`}>
+                    ✅ Sí, definitivamente
                   </label>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="no" id="no" />
-                  <label htmlFor="no" className={`text-sm ${themeClasses.textPrimary}`}>
-                    No
+                <div className={`flex items-center space-x-3 p-3 rounded-lg border-2 ${binaryAnswer === 'no' ? 'border-red-500 bg-red-500/10' : `border-transparent ${themeClasses.buttonSecondary}`} transition-all`}>
+                  <RadioGroupItem value="no" id="no" className="text-red-500" />
+                  <label htmlFor="no" className={`text-base font-medium ${themeClasses.textPrimary} cursor-pointer flex-1`}>
+                    ❌ No, probablemente no
                   </label>
                 </div>
               </RadioGroup>
@@ -143,14 +144,14 @@ const SatisfactionSurvey: React.FC<SatisfactionSurveyProps> = ({ onClose, onComp
 
             {/* Comment */}
             <div>
-              <label className={`block text-sm font-medium mb-2 ${themeClasses.textPrimary}`}>
+              <label className={`block text-base font-semibold mb-3 ${themeClasses.textPrimary}`}>
                 Comentarios adicionales (opcional)
               </label>
               <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                placeholder="Comparte tu experiencia..."
-                className={`w-full px-3 py-2 text-sm rounded border ${themeClasses.border} ${themeClasses.cardBackground} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none`}
+                placeholder="Comparte tu experiencia... 💭"
+                className={`w-full px-4 py-3 text-base rounded-lg border-2 ${themeClasses.border} ${themeClasses.cardBackground} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none transition-colors`}
                 rows={4}
               />
             </div>
@@ -158,9 +159,10 @@ const SatisfactionSurvey: React.FC<SatisfactionSurveyProps> = ({ onClose, onComp
             <Button
               onClick={handleSubmit}
               disabled={!binaryAnswer}
-              className="w-full"
+              size="lg"
+              className="w-full text-base font-semibold py-3"
             >
-              Enviar Encuesta
+              🚀 Enviar Encuesta
             </Button>
           </div>
         )}

@@ -6,14 +6,18 @@ import { useDraggable } from '../hooks/useDraggable';
 import { useResizable } from '../hooks/useResizable';
 import ChatCarousel from './ChatCarousel';
 import SatisfactionSurvey from './SatisfactionSurvey';
+import FullScreenViewer from './FullScreenViewer';
+import EmojiPicker from './EmojiPicker';
+import FileUpload, { FileAttachment } from './FileUpload';
+import ChatForm from './ChatForm';
 
 interface Message {
   id: number;
   text?: string;
   sender: 'user' | 'other';
   timestamp: Date;
-  type?: 'text' | 'carousel' | 'image' | 'video' | 'pdf';
-  content?: string;
+  type?: 'text' | 'carousel' | 'image' | 'video' | 'pdf' | 'form' | 'files';
+  content?: string | FileAttachment[];
 }
 
 const FloatingChat = () => {
@@ -23,10 +27,13 @@ const FloatingChat = () => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [showSurvey, setShowSurvey] = useState(false);
+  const [showFullScreen, setShowFullScreen] = useState(false);
+  const [fullScreenContent, setFullScreenContent] = useState<{type: 'image' | 'carousel', data: string | string[]}>({type: 'image', data: ''});
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: "¡Hola! ¿Cómo estás? Te muestro algunos elementos multimedia:",
+      text: "¡Hola! 👋 ¿Cómo estás? Te muestro algunos elementos multimedia:",
       sender: 'other',
       timestamp: new Date(),
     },
@@ -56,6 +63,18 @@ const FloatingChat = () => {
       timestamp: new Date(),
       type: 'pdf',
       content: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
+    },
+    {
+      id: 6,
+      text: "También puedes llenar este formulario completo: 📝",
+      sender: 'other',
+      timestamp: new Date(),
+    },
+    {
+      id: 7,
+      sender: 'other',
+      timestamp: new Date(),
+      type: 'form'
     }
   ]);
   const [newMessage, setNewMessage] = useState('');
@@ -88,7 +107,7 @@ const FloatingChat = () => {
     setTimeout(() => {
       const autoReply: Message = {
         id: messages.length + 2,
-        text: "¡Gracias por tu mensaje! Este es un chat de demostración.",
+        text: "¡Gracias por tu mensaje! 😊 Este es un chat de demostración.",
         sender: 'other',
         timestamp: new Date(),
       };
@@ -109,6 +128,67 @@ const FloatingChat = () => {
     setIsOpen(false);
   };
 
+  const handleImageClick = (imageUrl: string) => {
+    setFullScreenContent({ type: 'image', data: imageUrl });
+    setShowFullScreen(true);
+  };
+
+  const handleCarouselClick = (images: string[]) => {
+    setFullScreenContent({ type: 'carousel', data: images });
+    setShowFullScreen(true);
+  };
+
+  const handleEmojiSelect = (emoji: string) => {
+    setNewMessage(prev => prev + emoji);
+  };
+
+  const handleFilesSelected = (files: FileAttachment[]) => {
+    const message: Message = {
+      id: messages.length + 1,
+      sender: 'user',
+      timestamp: new Date(),
+      type: 'files',
+      content: files
+    };
+    setMessages(prev => [...prev, message]);
+
+    // Simular respuesta automática
+    setTimeout(() => {
+      const autoReply: Message = {
+        id: messages.length + 2,
+        text: `¡Perfecto! He recibido ${files.length} archivo${files.length > 1 ? 's' : ''}. 📎✨`,
+        sender: 'other',
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, autoReply]);
+    }, 1000);
+  };
+
+  const handleFormSubmit = (formData: any) => {
+    const message: Message = {
+      id: messages.length + 1,
+      text: formData.type === 'quick_reply' 
+        ? formData.message 
+        : `Formulario enviado: ${formData.name} - ${formData.email} ⭐${formData.rating}/5`,
+      sender: 'user',
+      timestamp: new Date(),
+    };
+    setMessages(prev => [...prev, message]);
+
+    // Simular respuesta automática
+    setTimeout(() => {
+      const autoReply: Message = {
+        id: messages.length + 2,
+        text: formData.type === 'quick_reply' 
+          ? "¡Gracias por tu respuesta rápida! 🚀" 
+          : "¡Excelente! Hemos recibido tu formulario. Te contactaremos pronto. 📧✨",
+        sender: 'other',
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, autoReply]);
+    }, 1000);
+  };
+
   const renderMessage = (message: Message) => {
     const isUser = message.sender === 'user';
     
@@ -116,7 +196,44 @@ const FloatingChat = () => {
       return (
         <div className="flex justify-start mb-3">
           <div className="max-w-[90%]">
-            <ChatCarousel />
+            <ChatCarousel onImageClick={handleCarouselClick} />
+          </div>
+        </div>
+      );
+    }
+
+    if (message.type === 'form') {
+      return (
+        <div className="flex justify-start mb-3">
+          <div className="max-w-[95%]">
+            <ChatForm onSubmit={handleFormSubmit} />
+          </div>
+        </div>
+      );
+    }
+
+    if (message.type === 'files' && message.content) {
+      const files = message.content as FileAttachment[];
+      return (
+        <div className="flex justify-end mb-3">
+          <div className="max-w-[80%] space-y-2">
+            {files.map((file) => (
+              <div key={file.id} className={`flex items-center gap-3 p-3 rounded-lg ${themeClasses.buttonPrimary} text-white`}>
+                {file.preview ? (
+                  <img src={file.preview} alt="" className="w-12 h-12 object-cover rounded" />
+                ) : (
+                  <div className="w-12 h-12 flex items-center justify-center rounded bg-white/20">
+                    <FileText className="w-6 h-6" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{file.file.name}</p>
+                  <p className="text-xs opacity-80">
+                    {(file.file.size / 1024 / 1024).toFixed(2)} MB
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       );
@@ -129,7 +246,9 @@ const FloatingChat = () => {
             <img
               src={message.content}
               alt="Imagen compartida"
-              className="rounded-lg max-w-full h-auto"
+              onClick={() => handleImageClick(message.content as string)}
+              className="rounded-lg max-w-full h-auto cursor-pointer hover:opacity-90 transition-opacity"
+              title="Click para ver en tamaño completo"
             />
           </div>
         </div>
@@ -278,16 +397,24 @@ const FloatingChat = () => {
                   type="text"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="Escribe tu mensaje..."
+                  placeholder="Escribe tu mensaje... 💬"
                   className={`flex-1 px-3 py-2 text-sm rounded border ${themeClasses.border} ${themeClasses.cardBackground} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:outline-none focus:ring-1 focus:ring-blue-500`}
                 />
-                <button
-                  type="submit"
-                  disabled={!newMessage.trim()}
-                  className={`${themeClasses.buttonPrimary} p-2 rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed`}
-                >
-                  <Send className="w-4 h-4 text-white" />
-                </button>
+                <div className="flex items-center gap-1">
+                  <FileUpload onFilesSelected={handleFilesSelected} />
+                  <EmojiPicker 
+                    onEmojiSelect={handleEmojiSelect}
+                    isOpen={showEmojiPicker}
+                    onToggle={() => setShowEmojiPicker(!showEmojiPicker)}
+                  />
+                  <button
+                    type="submit"
+                    disabled={!newMessage.trim()}
+                    className={`${themeClasses.buttonPrimary} p-2 rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
+                    <Send className="w-4 h-4 text-white" />
+                  </button>
+                </div>
               </form>
             </div>
 
@@ -334,6 +461,13 @@ const FloatingChat = () => {
           onComplete={handleSurveyComplete}
         />
       )}
+
+      {/* Visor full-screen */}
+      <FullScreenViewer
+        isOpen={showFullScreen}
+        onClose={() => setShowFullScreen(false)}
+        content={fullScreenContent}
+      />
     </>
   );
 };
