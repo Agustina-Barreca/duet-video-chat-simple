@@ -43,10 +43,32 @@ const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, valida
   const [startWithAudio, setStartWithAudio] = useState(true);
   const [initialBlurEnabled, setInitialBlurEnabled] = useState(false);
   const [initialBackground, setInitialBackground] = useState<string | null>(null);
+  
+  // Estados para validación del formulario
+  const [formErrors, setFormErrors] = useState<{[key: string]: string}>({});
+
+  // Validación del formulario
+  const validateForm = () => {
+    const errors: {[key: string]: string} = {};
+    
+    if (!name.trim()) {
+      errors.name = 'El nombre es obligatorio';
+    } else if (name.trim().length < 2) {
+      errors.name = 'El nombre debe tener al menos 2 caracteres';
+    }
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    
+    // 1. Primero validar el formulario
+    if (!validateForm()) {
+      console.log('Errores de validación del formulario:', formErrors);
+      return;
+    }
 
     const userData = {
       name: name.trim(),
@@ -56,15 +78,16 @@ const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, valida
       initialBackground
     };
 
-    // Si hay validación requerida, llamarla primero
+    // 2. Si el formulario es válido, proceder con la validación de la API
     if (onValidationRequired) {
-      console.log('Iniciando validación para:', userData);
-      const isValid = await onValidationRequired(userData);
-      if (isValid) {
+      console.log('Formulario válido. Iniciando validación de acceso a la API para:', userData);
+      const isAccessGranted = await onValidationRequired(userData);
+      if (isAccessGranted) {
         onSubmit(userData.name, userData.startWithVideo, userData.startWithAudio, userData.initialBlurEnabled, userData.initialBackground);
       }
+      // Si falla la validación de la API, el error se mostrará automáticamente
     } else {
-      // Si no hay validación, proceder directamente
+      // Si no hay validación de API, proceder directamente
       onSubmit(userData.name, userData.startWithVideo, userData.startWithAudio, userData.initialBlurEnabled, userData.initialBackground);
     }
   };
@@ -100,12 +123,12 @@ const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, valida
           <p className={themeClasses.textSecondary}>Configura tu entrada a la llamada</p>
         </div>
 
-        {/* Error de validación */}
+        {/* Error de validación de la API */}
         {validationError && (
           <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
             <div className="flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-red-400" />
-              <p className="text-red-400 text-sm font-medium">Error de validación</p>
+              <p className="text-red-400 text-sm font-medium">Error de acceso</p>
             </div>
             <p className="text-red-300 text-sm mt-1">{validationError}</p>
           </div>
@@ -114,18 +137,29 @@ const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, valida
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <Label htmlFor="name" className={`${themeClasses.textPrimary} text-sm font-medium`}>
-              Tu nombre
+              Tu nombre *
             </Label>
             <Input
               id="name"
               type="text"
               placeholder="Escribe tu nombre aquí..."
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              className={`mt-1 ${themeClasses.cardBackground} border ${themeClasses.border} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:border-green-500 focus:ring-green-500`}
-              required
+              onChange={(e) => {
+                setName(e.target.value);
+                // Limpiar errores cuando el usuario empiece a escribir
+                if (formErrors.name) {
+                  setFormErrors(prev => ({ ...prev, name: '' }));
+                }
+              }}
+              className={`mt-1 ${themeClasses.cardBackground} border ${formErrors.name ? 'border-red-500' : themeClasses.border} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:border-green-500 focus:ring-green-500`}
               disabled={isValidating}
             />
+            {formErrors.name && (
+              <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
+                <AlertCircle className="w-3 h-3" />
+                {formErrors.name}
+              </p>
+            )}
           </div>
 
           <div className="space-y-4">
@@ -179,7 +213,6 @@ const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, valida
               </button>
             </div>
 
-            {/* Control de blur */}
             <div className={`flex items-center justify-between ${themeClasses.buttonSecondary} rounded-lg p-3`}>
               <div className="flex items-center space-x-3">
                 <Focus className={`w-5 h-5 ${initialBlurEnabled ? 'text-blue-400' : 'text-gray-400'}`} />
@@ -199,7 +232,6 @@ const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, valida
               </button>
             </div>
 
-            {/* Control de fondo virtual */}
             <div className={`${themeClasses.buttonSecondary} rounded-lg p-3`}>
               <div className="flex items-center space-x-3 mb-3">
                 <Image className={`w-5 h-5 ${initialBackground ? 'text-purple-400' : 'text-gray-400'}`} />
@@ -223,12 +255,12 @@ const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, valida
           <Button 
             type="submit" 
             className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3"
-            disabled={!name.trim() || isValidating}
+            disabled={isValidating}
           >
             {isValidating ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Validando acceso...
+                Verificando acceso...
               </>
             ) : (
               'Iniciar llamada'

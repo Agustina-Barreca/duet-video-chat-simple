@@ -18,9 +18,9 @@ const VideoCall = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const [showNameForm, setShowNameForm] = useState(true);
   
-  // Estados para el flujo de validación
-  const [isValidating, setIsValidating] = useState(false);
-  const [validationError, setValidationError] = useState<string | null>(null);
+  // Estados para el flujo de validación de la API
+  const [isValidatingAccess, setIsValidatingAccess] = useState(false);
+  const [accessValidationError, setAccessValidationError] = useState<string | null>(null);
   
   // Nuevos estados para efectos de video
   const [isBlurEnabled, setIsBlurEnabled] = useState(false);
@@ -49,39 +49,41 @@ const VideoCall = () => {
     return () => clearInterval(interval);
   }, [isCallActive]);
 
-  // Función de validación que puedes reemplazar con tu API
-  const handleValidation = async (userData: {
+  // Función de validación de acceso a la API (aquí integrarías tu API real)
+  const handleAccessValidation = async (userData: {
     name: string;
     startWithVideo: boolean;
     startWithAudio: boolean;
     initialBlurEnabled: boolean;
     initialBackground: string | null;
   }): Promise<boolean> => {
-    setIsValidating(true);
-    setValidationError(null);
+    setIsValidatingAccess(true);
+    setAccessValidationError(null);
 
     try {
-      // Aquí es donde tú integrarás tu API de validación
+      console.log('Validando acceso a la videollamada para:', userData);
+      
+      // Aquí es donde integrarás tu API real
       // Simulación de delay para mostrar el estado de carga
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // TEMPORAL: Simulación de validación exitosa
-      // Reemplaza esta lógica con tu llamada real a la API
-      const isValid = true; // Tu API debería retornar si el usuario tiene acceso
+      // SIMULACIÓN: Cambiar esta lógica por tu llamada real a la API
+      const hasAccess = Math.random() > 0.3; // 70% de probabilidad de éxito
       
-      if (isValid) {
-        console.log('Validación exitosa para:', userData);
+      if (hasAccess) {
+        console.log('✅ Acceso concedido a la videollamada');
         return true;
       } else {
-        setValidationError('No tienes acceso a esta videollamada en este momento.');
+        setAccessValidationError('No tienes permisos para unirte a esta videollamada en este momento. Por favor, contacta al administrador.');
+        console.log('❌ Acceso denegado');
         return false;
       }
     } catch (error) {
-      console.error('Error en la validación:', error);
-      setValidationError('Error de conexión. Por favor, inténtalo de nuevo.');
+      console.error('Error al validar acceso:', error);
+      setAccessValidationError('Error de conexión con el servidor. Por favor, verifica tu conexión a internet e inténtalo de nuevo.');
       return false;
     } finally {
-      setIsValidating(false);
+      setIsValidatingAccess(false);
     }
   };
 
@@ -92,6 +94,7 @@ const VideoCall = () => {
     initialBlurEnabled: boolean,
     initialBackground: string | null
   ) => {
+    console.log('✅ Acceso aprobado. Iniciando videollamada...');
     setUserName(name);
     setShowNameForm(false);
     // Configurar estados iniciales basados en las preferencias del usuario
@@ -99,7 +102,7 @@ const VideoCall = () => {
     setIsMuted(!startWithAudio);
     setIsBlurEnabled(initialBlurEnabled);
     setCurrentBackground(initialBackground);
-    console.log(`Iniciando llamada - Video: ${startWithVideo ? 'activado' : 'desactivado'}, Audio: ${startWithAudio ? 'activado' : 'silenciado'}, Blur: ${initialBlurEnabled ? 'activado' : 'desactivado'}, Background: ${initialBackground || 'ninguno'}`);
+    console.log(`Llamada iniciada - Video: ${startWithVideo ? 'activado' : 'desactivado'}, Audio: ${startWithAudio ? 'activado' : 'silenciado'}, Blur: ${initialBlurEnabled ? 'activado' : 'desactivado'}, Background: ${initialBackground || 'ninguno'}`);
   };
 
   const handleEndCall = () => {
@@ -148,8 +151,8 @@ const VideoCall = () => {
     setIsRemoteAudioActive(true);
     setIsRemoteVideoActive(true);
     // Resetear estados de validación
-    setIsValidating(false);
-    setValidationError(null);
+    setIsValidatingAccess(false);
+    setAccessValidationError(null);
   };
 
   // Mostrar formulario de nombre si no se ha ingresado
@@ -157,9 +160,9 @@ const VideoCall = () => {
     return (
       <NameForm 
         onSubmit={handleNameSubmit}
-        onValidationRequired={handleValidation}
-        isValidating={isValidating}
-        validationError={validationError}
+        onValidationRequired={handleAccessValidation}
+        isValidating={isValidatingAccess}
+        validationError={accessValidationError}
       />
     );
   }
