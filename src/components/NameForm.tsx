@@ -1,11 +1,14 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Mic, MicOff, Video, VideoOff, Focus, Image, Loader2, AlertCircle } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { User, Loader2, AlertCircle } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
+import { useFormValidation } from "../hooks/useFormValidation";
 import ThemeSelector from "./ThemeSelector";
+import MediaControlsConfig from "./MediaControlsConfig";
+import VideoEffectsConfig from "./VideoEffectsConfig";
 
 interface NameFormProps {
   onSubmit: (
@@ -44,28 +47,31 @@ const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, valida
   const [initialBlurEnabled, setInitialBlurEnabled] = useState(false);
   const [initialBackground, setInitialBackground] = useState<string | null>(null);
   
-  // Estados para validación del formulario
-  const [formErrors, setFormErrors] = useState<{[key: string]: string}>({});
+  const { formErrors, validateForm, clearError } = useFormValidation();
 
-  // Validación del formulario
-  const validateForm = () => {
-    const errors: {[key: string]: string} = {};
-    
-    if (!name.trim()) {
-      errors.name = 'El nombre es obligatorio';
-    } else if (name.trim().length < 2) {
-      errors.name = 'El nombre debe tener al menos 2 caracteres';
+  const handleBackgroundChange = (backgroundId: string) => {
+    const selectedBg = backgrounds.find(bg => bg.id === backgroundId);
+    setInitialBackground(selectedBg?.url || null);
+    // Si se selecciona un fondo, desactivar el blur
+    if (selectedBg?.url) {
+      setInitialBlurEnabled(false);
     }
-    
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
+  };
+
+  const handleBlurToggle = () => {
+    const newBlurState = !initialBlurEnabled;
+    setInitialBlurEnabled(newBlurState);
+    // Si se activa el blur, desactivar el fondo personalizado
+    if (newBlurState) {
+      setInitialBackground(null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // 1. Primero validar el formulario
-    if (!validateForm()) {
+    if (!validateForm(name)) {
       console.log('Errores de validación del formulario:', formErrors);
       return;
     }
@@ -89,24 +95,6 @@ const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, valida
     } else {
       // Si no hay validación de API, proceder directamente
       onSubmit(userData.name, userData.startWithVideo, userData.startWithAudio, userData.initialBlurEnabled, userData.initialBackground);
-    }
-  };
-
-  const handleBackgroundChange = (backgroundId: string) => {
-    const selectedBg = backgrounds.find(bg => bg.id === backgroundId);
-    setInitialBackground(selectedBg?.url || null);
-    // Si se selecciona un fondo, desactivar el blur
-    if (selectedBg?.url) {
-      setInitialBlurEnabled(false);
-    }
-  };
-
-  const handleBlurToggle = () => {
-    const newBlurState = !initialBlurEnabled;
-    setInitialBlurEnabled(newBlurState);
-    // Si se activa el blur, desactivar el fondo personalizado
-    if (newBlurState) {
-      setInitialBackground(null);
     }
   };
 
@@ -146,10 +134,7 @@ const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, valida
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
-                // Limpiar errores cuando el usuario empiece a escribir
-                if (formErrors.name) {
-                  setFormErrors(prev => ({ ...prev, name: '' }));
-                }
+                clearError('name');
               }}
               className={`mt-1 ${themeClasses.cardBackground} border ${formErrors.name ? 'border-red-500' : themeClasses.border} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:border-green-500 focus:ring-green-500`}
               disabled={isValidating}
@@ -167,89 +152,21 @@ const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, valida
               Configuración inicial
             </Label>
             
-            <div className={`flex items-center justify-between ${themeClasses.buttonSecondary} rounded-lg p-3`}>
-              <div className="flex items-center space-x-3">
-                {startWithVideo ? (
-                  <Video className="w-5 h-5 text-green-400" />
-                ) : (
-                  <VideoOff className="w-5 h-5 text-red-400" />
-                )}
-                <span className={`${themeClasses.textPrimary} text-sm`}>Cámara</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setStartWithVideo(!startWithVideo)}
-                disabled={isValidating}
-                className={`w-12 h-6 rounded-full transition-colors relative ${
-                  startWithVideo ? 'bg-green-500' : 'bg-gray-600'
-                } ${isValidating ? 'opacity-50' : ''}`}
-              >
-                <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-transform ${
-                  startWithVideo ? 'translate-x-7' : 'translate-x-1'
-                }`}></div>
-              </button>
-            </div>
+            <MediaControlsConfig
+              startWithVideo={startWithVideo}
+              startWithAudio={startWithAudio}
+              onToggleVideo={() => setStartWithVideo(!startWithVideo)}
+              onToggleAudio={() => setStartWithAudio(!startWithAudio)}
+              disabled={isValidating}
+            />
 
-            <div className={`flex items-center justify-between ${themeClasses.buttonSecondary} rounded-lg p-3`}>
-              <div className="flex items-center space-x-3">
-                {startWithAudio ? (
-                  <Mic className="w-5 h-5 text-green-400" />
-                ) : (
-                  <MicOff className="w-5 h-5 text-red-400" />
-                )}
-                <span className={`${themeClasses.textPrimary} text-sm`}>Micrófono</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setStartWithAudio(!startWithAudio)}
-                disabled={isValidating}
-                className={`w-12 h-6 rounded-full transition-colors relative ${
-                  startWithAudio ? 'bg-green-500' : 'bg-gray-600'
-                } ${isValidating ? 'opacity-50' : ''}`}
-              >
-                <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-transform ${
-                  startWithAudio ? 'translate-x-7' : 'translate-x-1'
-                }`}></div>
-              </button>
-            </div>
-
-            <div className={`flex items-center justify-between ${themeClasses.buttonSecondary} rounded-lg p-3`}>
-              <div className="flex items-center space-x-3">
-                <Focus className={`w-5 h-5 ${initialBlurEnabled ? 'text-blue-400' : 'text-gray-400'}`} />
-                <span className={`${themeClasses.textPrimary} text-sm`}>Difuminar fondo</span>
-              </div>
-              <button
-                type="button"
-                onClick={handleBlurToggle}
-                disabled={isValidating}
-                className={`w-12 h-6 rounded-full transition-colors relative ${
-                  initialBlurEnabled ? 'bg-blue-500' : 'bg-gray-600'
-                } ${isValidating ? 'opacity-50' : ''}`}
-              >
-                <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-transform ${
-                  initialBlurEnabled ? 'translate-x-7' : 'translate-x-1'
-                }`}></div>
-              </button>
-            </div>
-
-            <div className={`${themeClasses.buttonSecondary} rounded-lg p-3`}>
-              <div className="flex items-center space-x-3 mb-3">
-                <Image className={`w-5 h-5 ${initialBackground ? 'text-purple-400' : 'text-gray-400'}`} />
-                <span className={`${themeClasses.textPrimary} text-sm`}>Fondo virtual</span>
-              </div>
-              <Select onValueChange={handleBackgroundChange} defaultValue="none" disabled={isValidating}>
-                <SelectTrigger className={`w-full h-9 text-xs ${themeClasses.cardBackground} border ${themeClasses.border} ${themeClasses.textPrimary} ${isValidating ? 'opacity-50' : ''}`}>
-                  <SelectValue placeholder="Seleccionar fondo" />
-                </SelectTrigger>
-                <SelectContent>
-                  {backgrounds.map((bg) => (
-                    <SelectItem key={bg.id} value={bg.id} className="text-xs">
-                      {bg.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <VideoEffectsConfig
+              initialBlurEnabled={initialBlurEnabled}
+              initialBackground={initialBackground}
+              onToggleBlur={handleBlurToggle}
+              onBackgroundChange={handleBackgroundChange}
+              disabled={isValidating}
+            />
           </div>
           
           <Button 
