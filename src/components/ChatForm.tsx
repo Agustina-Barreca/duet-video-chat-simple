@@ -4,6 +4,7 @@ import { Send, Calendar, Clock, Phone, Mail, User, MapPin } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
+import FileUpload, { FileAttachment } from './FileUpload';
 
 interface ChatFormProps {
   onSubmit: (formData: any) => void;
@@ -22,7 +23,8 @@ const ChatForm: React.FC<ChatFormProps> = ({ onSubmit }) => {
     message: '',
     rating: 5,
     category: '',
-    agree: false
+    agree: false,
+    attachments: [] as FileAttachment[]
   });
 
   const quickReplies = [
@@ -38,6 +40,10 @@ const ChatForm: React.FC<ChatFormProps> = ({ onSubmit }) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleFilesSelected = (files: FileAttachment[]) => {
+    setFormData(prev => ({ ...prev, attachments: [...prev.attachments, ...files] }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
@@ -50,7 +56,8 @@ const ChatForm: React.FC<ChatFormProps> = ({ onSubmit }) => {
       message: '',
       rating: 5,
       category: '',
-      agree: false
+      agree: false,
+      attachments: []
     });
   };
 
@@ -191,6 +198,21 @@ const ChatForm: React.FC<ChatFormProps> = ({ onSubmit }) => {
             placeholder="Cuéntanos más detalles... 😊"
             className={`w-full px-3 py-2 text-sm rounded border ${themeClasses.border} ${themeClasses.cardBackground} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none h-20`}
           />
+        </div>
+
+        {/* Archivos adjuntos */}
+        <div className="space-y-2">
+          <label className={`text-sm font-medium ${themeClasses.textPrimary} flex items-center gap-2`}>
+            📎 Archivos adjuntos
+          </label>
+          <div className="flex items-center gap-2">
+            <FileUpload onFilesSelected={handleFilesSelected} />
+            {formData.attachments.length > 0 && (
+              <span className={`text-xs ${themeClasses.textSecondary}`}>
+                {formData.attachments.length} archivo{formData.attachments.length !== 1 ? 's' : ''} seleccionado{formData.attachments.length !== 1 ? 's' : ''}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Checkbox */}
