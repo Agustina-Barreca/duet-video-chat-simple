@@ -74,6 +74,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
   return (
     <div className="relative">
       <button
+        type="button"
         onClick={() => fileInputRef.current?.click()}
         className={`p-2 rounded hover:bg-white/10 ${themeClasses.textSecondary} hover:${themeClasses.textPrimary} transition-colors`}
         title="Adjuntar archivo"
