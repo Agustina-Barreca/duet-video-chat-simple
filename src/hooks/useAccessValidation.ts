@@ -16,6 +16,7 @@ declare global {
     sessionName?: string;
     accesstoken?: string;
     sessionPassword?: string;
+    userIdentity?: string;
   }
 }
 
@@ -36,18 +37,13 @@ export const useAccessValidation = () => {
       
       // Usar variables globales de window para la configuración de Zoom
       const zoomConfig = {
-        sessionName: window.sessionName || 'test-session',
+        sessionName: window.sessionName,
         accessToken: window.accesstoken,
-        userIdentity: userData.name,
-        sessionPassword: window.sessionPassword || ''
+        userIdentity: window.userIdentity,
+        sessionPassword: window.sessionPassword
       };
 
-      console.log('Configuración de Zoom:', {
-        sessionName: zoomConfig.sessionName,
-        accessToken: zoomConfig.accessToken ? '[TOKEN PRESENTE]' : '[TOKEN FALTANTE]',
-        userIdentity: zoomConfig.userIdentity,
-        sessionPassword: zoomConfig.sessionPassword ? '[PASSWORD PRESENTE]' : '[SIN PASSWORD]'
-      });
+      console.log('Configuración de Zoom:', zoomConfig);
 
       // Intentar conectar a la sesión de Zoom
       const connectionSuccess = await joinSession(zoomConfig);
