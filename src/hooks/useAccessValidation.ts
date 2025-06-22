@@ -10,6 +10,15 @@ interface UserData {
   initialBackground: string | null;
 }
 
+// Extend window interface to include Zoom configuration
+declare global {
+  interface Window {
+    sessionName?: string;
+    accesstoken?: string;
+    sessionPassword?: string;
+  }
+}
+
 export const useAccessValidation = () => {
   const [isValidatingAccess, setIsValidatingAccess] = useState(false);
   const [accessValidationError, setAccessValidationError] = useState<string | null>(null);
@@ -25,14 +34,20 @@ export const useAccessValidation = () => {
       // Simulación de delay para mostrar el estado de carga
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // AQUÍ PUEDES CONFIGURAR TUS DATOS DE ZOOM REALES
-      // Por ahora uso datos simulados - reemplaza con tus valores reales
+      // Usar variables globales de window para la configuración de Zoom
       const zoomConfig = {
-        sessionName: 'test-session', // Reemplaza con tu sessionName real
-        accessToken: 'your-jwt-token', // Reemplaza con tu JWT token real
+        sessionName: window.sessionName || 'test-session', // Usar window.sessionName o valor por defecto
+        accessToken: window.accesstoken || 'your-jwt-token', // Usar window.accesstoken o valor por defecto
         userIdentity: userData.name, // Usar el nombre del usuario
-        sessionPassword: '' // Opcional
+        sessionPassword: window.sessionPassword || '' // Usar window.sessionPassword o vacío
       };
+
+      console.log('Configuración de Zoom:', {
+        sessionName: zoomConfig.sessionName,
+        accessToken: zoomConfig.accessToken ? '[TOKEN PRESENTE]' : '[TOKEN FALTANTE]',
+        userIdentity: zoomConfig.userIdentity,
+        sessionPassword: zoomConfig.sessionPassword ? '[PASSWORD PRESENTE]' : '[SIN PASSWORD]'
+      });
 
       // Intentar conectar a la sesión de Zoom
       const connectionSuccess = await joinSession(zoomConfig);
