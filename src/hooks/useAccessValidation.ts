@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useZoomVideoSDK } from "./useZoomVideoSDK";
 
 interface UserData {
   name: string;
@@ -12,6 +13,7 @@ interface UserData {
 export const useAccessValidation = () => {
   const [isValidatingAccess, setIsValidatingAccess] = useState(false);
   const [accessValidationError, setAccessValidationError] = useState<string | null>(null);
+  const { joinSession, connectionError } = useZoomVideoSDK();
 
   const handleAccessValidation = async (userData: UserData): Promise<boolean> => {
     setIsValidatingAccess(true);
@@ -20,19 +22,28 @@ export const useAccessValidation = () => {
     try {
       console.log('Validando acceso a la videollamada para:', userData);
       
-      // Aquí es donde integrarás tu API real
       // Simulación de delay para mostrar el estado de carga
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // SIMULACIÓN: Cambiar esta lógica por tu llamada real a la API
-      const hasAccess = Math.random() > 0.3; // 70% de probabilidad de éxito
+      // AQUÍ PUEDES CONFIGURAR TUS DATOS DE ZOOM REALES
+      // Por ahora uso datos simulados - reemplaza con tus valores reales
+      const zoomConfig = {
+        sessionName: 'test-session', // Reemplaza con tu sessionName real
+        accessToken: 'your-jwt-token', // Reemplaza con tu JWT token real
+        userIdentity: userData.name, // Usar el nombre del usuario
+        sessionPassword: '' // Opcional
+      };
+
+      // Intentar conectar a la sesión de Zoom
+      const connectionSuccess = await joinSession(zoomConfig);
       
-      if (hasAccess) {
-        console.log('✅ Acceso concedido a la videollamada');
+      if (connectionSuccess) {
+        console.log('✅ Acceso concedido y conectado a Zoom');
         return true;
       } else {
-        setAccessValidationError('No tienes permisos para unirte a esta videollamada en este momento. Por favor, contacta al administrador.');
-        console.log('❌ Acceso denegado');
+        const errorMsg = connectionError || 'No se pudo conectar a la videollamada. Verifica tu configuración.';
+        setAccessValidationError(errorMsg);
+        console.log('❌ Error de conexión a Zoom');
         return false;
       }
     } catch (error) {

@@ -10,28 +10,19 @@ import CallEndScreen from "./CallEndScreen";
 import { useTheme } from "../contexts/ThemeContext";
 import { useVideoCallState } from "../hooks/useVideoCallState";
 import { useAccessValidation } from "../hooks/useAccessValidation";
+import { useZoomVideoSDK } from "../hooks/useZoomVideoSDK";
 
 const VideoCall = () => {
   const { getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
   
   const {
-    isMuted,
-    setIsMuted,
-    isVideoOff,
-    setIsVideoOff,
     isCallActive,
     setIsCallActive,
     userName,
     setUserName,
     showNameForm,
     setShowNameForm,
-    isBlurEnabled,
-    setIsBlurEnabled,
-    currentBackground,
-    setCurrentBackground,
-    isRemoteAudioActive,
-    isRemoteVideoActive,
     resetCallState
   } = useVideoCallState();
 
@@ -41,54 +32,72 @@ const VideoCall = () => {
     handleAccessValidation
   } = useAccessValidation();
 
-  const handleNameSubmit = (
+  const {
+    isConnected,
+    isLocalVideoEnabled,
+    isLocalAudioEnabled,
+    isRemoteVideoEnabled,
+    isRemoteAudioEnabled,
+    isBackgroundBlurred,
+    connectionError,
+    localVideoRef,
+    remoteVideoRef,
+    toggleVideo,
+    toggleAudio,
+    toggleBlurBackground,
+    leaveSession
+  } = useZoomVideoSDK();
+
+  const handleNameSubmit = async (
     name: string, 
     startWithVideo: boolean, 
     startWithAudio: boolean,
     initialBlurEnabled: boolean,
     initialBackground: string | null
   ) => {
-    console.log('✅ Acceso aprobado. Iniciando videollamada...');
-    setUserName(name);
-    setShowNameForm(false);
-    // Configurar estados iniciales basados en las preferencias del usuario
-    setIsVideoOff(!startWithVideo);
-    setIsMuted(!startWithAudio);
-    setIsBlurEnabled(initialBlurEnabled);
-    setCurrentBackground(initialBackground);
-    console.log(`Llamada iniciada - Video: ${startWithVideo ? 'activado' : 'desactivado'}, Audio: ${startWithAudio ? 'activado' : 'silenciado'}, Blur: ${initialBlurEnabled ? 'activado' : 'desactivado'}, Background: ${initialBackground || 'ninguno'}`);
+    console.log('Iniciando proceso de validación de acceso...');
+    const userData = {
+      name,
+      startWithVideo,
+      startWithAudio,
+      initialBlurEnabled,
+      initialBackground
+    };
+
+    const accessGranted = await handleAccessValidation(userData);
+    
+    if (accessGranted) {
+      console.log('✅ Acceso aprobado. Iniciando videollamada...');
+      setUserName(name);
+      setShowNameForm(false);
+      console.log(`Llamada iniciada con configuración: Video: ${startWithVideo ? 'activado' : 'desactivado'}, Audio: ${startWithAudio ? 'activado' : 'silenciado'}, Blur: ${initialBlurEnabled ? 'activado' : 'desactivado'}, Background: ${initialBackground || 'ninguno'}`);
+    }
+    // Si falla, el error se mostrará automáticamente en el NameForm
   };
 
-  const handleEndCall = () => {
+  const handleEndCall = async () => {
+    await leaveSession();
     setIsCallActive(false);
     console.log("Llamada terminada");
   };
 
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
-    console.log("Audio", isMuted ? "activado" : "silenciado");
+  const toggleMute = async () => {
+    await toggleAudio();
+    console.log("Audio", isLocalAudioEnabled ? "silenciado" : "activado");
   };
 
-  const toggleVideo = () => {
-    setIsVideoOff(!isVideoOff);
-    console.log("Video", isVideoOff ? "activado" : "desactivado");
+  const toggleVideoLocal = async () => {
+    await toggleVideo();
+    console.log("Video", isLocalVideoEnabled ? "desactivado" : "activado");
   };
 
-  const toggleBlur = () => {
-    setIsBlurEnabled(!isBlurEnabled);
-    // Si se activa el blur, desactivar el fondo personalizado
-    if (!isBlurEnabled) {
-      setCurrentBackground(null);
-    }
-    console.log("Blur background:", !isBlurEnabled ? "activado" : "desactivado");
+  const toggleBlur = async () => {
+    await toggleBlurBackground();
+    console.log("Blur background:", !isBackgroundBlurred ? "activado" : "desactivado");
   };
 
   const handleBackgroundChange = (background: string | null) => {
-    setCurrentBackground(background);
-    // Si se selecciona un fondo personalizado, desactivar el blur
-    if (background) {
-      setIsBlurEnabled(false);
-    }
+    // Por ahora solo manejamos blur, el fondo personalizado lo implementaremos después
     console.log('Background changed to:', background || 'none');
   };
 
@@ -106,12 +115,13 @@ const VideoCall = () => {
         onSubmit={handleNameSubmit}
         onValidationRequired={handleAccessValidation}
         isValidating={isValidatingAccess}
-        validationError={accessValidationError}
+        validationError={accessValidationError || connectionError}
       />
     );
   }
 
-  if (!isCallActive) {
+  // Mostrar pantalla de llamada finalizada si no está activa O no está conectado
+  if (!isCallActive || !isConnected) {
     return (
       <CallEndScreen 
         userName={userName}
@@ -126,35 +136,61 @@ const VideoCall = () => {
       
       <CallHeader 
         userName={userName} 
-        isRemoteAudioActive={isRemoteAudioActive}
-        isRemoteVideoActive={isRemoteVideoActive}
+        isRemoteAudioActive={isRemoteAudioEnabled}
+        isRemoteVideoActive={isRemoteVideoEnabled}
       />
       
       {/* Video principal (remoto) - con z-index bajo para evitar superposiciones */}
       <div className="relative z-0">
-        <RemoteVideo isVideoOff={!isRemoteVideoActive} />
+        <div className="absolute inset-0 p-8 pt-32 pb-24 flex items-center justify-center">
+          <div 
+            ref={remoteVideoRef}
+            className={`w-full max-w-4xl h-96 rounded-2xl overflow-hidden shadow-2xl ${themeClasses.cardBackground} ${themeClasses.border} border flex items-center justify-center`}
+          >
+            {!isRemoteVideoEnabled && (
+              <div className="text-center">
+                <div className={`w-32 h-32 bg-gradient-to-br ${themeClasses.accent} rounded-full flex items-center justify-center mx-auto mb-4`}>
+                  <span className="text-4xl text-white">👤</span>
+                </div>
+                <h3 className={`text-2xl font-semibold ${themeClasses.textPrimary}`}>Usuario Remoto</h3>
+                <p className={`${themeClasses.textSecondary}`}>Video desactivado</p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
       
       {/* Video local flotante - con z-index medio */}
       <div className="relative z-10">
-        <LocalVideo 
-          isVideoOff={isVideoOff} 
-          userName={userName}
-          isBlurEnabled={isBlurEnabled}
-          currentBackground={currentBackground}
-        />
+        <div className="fixed bottom-32 right-8 w-48 h-36 rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl">
+          <div 
+            ref={localVideoRef}
+            className={`w-full h-full ${themeClasses.cardBackground} flex items-center justify-center`}
+          >
+            {!isLocalVideoEnabled && (
+              <div className="text-center">
+                <div className={`w-12 h-12 bg-gradient-to-br ${themeClasses.accent} rounded-full flex items-center justify-center mx-auto`}>
+                  <span className="text-lg text-white">👤</span>
+                </div>
+                {userName && (
+                  <p className={`text-xs font-medium mt-1 ${themeClasses.textPrimary}`}>{userName}</p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
       
       {/* Controles de llamada - con z-index alto para estar siempre visibles */}
       <div className="relative z-20">
         <CallControls 
-          isMuted={isMuted}
-          isVideoOff={isVideoOff}
+          isMuted={!isLocalAudioEnabled}
+          isVideoOff={!isLocalVideoEnabled}
           onToggleMute={toggleMute}
-          onToggleVideo={toggleVideo}
+          onToggleVideo={toggleVideoLocal}
           onEndCall={handleEndCall}
-          isBlurEnabled={isBlurEnabled}
-          currentBackground={currentBackground}
+          isBlurEnabled={isBackgroundBlurred}
+          currentBackground={null}
           onToggleBlur={toggleBlur}
           onBackgroundChange={handleBackgroundChange}
         />

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,7 +31,7 @@ interface NameFormProps {
 const backgrounds = [
   { id: 'none', name: 'Sin fondo', url: null },
   { id: 'office', name: 'Oficina', url: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=1920&h=1080&fit=crop' },
-  { id: 'nature', name: 'Naturaleza', url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1920&h=1080&fit=crop' },
+  { id: 'nature', name: 'Naturaleza', url: 'https://images.unsplash.com/photo-1506744140801-50d01698950b?w=1920&h=1080&fit=crop' },
   { id: 'mountains', name: 'Montañas', url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&h=1080&fit=crop' },
   { id: 'workspace', name: 'Espacio de trabajo', url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1920&h=1080&fit=crop' },
 ];
@@ -84,16 +83,13 @@ const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, valida
       initialBackground
     };
 
-    // 2. Si el formulario es válido, proceder con la validación de la API
+    // 2. Si hay validación de API configurada, usarla
     if (onValidationRequired) {
       console.log('Formulario válido. Iniciando validación de acceso a la API para:', userData);
-      const isAccessGranted = await onValidationRequired(userData);
-      if (isAccessGranted) {
-        onSubmit(userData.name, userData.startWithVideo, userData.startWithAudio, userData.initialBlurEnabled, userData.initialBackground);
-      }
-      // Si falla la validación de la API, el error se mostrará automáticamente
+      // La validación se maneja en VideoCall, no procedemos directamente
+      await onValidationRequired(userData);
     } else {
-      // Si no hay validación de API, proceder directamente
+      // Si no hay validación de API, proceder directamente (modo legacy)
       onSubmit(userData.name, userData.startWithVideo, userData.startWithAudio, userData.initialBlurEnabled, userData.initialBackground);
     }
   };
@@ -177,7 +173,7 @@ const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, valida
             {isValidating ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Verificando acceso...
+                Conectando a videollamada...
               </>
             ) : (
               'Iniciar llamada'
