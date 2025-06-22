@@ -30,7 +30,10 @@ export const useZoomVideoSDK = () => {
 
   // Inicializar cliente
   const initClient = async () => {
-    if (client || isConnected) return true;
+    if (client || isConnected) {
+      console.log('Cliente ya inicializado o conectado');
+      return client || true;
+    }
 
     setIsInitializing(true);
     setConnectionError(null);
@@ -48,11 +51,11 @@ export const useZoomVideoSDK = () => {
       
       setClient(clientZoom);
       console.log('Cliente Zoom inicializado correctamente');
-      return true;
+      return clientZoom;
     } catch (error) {
       console.error('Error inicializando cliente Zoom:', error);
       setConnectionError('Error al inicializar el cliente de videollamada');
-      return false;
+      return null;
     } finally {
       setIsInitializing(false);
     }
@@ -60,16 +63,24 @@ export const useZoomVideoSDK = () => {
 
   // Unirse a la sesión
   const joinSession = async (config: ZoomConfig) => {
-    if (!client) {
-      const initialized = await initClient();
-      if (!initialized) return false;
+    console.log('Iniciando joinSession con config:', config);
+    
+    let currentClient = client;
+    
+    if (!currentClient) {
+      console.log('Cliente no existe, inicializando...');
+      currentClient = await initClient();
+      if (!currentClient) {
+        console.error('No se pudo inicializar el cliente');
+        return false;
+      }
     }
 
     try {
-      console.log('Uniéndose a la sesión...', config);
+      console.log('Uniéndose a la sesión con cliente:', currentClient);
       setConnectionError(null);
       
-      await client.join(
+      await currentClient.join(
         config.sessionName,
         config.accessToken,
         config.userIdentity,
@@ -79,7 +90,7 @@ export const useZoomVideoSDK = () => {
       setIsConnected(true);
       console.log('✅ Conectado exitosamente a la sesión');
 
-      const mediaStream = client.getMediaStream();
+      const mediaStream = currentClient.getMediaStream();
       const isSupportedHD = mediaStream.isSupportHDVideo();
       console.log(`HD ${isSupportedHD ? 'soportado' : 'no soportado'}`);
 
@@ -88,7 +99,7 @@ export const useZoomVideoSDK = () => {
       await mediaStream.startAudio();
       setIsLocalAudioEnabled(true);
 
-      await renderLocalVideo({ action: 'Start', userId: client.getCurrentUserInfo().userId });
+      await renderLocalVideo({ action: 'Start', userId: currentClient.getCurrentUserInfo().userId });
       
       return true;
     } catch (error) {
