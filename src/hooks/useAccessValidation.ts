@@ -34,12 +34,20 @@ export const useAccessValidation = () => {
       // Simulación de delay para mostrar el estado de carga
       await new Promise(resolve => setTimeout(resolve, 1000));
       
+      // Verificar que el token esté presente
+      if (!window.accesstoken) {
+        const errorMsg = 'Token de acceso requerido. Por favor, configure window.accesstoken antes de iniciar la videollamada.';
+        setAccessValidationError(errorMsg);
+        console.log('❌ Token de acceso faltante');
+        return false;
+      }
+      
       // Usar variables globales de window para la configuración de Zoom
       const zoomConfig = {
-        sessionName: window.sessionName || 'test-session', // Usar window.sessionName o valor por defecto
-        accessToken: window.accesstoken || 'your-jwt-token', // Usar window.accesstoken o valor por defecto
-        userIdentity: userData.name, // Usar el nombre del usuario
-        sessionPassword: window.sessionPassword || '' // Usar window.sessionPassword o vacío
+        sessionName: window.sessionName || 'test-session',
+        accessToken: window.accesstoken,
+        userIdentity: userData.name,
+        sessionPassword: window.sessionPassword || ''
       };
 
       console.log('Configuración de Zoom:', {
