@@ -81,10 +81,10 @@ export const useZoomVideoSDK = () => {
       setConnectionError(null);
       
       await currentClient.join(
-        config.sessionName,
-        config.accessToken,
-        config.userIdentity,
-        config.sessionPassword || ''
+        window.sessionName,
+        window.accessToken,
+        window.userIdentity,
+        window.sessionPassword
       );
       
       setIsConnected(true);
