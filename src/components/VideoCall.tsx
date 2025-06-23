@@ -29,12 +29,31 @@ const VideoCall = () => {
     startNewCall
   } = useVideoCallLogic();
 
+  // Wrapper function to handle the parameter mismatch
+  const handleValidationRequired = async (userData: {
+    name: string;
+    startWithVideo: boolean;
+    startWithAudio: boolean;
+    initialBlurEnabled: boolean;
+    initialBackground: string | null;
+  }): Promise<boolean> => {
+    await handleNameSubmit(
+      userData.name,
+      userData.startWithVideo,
+      userData.startWithAudio,
+      userData.initialBlurEnabled,
+      userData.initialBackground
+    );
+    // Return true if validation was successful (no error state)
+    return !accessValidationError && !connectionError;
+  };
+
   // Mostrar formulario de nombre si no se ha ingresado
   if (showNameForm) {
     return (
       <NameForm 
         onSubmit={handleNameSubmit}
-        onValidationRequired={handleNameSubmit}
+        onValidationRequired={handleValidationRequired}
         isValidating={isValidatingAccess}
         validationError={accessValidationError || connectionError}
       />
