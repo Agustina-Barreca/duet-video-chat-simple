@@ -82,7 +82,7 @@ export const useZoomVideoSDK = () => {
       
       await currentClient.join(
         window.sessionName,
-        window.accessToken,
+        window.accesstoken,
         window.userIdentity,
         window.sessionPassword
       );
