@@ -70,6 +70,7 @@ const VideoCall = () => {
       console.log('✅ Acceso aprobado. Iniciando videollamada...');
       setUserName(name);
       setShowNameForm(false);
+      setIsCallActive(true); // Esta es la línea clave que faltaba
       console.log(`Llamada iniciada con configuración: Video: ${startWithVideo ? 'activado' : 'desactivado'}, Audio: ${startWithAudio ? 'activado' : 'silenciado'}, Blur: ${initialBlurEnabled ? 'activado' : 'desactivado'}, Background: ${initialBackground || 'ninguno'}`);
     }
     // Si falla, el error se mostrará automáticamente en el NameForm

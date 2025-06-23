@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 export const useVideoCallState = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
-  const [isCallActive, setIsCallActive] = useState(true);
+  const [isCallActive, setIsCallActive] = useState(false); // Cambiar de true a false
   const [userName, setUserName] = useState<string | null>(null);
   const [showNameForm, setShowNameForm] = useState(true);
   
