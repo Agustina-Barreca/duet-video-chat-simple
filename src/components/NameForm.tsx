@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { User, Loader2, AlertCircle } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
-import { useFormValidation } from "../hooks/useFormValidation";
+
 import ThemeSelector from "./ThemeSelector";
 import MediaControlsConfig from "./MediaControlsConfig";
 import VideoEffectsConfig from "./VideoEffectsConfig";
@@ -46,7 +46,7 @@ const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, valida
   const [initialBlurEnabled, setInitialBlurEnabled] = useState(false);
   const [initialBackground, setInitialBackground] = useState<string | null>(null);
   
-  const { formErrors, validateForm, clearError } = useFormValidation();
+  
 
   const handleBackgroundChange = (backgroundId: string) => {
     const selectedBg = backgrounds.find(bg => bg.id === backgroundId);
@@ -69,29 +69,11 @@ const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, valida
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // 1. Primero validar el formulario
-    if (!validateForm(name)) {
-      console.log('Errores de validación del formulario:', formErrors);
-      return;
-    }
-
-    const userData = {
-      name: name.trim(),
-      startWithVideo,
-      startWithAudio,
-      initialBlurEnabled,
-      initialBackground
-    };
-
-    // 2. Si hay validación de API configurada, usarla
-    if (onValidationRequired) {
-      console.log('Formulario válido. Iniciando validación de acceso a la API para:', userData);
-      // La validación se maneja en VideoCall, no procedemos directamente
-      await onValidationRequired(userData);
-    } else {
-      // Si no hay validación de API, proceder directamente (modo legacy)
-      onSubmit(userData.name, userData.startWithVideo, userData.startWithAudio, userData.initialBlurEnabled, userData.initialBackground);
-    }
+    // Usar nombre por defecto si no se ingresa
+    const finalName = name.trim() || "Usuario";
+    
+    // Llamar directamente sin validaciones
+    onSubmit(finalName, startWithVideo, startWithAudio, initialBlurEnabled, initialBackground);
   };
 
   return (
@@ -121,26 +103,17 @@ const NameForm = ({ onSubmit, onValidationRequired, isValidating = false, valida
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <Label htmlFor="name" className={`${themeClasses.textPrimary} text-sm font-medium`}>
-              Tu nombre *
+              Tu nombre (opcional)
             </Label>
             <Input
               id="name"
               type="text"
               placeholder="Escribe tu nombre aquí..."
               value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-                clearError('name');
-              }}
-              className={`mt-1 ${themeClasses.cardBackground} border ${formErrors.name ? 'border-red-500' : themeClasses.border} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:border-green-500 focus:ring-green-500`}
+              onChange={(e) => setName(e.target.value)}
+              className={`mt-1 ${themeClasses.cardBackground} border ${themeClasses.border} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:border-green-500 focus:ring-green-500`}
               disabled={isValidating}
             />
-            {formErrors.name && (
-              <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
-                <AlertCircle className="w-3 h-3" />
-                {formErrors.name}
-              </p>
-            )}
           </div>
 
           <div className="space-y-4">

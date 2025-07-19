@@ -365,9 +365,6 @@ const VideoCall = () => {
     return (
       <NameForm 
         onSubmit={handleNameSubmit}
-        onValidationRequired={() => Promise.resolve(true)}
-        isValidating={false}
-        validationError={null}
       />
     );
   }
