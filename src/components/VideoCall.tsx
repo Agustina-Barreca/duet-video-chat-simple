@@ -54,11 +54,16 @@ const VideoCall = () => {
 
   // Inicializar cliente Zoom cuando se monte el componente
   useEffect(() => {
-    if (!isCallActive || client) return;
+    console.log('🔄 useEffect [isCallActive, client]:', { isCallActive, clientExists: !!client });
+    
+    if (!isCallActive || client) {
+      console.log('❌ No inicializando cliente:', { isCallActive, clientExists: !!client });
+      return;
+    }
 
     const initClient = async () => {
       try {
-        console.log('Inicializando cliente Zoom...');
+        console.log('🚀 Inicializando cliente Zoom...');
         const clientZoom = ZoomVideoSDK.createClient();
         await clientZoom.init('es-ES', 'Global', {
           patchJsMedia: true,
@@ -68,13 +73,13 @@ const VideoCall = () => {
           leaveOnPageUnload: true
         });
         
+        console.log('✅ Cliente Zoom inicializado correctamente');
         setClient(clientZoom);
-        console.log('Cliente Zoom inicializado correctamente');
         
         // Inmediatamente intentar unirse a la sesión
         await joinSession(clientZoom);
       } catch (error) {
-        console.error('Error inicializando cliente Zoom:', error);
+        console.error('❌ Error inicializando cliente Zoom:', error);
         setConnectionError('Error al inicializar el cliente de videollamada');
       }
     };
@@ -84,36 +89,61 @@ const VideoCall = () => {
 
   // Configurar eventos del cliente
   useEffect(() => {
-    if (!client) return;
+    console.log('🔄 useEffect [client]:', { clientExists: !!client });
+    
+    if (!client) {
+      console.log('❌ No configurando eventos: cliente no existe');
+      return;
+    }
 
+    console.log('⚡ Configurando eventos del cliente...');
     const handleUserUpdated = (state: any) => {
+      console.log('👥 Evento user-updated recibido:', state);
       updateRemoteParticipantState(state);
     };
 
     client.on('user-updated', handleUserUpdated);
+    console.log('✅ Eventos del cliente configurados');
 
     return () => {
+      console.log('🧹 Limpiando eventos del cliente');
       client.off('user-updated', handleUserUpdated);
     };
   }, [client]);
 
   // Efecto para manejar video remoto
   useEffect(() => {
+    console.log('🔄 useEffect [remoteVideoStatus]:', remoteVideoStatus);
+    
     if (remoteVideoStatus.bVideoOn) {
+      console.log('📹 Video remoto activado, iniciando renderizado...');
       if (!isRemoteVideoEnabled) {
         renderRemoteVideo({ action: 'Start', userId: remoteVideoStatus.userId });
       }
     } else if (remoteVideoStatus.bVideoOn === false) {
+      console.log('🚫 Video remoto desactivado, deteniendo renderizado...');
       renderRemoteVideo({ action: 'Stop', userId: remoteVideoStatus.userId });
     }
   }, [remoteVideoStatus]);
 
   // Unirse a la sesión
   const joinSession = async (currentClient: any) => {
-    if (!currentClient) return false;
+    console.log('🔗 joinSession iniciado:', { clientExists: !!currentClient });
+    
+    if (!currentClient) {
+      console.log('❌ joinSession abortado: cliente no existe');
+      return false;
+    }
 
     try {
-      console.log('Uniéndose a la sesión...');
+      console.log('🚀 Uniéndose a la sesión...');
+      console.log('📋 Configuración de sesión:', {
+        sessionName: window.sessionName,
+        hasToken: !!window.accesstoken,
+        userIdentity: window.userIdentity,
+        hasPassword: !!window.sessionPassword
+      });
+      
       setConnectionError(null);
       
       await currentClient.join(
@@ -128,18 +158,22 @@ const VideoCall = () => {
 
       const mediaStream = currentClient.getMediaStream();
       const isSupportedHD = mediaStream.isSupportHDVideo();
-      console.log(`HD ${isSupportedHD ? 'soportado' : 'no soportado'}`);
+      console.log(`📺 HD ${isSupportedHD ? 'soportado' : 'no soportado'}`);
 
       // Iniciar video y audio
+      console.log('🎥 Iniciando video local...');
       await mediaStream.startVideo({ hd: isSupportedHD });
+      console.log('🎤 Iniciando audio local...');
       await mediaStream.startAudio();
       setIsLocalAudioEnabled(true);
 
+      console.log('🖼️ Renderizando video local...');
       await renderLocalVideo({ action: 'Start', userId: currentClient.getCurrentUserInfo().userId });
       
+      console.log('✅ joinSession completado exitosamente');
       return true;
     } catch (error) {
-      console.error('Error uniéndose a la sesión:', error);
+      console.error('❌ Error uniéndose a la sesión:', error);
       setConnectionError('No se pudo conectar a la videollamada. Verifica tus permisos.');
       setIsConnected(false);
       return false;
@@ -148,24 +182,43 @@ const VideoCall = () => {
 
   // Manejar estado del participante remoto
   const updateRemoteParticipantState = (state: any) => {
-    if (!Array.isArray(state) || state.length === 0) return;
-    if (!client?.getCurrentUserInfo()?.userId) return;
+    console.log('👥 updateRemoteParticipantState:', { state, isArray: Array.isArray(state), length: state?.length });
+    
+    if (!Array.isArray(state) || state.length === 0) {
+      console.log('❌ Estado inválido o vacío');
+      return;
+    }
+    
+    if (!client?.getCurrentUserInfo()?.userId) {
+      console.log('❌ No hay usuario actual o cliente');
+      return;
+    }
+
+    const currentUserId = client.getCurrentUserInfo().userId;
+    console.log('🏷️ Usuario actual:', currentUserId);
 
     const remoteParticipant = state.find(
-      (status: any) => status.userId !== client.getCurrentUserInfo()?.userId &&
+      (status: any) => status.userId !== currentUserId &&
         status.userId !== null &&
         status.userId !== undefined &&
         status.userId !== ''
     );
 
-    if (!remoteParticipant) return;
+    console.log('🔍 Participante remoto encontrado:', remoteParticipant);
+
+    if (!remoteParticipant) {
+      console.log('❌ No se encontró participante remoto válido');
+      return;
+    }
 
     if (remoteParticipant.hasOwnProperty('bVideoOn')) {
       const { userId, bVideoOn } = remoteParticipant;
+      console.log('📹 Actualizando estado de video remoto:', { userId, bVideoOn });
       setRemoteVideoStatus({ userId, bVideoOn });
     }
 
     if (remoteParticipant.hasOwnProperty('muted')) {
+      console.log('🎤 Actualizando estado de audio remoto:', { muted: remoteParticipant.muted });
       setIsRemoteAudioEnabled(!remoteParticipant.muted);
     }
   };
@@ -176,8 +229,10 @@ const VideoCall = () => {
     videoRef,
     setVideoEnabled
   }: any) => {
+    console.log('🎬 handleRenderVideo:', { event, hasRef: !!videoRef?.current, hasClient: !!client });
+    
     if (!client) {
-      console.error('Cliente no definido aún');
+      console.error('❌ Cliente no definido aún');
       return;
     }
 
@@ -185,16 +240,19 @@ const VideoCall = () => {
 
     try {
       if (event.action === 'Start') {
+        console.log('▶️ Iniciando renderizado de video para usuario:', event.userId);
         const userVideo = await mediaStream.attachVideo(event.userId, VideoQuality.Video_720P);
 
         if (!videoRef.current) {
-          console.warn('Video no disponible.');
+          console.warn('⚠️ Ref de video no disponible.');
           return;
         }
 
         videoRef.current.appendChild(userVideo);
         setVideoEnabled(true);
+        console.log('✅ Video renderizado exitosamente');
       } else if (event.action === 'Stop') {
+        console.log('⏹️ Deteniendo renderizado de video para usuario:', event.userId);
         const elements = await mediaStream.detachVideo(event.userId);
         if (elements) {
           if (Array.isArray(elements)) {
@@ -204,13 +262,15 @@ const VideoCall = () => {
           }
         }
         setVideoEnabled(false);
+        console.log('✅ Video desrenderizado exitosamente');
       }
     } catch (error) {
-      console.error('Error en acción de renderizar video:', error);
+      console.error('❌ Error en acción de renderizar video:', error);
     }
   };
 
   const renderLocalVideo = (event: any) => {
+    console.log('📹 renderLocalVideo:', event);
     handleRenderVideo({
       event,
       videoRef: localVideoRef,
@@ -219,6 +279,7 @@ const VideoCall = () => {
   };
 
   const renderRemoteVideo = (event: any) => {
+    console.log('📺 renderRemoteVideo:', event);
     handleRenderVideo({
       event,
       videoRef: remoteVideoRef,
