@@ -1,4 +1,5 @@
 
+import React, { forwardRef } from "react";
 import { User } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 
@@ -10,13 +11,13 @@ interface LocalVideoContentProps {
   isMinimized: boolean;
 }
 
-const LocalVideoContent = ({
+const LocalVideoContent = forwardRef<HTMLDivElement, LocalVideoContentProps>(({
   isVideoOff,
   userName,
   isBlurEnabled,
   currentBackground,
   isMinimized
-}: LocalVideoContentProps) => {
+}, ref) => {
   const { getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
 
@@ -62,7 +63,7 @@ const LocalVideoContent = ({
   }
 
   return (
-    <div className="w-full h-full relative" style={getVideoStyle()}>
+    <div ref={ref} className="w-full h-full relative" style={getVideoStyle()}>
       {/* Overlay con efectos aplicados */}
       <div className={`absolute inset-0 ${currentBackground ? 'bg-black/20' : `bg-gradient-to-br ${themeClasses.accent}`} ${currentBackground ? '' : 'opacity-90'}`}></div>
       
@@ -74,6 +75,6 @@ const LocalVideoContent = ({
       )}
     </div>
   );
-};
+});
 
 export default LocalVideoContent;

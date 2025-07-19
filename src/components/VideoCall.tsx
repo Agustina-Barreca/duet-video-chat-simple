@@ -5,6 +5,7 @@ import CallHeader from "./CallHeader";
 import NameForm from "./NameForm";
 import ThemeSelector from "./ThemeSelector";
 import FloatingChat from "./FloatingChat";
+import LocalVideoContainer from "./LocalVideoContainer";
 
 import { useTheme } from "../contexts/ThemeContext";
 import ZoomVideoSDK, { VideoQuality } from '@zoom/videosdk';
@@ -400,25 +401,13 @@ const VideoCall = () => {
       </div>
       
       {/* Video local flotante - con z-index medio */}
-      <div className="relative z-10">
-        <div className="fixed bottom-32 right-8 w-48 h-36 rounded-xl overflow-hidden border-2 border-white/30 shadow-2xl">
-          <div 
-            ref={localVideoRef}
-            className={`w-full h-full ${themeClasses.cardBackground} flex items-center justify-center`}
-          >
-            {!isLocalVideoEnabled && (
-              <div className="text-center">
-                <div className={`w-12 h-12 bg-gradient-to-br ${themeClasses.accent} rounded-full flex items-center justify-center mx-auto`}>
-                  <span className="text-lg text-white">👤</span>
-                </div>
-                {userName && (
-                  <p className={`text-xs font-medium mt-1 ${themeClasses.textPrimary}`}>{userName}</p>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      <LocalVideoContainer 
+        ref={localVideoRef}
+        isVideoOff={!isLocalVideoEnabled}
+        userName={userName}
+        isBlurEnabled={isBackgroundBlurred}
+        currentBackground={null}
+      />
       
       {/* Controles de llamada - con z-index alto para estar siempre visibles */}
       <div className="relative z-20">

@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, forwardRef } from "react";
 import { Minimize2 } from "lucide-react";
 import LocalVideoContent from "./LocalVideoContent";
 import { useLocalVideoPosition } from "../hooks/useLocalVideoPosition";
@@ -13,12 +13,12 @@ interface LocalVideoContainerProps {
   currentBackground: string | null;
 }
 
-const LocalVideoContainer = ({
+const LocalVideoContainer = forwardRef<HTMLDivElement, LocalVideoContainerProps>(({
   isVideoOff,
   userName,
   isBlurEnabled,
   currentBackground
-}: LocalVideoContainerProps) => {
+}, ref) => {
   const [isMinimized, setIsMinimized] = useState(false);
   
   const {
@@ -136,6 +136,7 @@ const LocalVideoContainer = ({
       )}
 
       <LocalVideoContent
+        ref={ref}
         isVideoOff={isVideoOff}
         userName={userName}
         isBlurEnabled={isBlurEnabled}
@@ -154,6 +155,6 @@ const LocalVideoContainer = ({
       )}
     </div>
   );
-};
+});
 
 export default LocalVideoContainer;
