@@ -1,13 +1,13 @@
 
 import { User } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, forwardRef } from "react";
 import { useTheme } from "../contexts/ThemeContext";
 
 interface RemoteVideoProps {
   isVideoOff: boolean;
 }
 
-const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
+const RemoteVideo = forwardRef<HTMLDivElement, RemoteVideoProps>(({ isVideoOff }, ref) => {
   const { getThemeClasses } = useTheme();
   const themeClasses = getThemeClasses();
   
@@ -170,20 +170,17 @@ const RemoteVideo = ({ isVideoOff }: RemoteVideoProps) => {
                 <User className="w-16 h-16 text-white" />
               </div>
               <h3 className={`text-2xl font-semibold ${themeClasses.textPrimary}`}>Usuario Remoto</h3>
+              <p className={`${themeClasses.textSecondary}`}>Video desactivado</p>
             </div>
           </div>
         ) : (
-          <div className="w-full h-full relative overflow-hidden">
-            {/* Simulación de video con gradiente animado */}
-            <div className={`absolute inset-0 bg-gradient-to-br ${themeClasses.accent} opacity-80 animate-pulse`}></div>
-            
-            {/* Efecto de brillo para simular movimiento */}
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 animate-[slide_3s_ease-in-out_infinite]"></div>
+          <div ref={ref} className="w-full h-full relative overflow-hidden">
+            {/* Área donde se mostrará el video real del SDK de Zoom */}
           </div>
         )}
       </div>
     </div>
   );
-};
+});
 
 export default RemoteVideo;
