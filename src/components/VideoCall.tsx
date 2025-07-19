@@ -5,7 +5,7 @@ import CallHeader from "./CallHeader";
 import NameForm from "./NameForm";
 import ThemeSelector from "./ThemeSelector";
 import FloatingChat from "./FloatingChat";
-import CallEndScreen from "./CallEndScreen";
+
 import { useTheme } from "../contexts/ThemeContext";
 import ZoomVideoSDK, { VideoQuality } from '@zoom/videosdk';
 
@@ -329,6 +329,15 @@ const VideoCall = () => {
   const handleEndCall = async () => {
     await leaveSession();
     setIsCallActive(false);
+    setShowNameForm(true);
+    setUserName(null);
+    // Reset estados
+    setIsConnected(false);
+    setIsLocalVideoEnabled(false);
+    setIsLocalAudioEnabled(false);
+    setIsRemoteVideoEnabled(false);
+    setIsBackgroundBlurred(false);
+    setClient(null);
     console.log("Llamada terminada");
   };
 
@@ -351,19 +360,6 @@ const VideoCall = () => {
     console.log('Background changed to:', background || 'none');
   };
 
-  const startNewCall = () => {
-    setIsCallActive(true);
-    setShowNameForm(true);
-    setUserName(null);
-    // Reset estados
-    setIsConnected(false);
-    setIsLocalVideoEnabled(false);
-    setIsLocalAudioEnabled(false);
-    setIsRemoteVideoEnabled(false);
-    setIsBackgroundBlurred(false);
-    setClient(null);
-  };
-
   // Mostrar formulario de nombre si no se ha ingresado
   if (showNameForm) {
     return (
@@ -372,16 +368,6 @@ const VideoCall = () => {
         onValidationRequired={() => Promise.resolve(true)}
         isValidating={false}
         validationError={null}
-      />
-    );
-  }
-
-  // Mostrar pantalla de llamada finalizada si no está activa
-  if (!isCallActive) {
-    return (
-      <CallEndScreen 
-        userName={userName}
-        onStartNewCall={startNewCall}
       />
     );
   }
