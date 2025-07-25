@@ -33,10 +33,10 @@ const FloatingChat = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [newMessage, setNewMessage] = useState('');
 
-  // Inicializar posición considerando viewport
+  // Initialize position considering viewport
   const { position, dragRef, handleMouseDown, isDragging } = useDraggable({
-    x: Math.max(20, window.innerWidth - 370), // Asegurar margen mínimo
-    y: Math.max(20, Math.min(100, window.innerHeight - 520)), // Asegurar que quepa en pantalla
+    x: Math.max(20, window.innerWidth - 370), // Ensure minimum margin
+    y: Math.max(20, Math.min(100, window.innerHeight - 520)), // Ensure it fits on screen
   });
 
   const { size, handleResizeStart, isResizing } = useResizable(
@@ -93,12 +93,12 @@ const FloatingChat = () => {
     }
   ]);
 
-  // Función para hacer scroll al final
+  // Function to scroll to bottom
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Scroll automático cuando cambian los mensajes
+  // Auto scroll when messages change
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -117,7 +117,7 @@ const FloatingChat = () => {
     setMessages([...messages, message]);
     setNewMessage('');
 
-    // Simular respuesta automática
+    // Simulate automatic response
     setTimeout(() => {
       const autoReply: Message = {
         id: messages.length + 2,
@@ -173,7 +173,7 @@ const FloatingChat = () => {
     };
     setMessages(prev => [...prev, message]);
 
-    // Simular respuesta automática
+    // Simulate automatic response
     setTimeout(() => {
       const autoReply: Message = {
         id: messages.length + 2,
@@ -196,7 +196,7 @@ const FloatingChat = () => {
     };
     setMessages(prev => [...prev, message]);
 
-    // Simular respuesta automática
+    // Simulate automatic response
     setTimeout(() => {
       const autoReply: Message = {
         id: messages.length + 2,
@@ -210,7 +210,7 @@ const FloatingChat = () => {
     }, 1000);
   };
 
-  // Si el chat no está abierto, mostrar solo el icono flotante
+  // If chat is not open, show only the floating icon
   if (!isOpen) {
     return (
       <div

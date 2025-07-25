@@ -31,7 +31,7 @@ export const useResizable = (initialSize: Size, minSize: Size, position?: Positi
       let newWidth = startSize.current.width;
       let newHeight = startSize.current.height;
 
-      // Calcular nuevas dimensiones según el handle
+      // Calculate new dimensions according to handle
       switch (resizeHandle) {
         case 'se':
           newWidth = startSize.current.width + deltaX;
@@ -51,7 +51,7 @@ export const useResizable = (initialSize: Size, minSize: Size, position?: Positi
           break;
       }
 
-      // Aplicar tamaños mínimos
+      // Apply minimum sizes
       newWidth = Math.max(minSize.width, newWidth);
       newHeight = Math.max(minSize.height, newHeight);
 

@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from "react";
 
 export const useLocalVideoPosition = (isMinimized: boolean) => {
-  // Optimizar cálculos de posición inicial con useMemo
+  // Optimize initial position calculations with useMemo
   const { videoWidth, videoHeight, initialX, initialY, minimizedSize, minimizedX, minimizedY } = useMemo(() => {
     const isMobile = window.innerWidth < 768;
     const width = isMobile ? 128 : 192;
@@ -13,7 +13,7 @@ export const useLocalVideoPosition = (isMinimized: boolean) => {
     const x = Math.min(window.innerWidth - width - margin, window.innerWidth - width - margin);
     const y = window.innerHeight - height - bottomOffset;
     
-    // Posición para el modo minimizado (esquina superior derecha, fuera del video remoto)
+    // Position for minimized mode (top right corner, outside remote video)
     const minSize = 60;
     const minX = window.innerWidth - minSize - margin;
     const minY = margin + 80; // Debajo del header
@@ -31,7 +31,7 @@ export const useLocalVideoPosition = (isMinimized: boolean) => {
   
   const [position, setPosition] = useState({ x: initialX, y: initialY });
 
-  // Actualizar posición cuando se minimiza/maximiza
+  // Update position when minimizing/maximizing
   useEffect(() => {
     if (isMinimized) {
       setPosition({ x: minimizedX, y: minimizedY });

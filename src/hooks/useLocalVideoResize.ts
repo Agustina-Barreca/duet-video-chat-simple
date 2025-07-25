@@ -25,7 +25,7 @@ export const useLocalVideoResize = ({
   const startMouseRef = useRef({ x: 0, y: 0 });
   const startPositionRef = useRef({ x: 0, y: 0 });
 
-  // Actualizar tamaño cuando cambia el estado minimizado
+  // Update size when minimized state changes
   useEffect(() => {
     if (isMinimized) {
       setSize({ width: minimizedSize, height: minimizedSize });
@@ -56,7 +56,7 @@ export const useLocalVideoResize = ({
       let newX = startPositionRef.current.x;
       let newY = startPositionRef.current.y;
 
-      // Calcular nuevas dimensiones y posición basado en la dirección del redimensionado
+      // Calculate new dimensions and position based on resize direction
       switch (resizeDirection) {
         case 'se': // Esquina inferior derecha
           newWidth += deltaX;
@@ -80,7 +80,7 @@ export const useLocalVideoResize = ({
           break;
       }
 
-      // Aplicar límites de tamaño
+      // Apply size limits
       const minWidth = 128;
       const minHeight = 96;
       const maxWidth = 400;
@@ -89,7 +89,7 @@ export const useLocalVideoResize = ({
       newWidth = Math.max(minWidth, Math.min(maxWidth, newWidth));
       newHeight = Math.max(minHeight, Math.min(maxHeight, newHeight));
 
-      // Validar límites del viewport y ajustar posición si es necesario
+      // Validate viewport limits and adjust position if necessary
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
 

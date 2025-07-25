@@ -52,7 +52,7 @@ export const useLocalVideoDrag = ({
       const deltaX = e.clientX - dragRef.current.startX;
       const deltaY = e.clientY - dragRef.current.startY;
       
-      // Si se mueve más de 5px, consideramos que está arrastrando
+      // If it moves more than 5px, consider it dragging
       if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
         setHasDragged(true);
       }
@@ -88,7 +88,7 @@ export const useLocalVideoDrag = ({
       const deltaX = touch.clientX - dragRef.current.startX;
       const deltaY = touch.clientY - dragRef.current.startY;
       
-      // Si se mueve más de 5px, consideramos que está arrastrando
+      // If it moves more than 5px, consider it dragging
       if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
         setHasDragged(true);
       }

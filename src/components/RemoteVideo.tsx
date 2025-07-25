@@ -21,7 +21,7 @@ const RemoteVideo = forwardRef<HTMLDivElement, RemoteVideoProps>(({ isVideoOff }
   const startMouseRef = useRef({ x: 0, y: 0 });
   const startPositionRef = useRef({ x: 0, y: 0 });
 
-  // Inicializar posición centrada
+  // Initialize centered position
   useEffect(() => {
     const centerX = (window.innerWidth - size.width) / 2;
     const centerY = (window.innerHeight - size.height) / 2;
@@ -57,7 +57,7 @@ const RemoteVideo = forwardRef<HTMLDivElement, RemoteVideoProps>(({ isVideoOff }
         let newWidth = startSizeRef.current.width;
         let newHeight = startSizeRef.current.height;
 
-        // Calcular nuevas dimensiones basado en la dirección del redimensionado
+        // Calculate new dimensions based on resize direction
         switch (resizeDirection) {
           case 'se': // Esquina inferior derecha
             newWidth += deltaX;
@@ -77,15 +77,15 @@ const RemoteVideo = forwardRef<HTMLDivElement, RemoteVideoProps>(({ isVideoOff }
             break;
         }
 
-        // Aplicar límites
+        // Apply limits
         newWidth = Math.max(300, Math.min(1200, newWidth));
         newHeight = Math.max(200, Math.min(800, newHeight));
 
-        // Calcular la diferencia de tamaño para mantener centrado
+        // Calculate size difference to keep centered
         const widthDiff = newWidth - startSizeRef.current.width;
         const heightDiff = newHeight - startSizeRef.current.height;
 
-        // Calcular nueva posición para mantener el centro
+        // Calculate new position to keep center
         const newX = Math.max(0, Math.min(window.innerWidth - newWidth, startPositionRef.current.x - widthDiff / 2));
         const newY = Math.max(0, Math.min(window.innerHeight - newHeight, startPositionRef.current.y - heightDiff / 2));
 

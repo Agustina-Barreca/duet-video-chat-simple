@@ -50,7 +50,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
-    // Solo ocultar si realmente salimos del área de drag
+    // Only hide if we actually left the drag area
     if (!e.currentTarget.contains(e.relatedTarget as Node)) {
       setIsDragOver(false);
     }
