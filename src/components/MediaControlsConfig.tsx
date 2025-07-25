@@ -29,7 +29,7 @@ const MediaControlsConfig = ({
           ) : (
             <VideoOff className="w-5 h-5 text-red-400" />
           )}
-          <span className={`${themeClasses.textPrimary} text-sm`}>Cámara</span>
+          <span className={`${themeClasses.textPrimary} text-sm`}>Camera</span>
         </div>
         <button
           type="button"
@@ -52,7 +52,7 @@ const MediaControlsConfig = ({
           ) : (
             <MicOff className="w-5 h-5 text-red-400" />
           )}
-          <span className={`${themeClasses.textPrimary} text-sm`}>Micrófono</span>
+          <span className={`${themeClasses.textPrimary} text-sm`}>Microphone</span>
         </div>
         <button
           type="button"

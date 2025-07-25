@@ -34,14 +34,14 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
         <button
           onClick={onMinimize}
           className={`p-1 rounded hover:bg-white/10 ${themeClasses.textSecondary} hover:${themeClasses.textPrimary} transition-colors`}
-          title={isMinimized ? 'Maximizar' : 'Minimizar'}
+          title={isMinimized ? 'Maximize' : 'Minimize'}
         >
           <Minus className="w-4 h-4" />
         </button>
         <button
           onClick={onClose}
           className={`p-1 rounded hover:bg-white/10 ${themeClasses.textSecondary} hover:${themeClasses.textPrimary} transition-colors`}
-          title="Cerrar chat"
+          title="Close chat"
         >
           <X className="w-4 h-4" />
         </button>

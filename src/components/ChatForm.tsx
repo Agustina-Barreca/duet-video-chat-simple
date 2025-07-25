@@ -28,12 +28,12 @@ const ChatForm: React.FC<ChatFormProps> = ({ onSubmit }) => {
   });
 
   const quickReplies = [
-    'Sí, me interesa',
-    'No, gracias',
-    'Más información',
-    'Contactar por teléfono',
-    'Programar cita',
-    'Enviar presupuesto'
+    'Yes, I\'m interested',
+    'No, thank you',
+    'More information',
+    'Call me',
+    'Schedule appointment',
+    'Send quote'
   ];
 
   const handleInputChange = (field: string, value: any) => {
@@ -68,21 +68,21 @@ const ChatForm: React.FC<ChatFormProps> = ({ onSubmit }) => {
   return (
     <div className={`${themeClasses.cardBackground} border ${themeClasses.border} rounded-lg p-4 space-y-4`}>
       <h3 className={`text-lg font-semibold ${themeClasses.textPrimary}`}>
-        Formulario de Contacto 📝
+        Contact Form 📝
       </h3>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Nombre */}
+        {/* Name */}
         <div className="space-y-2">
           <label className={`text-sm font-medium ${themeClasses.textPrimary} flex items-center gap-2`}>
             <User className="w-4 h-4" />
-            Nombre completo
+            Full name
           </label>
           <input
             type="text"
             value={formData.name}
             onChange={(e) => handleInputChange('name', e.target.value)}
-            placeholder="Tu nombre completo"
+            placeholder="Your full name"
             className={`w-full px-3 py-2 text-sm rounded border ${themeClasses.border} ${themeClasses.cardBackground} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
             required
           />
@@ -98,17 +98,17 @@ const ChatForm: React.FC<ChatFormProps> = ({ onSubmit }) => {
             type="email"
             value={formData.email}
             onChange={(e) => handleInputChange('email', e.target.value)}
-            placeholder="tu@email.com"
+            placeholder="you@email.com"
             className={`w-full px-3 py-2 text-sm rounded border ${themeClasses.border} ${themeClasses.cardBackground} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
             required
           />
         </div>
 
-        {/* Teléfono */}
+        {/* Phone */}
         <div className="space-y-2">
           <label className={`text-sm font-medium ${themeClasses.textPrimary} flex items-center gap-2`}>
             <Phone className="w-4 h-4" />
-            Teléfono
+            Phone
           </label>
           <input
             type="tel"
@@ -119,12 +119,12 @@ const ChatForm: React.FC<ChatFormProps> = ({ onSubmit }) => {
           />
         </div>
 
-        {/* Fecha y Hora */}
+        {/* Date and Time */}
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">
             <label className={`text-sm font-medium ${themeClasses.textPrimary} flex items-center gap-2`}>
               <Calendar className="w-4 h-4" />
-              Fecha
+              Date
             </label>
             <input
               type="date"
@@ -136,7 +136,7 @@ const ChatForm: React.FC<ChatFormProps> = ({ onSubmit }) => {
           <div className="space-y-2">
             <label className={`text-sm font-medium ${themeClasses.textPrimary} flex items-center gap-2`}>
               <Clock className="w-4 h-4" />
-              Hora
+              Time
             </label>
             <input
               type="time"
@@ -147,28 +147,28 @@ const ChatForm: React.FC<ChatFormProps> = ({ onSubmit }) => {
           </div>
         </div>
 
-        {/* Categoría */}
+        {/* Category */}
         <div className="space-y-2">
           <label className={`text-sm font-medium ${themeClasses.textPrimary}`}>
-            Categoría
+            Category
           </label>
           <select
             value={formData.category}
             onChange={(e) => handleInputChange('category', e.target.value)}
             className={`w-full px-3 py-2 text-sm rounded border ${themeClasses.border} ${themeClasses.cardBackground} ${themeClasses.textPrimary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
           >
-            <option value="">Selecciona una categoría</option>
-            <option value="consulta">Consulta General</option>
-            <option value="soporte">Soporte Técnico</option>
-            <option value="ventas">Ventas</option>
-            <option value="reclamo">Reclamo</option>
+            <option value="">Select a category</option>
+            <option value="consulta">General Inquiry</option>
+            <option value="soporte">Technical Support</option>
+            <option value="ventas">Sales</option>
+            <option value="reclamo">Complaint</option>
           </select>
         </div>
 
         {/* Rating */}
         <div className="space-y-2">
           <label className={`text-sm font-medium ${themeClasses.textPrimary}`}>
-            Calificación: {formData.rating}/5 ⭐
+            Rating: {formData.rating}/5 ⭐
           </label>
           <input
             type="range"
@@ -187,29 +187,29 @@ const ChatForm: React.FC<ChatFormProps> = ({ onSubmit }) => {
           </div>
         </div>
 
-        {/* Mensaje */}
+        {/* Message */}
         <div className="space-y-2">
           <label className={`text-sm font-medium ${themeClasses.textPrimary}`}>
-            Mensaje 💬
+            Message 💬
           </label>
           <Textarea
             value={formData.message}
             onChange={(e) => handleInputChange('message', e.target.value)}
-            placeholder="Cuéntanos más detalles... 😊"
+            placeholder="Tell us more details... 😊"
             className={`w-full px-3 py-2 text-sm rounded border ${themeClasses.border} ${themeClasses.cardBackground} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none h-20`}
           />
         </div>
 
-        {/* Archivos adjuntos */}
+        {/* Attachments */}
         <div className="space-y-2">
           <label className={`text-sm font-medium ${themeClasses.textPrimary} flex items-center gap-2`}>
-            📎 Archivos adjuntos
+            📎 Attachments
           </label>
           <div className="flex items-center gap-2">
             <FileUpload onFilesSelected={handleFilesSelected} />
             {formData.attachments.length > 0 && (
               <span className={`text-xs ${themeClasses.textSecondary}`}>
-                {formData.attachments.length} archivo{formData.attachments.length !== 1 ? 's' : ''} seleccionado{formData.attachments.length !== 1 ? 's' : ''}
+                {formData.attachments.length} file{formData.attachments.length !== 1 ? 's' : ''} selected
               </span>
             )}
           </div>
@@ -225,7 +225,7 @@ const ChatForm: React.FC<ChatFormProps> = ({ onSubmit }) => {
             className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
           />
           <label htmlFor="agree" className={`text-sm ${themeClasses.textPrimary}`}>
-            Acepto los términos y condiciones 📋
+            I agree to the terms and conditions 📋
           </label>
         </div>
 
@@ -235,14 +235,14 @@ const ChatForm: React.FC<ChatFormProps> = ({ onSubmit }) => {
           disabled={!formData.name || !formData.email}
         >
           <Send className="w-4 h-4 mr-2" />
-          Enviar Formulario 🚀
+          Submit Form 🚀
         </Button>
       </form>
 
-      {/* Respuestas Rápidas */}
+      {/* Quick Replies */}
       <div className="border-t pt-4">
         <h4 className={`text-sm font-medium ${themeClasses.textPrimary} mb-3`}>
-          Respuestas Rápidas ⚡
+          Quick Replies ⚡
         </h4>
         <div className="grid grid-cols-2 gap-2">
           {quickReplies.map((reply, index) => (

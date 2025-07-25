@@ -30,7 +30,7 @@ const SatisfactionSurvey: React.FC<SatisfactionSurveyProps> = ({ onClose, onComp
   };
 
   const handleSubmit = () => {
-    console.log('Encuesta enviada:', {
+    console.log('Survey sent:', {
       nps: npsScore[0],
       csat: csatScore[0],
       binaryAnswer,
@@ -54,7 +54,7 @@ const SatisfactionSurvey: React.FC<SatisfactionSurveyProps> = ({ onClose, onComp
               </button>
             )}
             <h3 className={`text-xl font-bold ${themeClasses.textPrimary}`}>
-              Encuesta de Satisfacción ({currentStep}/2)
+              Satisfaction Survey ({currentStep}/2)
             </h3>
           </div>
           <button
@@ -65,13 +65,13 @@ const SatisfactionSurvey: React.FC<SatisfactionSurveyProps> = ({ onClose, onComp
           </button>
         </div>
 
-        {/* Step 1: NPS y CSAT */}
+        {/* Step 1: NPS and CSAT */}
         {currentStep === 1 && (
           <div className="space-y-8">
             {/* NPS Question */}
             <div>
               <label className={`block text-base font-semibold mb-4 ${themeClasses.textPrimary}`}>
-                ¿Qué tan probable es que recomiendes nuestro servicio? (0-10)
+                How likely are you to recommend our service? (0-10)
               </label>
               <Slider
                 value={npsScore}
@@ -82,16 +82,16 @@ const SatisfactionSurvey: React.FC<SatisfactionSurveyProps> = ({ onClose, onComp
                 className="w-full mb-3"
               />
               <div className="flex justify-between text-sm mt-3">
-                <span className={`${themeClasses.textPrimary} font-medium`}>Muy improbable (0)</span>
+                <span className={`${themeClasses.textPrimary} font-medium`}>Very unlikely (0)</span>
                 <span className={`font-bold text-lg ${themeClasses.textPrimary} bg-blue-500/20 px-3 py-1 rounded-full`}>{npsScore[0]}</span>
-                <span className={`${themeClasses.textPrimary} font-medium`}>Muy probable (10)</span>
+                <span className={`${themeClasses.textPrimary} font-medium`}>Very likely (10)</span>
               </div>
             </div>
 
             {/* CSAT Question */}
             <div>
               <label className={`block text-base font-semibold mb-4 ${themeClasses.textPrimary}`}>
-                ¿Qué tan satisfecho estás con nuestro servicio? (1-5)
+                How satisfied are you with our service? (1-5)
               </label>
               <Slider
                 value={csatScore}
@@ -102,9 +102,9 @@ const SatisfactionSurvey: React.FC<SatisfactionSurveyProps> = ({ onClose, onComp
                 className="w-full mb-3"
               />
               <div className="flex justify-between text-sm mt-3">
-                <span className={`${themeClasses.textPrimary} font-medium`}>Muy insatisfecho (1)</span>
+                <span className={`${themeClasses.textPrimary} font-medium`}>Very dissatisfied (1)</span>
                 <span className={`font-bold text-lg ${themeClasses.textPrimary} bg-green-500/20 px-3 py-1 rounded-full`}>{csatScore[0]}</span>
-                <span className={`${themeClasses.textPrimary} font-medium`}>Muy satisfecho (5)</span>
+                <span className={`${themeClasses.textPrimary} font-medium`}>Very satisfied (5)</span>
               </div>
             </div>
 
@@ -113,30 +113,30 @@ const SatisfactionSurvey: React.FC<SatisfactionSurveyProps> = ({ onClose, onComp
               size="lg"
               className="w-full text-base font-semibold py-3"
             >
-              Siguiente →
+              Next →
             </Button>
           </div>
         )}
 
-        {/* Step 2: Pregunta binaria y comentario */}
+        {/* Step 2: Binary question and comment */}
         {currentStep === 2 && (
           <div className="space-y-6">
             {/* Binary Question */}
             <div>
               <label className={`block text-base font-semibold mb-4 ${themeClasses.textPrimary}`}>
-                ¿Volverías a usar nuestro servicio?
+                Would you use our service again?
               </label>
               <RadioGroup value={binaryAnswer} onValueChange={setBinaryAnswer} className="space-y-4">
                 <div className={`flex items-center space-x-3 p-3 rounded-lg border-2 ${binaryAnswer === 'si' ? 'border-green-500 bg-green-500/10' : `border-transparent ${themeClasses.buttonSecondary}`} transition-all`}>
                   <RadioGroupItem value="si" id="si" className="text-green-500" />
                   <label htmlFor="si" className={`text-base font-medium ${themeClasses.textPrimary} cursor-pointer flex-1`}>
-                    ✅ Sí, definitivamente
+                    ✅ Yes, definitely
                   </label>
                 </div>
                 <div className={`flex items-center space-x-3 p-3 rounded-lg border-2 ${binaryAnswer === 'no' ? 'border-red-500 bg-red-500/10' : `border-transparent ${themeClasses.buttonSecondary}`} transition-all`}>
                   <RadioGroupItem value="no" id="no" className="text-red-500" />
                   <label htmlFor="no" className={`text-base font-medium ${themeClasses.textPrimary} cursor-pointer flex-1`}>
-                    ❌ No, probablemente no
+                    ❌ No, probably not
                   </label>
                 </div>
               </RadioGroup>
@@ -145,12 +145,12 @@ const SatisfactionSurvey: React.FC<SatisfactionSurveyProps> = ({ onClose, onComp
             {/* Comment */}
             <div>
               <label className={`block text-base font-semibold mb-3 ${themeClasses.textPrimary}`}>
-                Comentarios adicionales (opcional)
+                Additional comments (optional)
               </label>
               <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                placeholder="Comparte tu experiencia... 💭"
+                placeholder="Share your experience... 💭"
                 className={`w-full px-4 py-3 text-base rounded-lg border-2 ${themeClasses.border} ${themeClasses.cardBackground} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none transition-colors`}
                 rows={4}
               />
@@ -162,7 +162,7 @@ const SatisfactionSurvey: React.FC<SatisfactionSurveyProps> = ({ onClose, onComp
               size="lg"
               className="w-full text-base font-semibold py-3"
             >
-              🚀 Enviar Encuesta
+              🚀 Submit Survey
             </Button>
           </div>
         )}

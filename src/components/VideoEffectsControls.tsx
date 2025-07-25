@@ -12,11 +12,11 @@ interface VideoEffectsControlsProps {
 }
 
 const backgrounds = [
-  { id: 'none', name: 'Sin fondo', url: null },
-  { id: 'office', name: 'Oficina', url: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=1920&h=1080&fit=crop' },
-  { id: 'nature', name: 'Naturaleza', url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1920&h=1080&fit=crop' },
-  { id: 'mountains', name: 'Montañas', url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&h=1080&fit=crop' },
-  { id: 'workspace', name: 'Espacio de trabajo', url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1920&h=1080&fit=crop' },
+  { id: 'none', name: 'No background', url: null },
+  { id: 'office', name: 'Office', url: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=1920&h=1080&fit=crop' },
+  { id: 'nature', name: 'Nature', url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1920&h=1080&fit=crop' },
+  { id: 'mountains', name: 'Mountains', url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&h=1080&fit=crop' },
+  { id: 'workspace', name: 'Workspace', url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1920&h=1080&fit=crop' },
 ];
 
 const VideoEffectsControls = ({ 
@@ -32,8 +32,8 @@ const VideoEffectsControls = ({
 
   return (
     <div className="flex gap-2">
-      {/* Control de blur */}
-      <Tooltip text={isBlurEnabled ? "Desactivar desenfoque" : "Desenfocar fondo"} position="top">
+      {/* Blur control */}
+      <Tooltip text={isBlurEnabled ? "Disable blur" : "Blur background"} position="top">
         <button
           onClick={onToggleBlur}
           className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 ${
@@ -46,8 +46,8 @@ const VideoEffectsControls = ({
         </button>
       </Tooltip>
 
-      {/* Control de fondo */}
-      <Tooltip text="Cambiar fondo virtual" position="top">
+      {/* Background control */}
+      <Tooltip text="Change virtual background" position="top">
         <div>
           <Popover>
             <PopoverTrigger asChild>
@@ -63,10 +63,10 @@ const VideoEffectsControls = ({
             </PopoverTrigger>
             <PopoverContent className="w-56 p-3" side="top" align="center">
               <div className="space-y-3">
-                <h4 className="text-sm font-medium">Cambiar fondo</h4>
+                <h4 className="text-sm font-medium">Change background</h4>
                 <Select onValueChange={handleBackgroundChange} defaultValue="none">
                   <SelectTrigger className="w-full h-9 text-xs">
-                    <SelectValue placeholder="Seleccionar fondo" />
+                    <SelectValue placeholder="Select background" />
                   </SelectTrigger>
                   <SelectContent>
                     {backgrounds.map((bg) => (

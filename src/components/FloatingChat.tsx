@@ -48,7 +48,7 @@ const FloatingChat = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: "¡Hola! 👋 ¿Cómo estás? Te muestro algunos elementos multimedia:",
+      text: "Hello! 👋 How are you? Let me show you some multimedia elements:",
       sender: 'other',
       timestamp: new Date(),
     },
@@ -81,7 +81,7 @@ const FloatingChat = () => {
     },
     {
       id: 6,
-      text: "También puedes llenar este formulario completo: 📝",
+      text: "You can also fill out this complete form: 📝",
       sender: 'other',
       timestamp: new Date(),
     },
@@ -121,7 +121,7 @@ const FloatingChat = () => {
     setTimeout(() => {
       const autoReply: Message = {
         id: messages.length + 2,
-        text: "¡Gracias por tu mensaje! 😊 Este es un chat de demostración.",
+        text: "Thank you for your message! 😊 This is a demo chat.",
         sender: 'other',
         timestamp: new Date(),
       };
@@ -177,7 +177,7 @@ const FloatingChat = () => {
     setTimeout(() => {
       const autoReply: Message = {
         id: messages.length + 2,
-        text: `¡Perfecto! He recibido ${files.length} archivo${files.length > 1 ? 's' : ''}. 📎✨`,
+        text: `Perfect! I've received ${files.length} file${files.length > 1 ? 's' : ''}. 📎✨`,
         sender: 'other',
         timestamp: new Date(),
       };
@@ -190,7 +190,7 @@ const FloatingChat = () => {
       id: messages.length + 1,
       text: formData.type === 'quick_reply' 
         ? formData.message 
-        : `Formulario enviado: ${formData.name} - ${formData.email} ⭐${formData.rating}/5`,
+        : `Form submitted: ${formData.name} - ${formData.email} ⭐${formData.rating}/5`,
       sender: 'user',
       timestamp: new Date(),
     };
@@ -201,8 +201,8 @@ const FloatingChat = () => {
       const autoReply: Message = {
         id: messages.length + 2,
         text: formData.type === 'quick_reply' 
-          ? "¡Gracias por tu respuesta rápida! 🚀" 
-          : "¡Excelente! Hemos recibido tu formulario. Te contactaremos pronto. 📧✨",
+          ? "Thank you for your quick response! 🚀" 
+          : "Excellent! We've received your form. We'll contact you soon. 📧✨",
         sender: 'other',
         timestamp: new Date(),
       };
@@ -220,7 +220,7 @@ const FloatingChat = () => {
         <button
           onClick={() => setIsOpen(true)}
           className={`${themeClasses.buttonPrimary} rounded-full p-4 shadow-lg hover:scale-105 transition-all duration-200`}
-          title="Abrir chat"
+          title="Open chat"
         >
           <MessageCircle className="w-6 h-6 text-white" />
         </button>
@@ -249,10 +249,10 @@ const FloatingChat = () => {
           onMouseDown={handleMouseDown}
         />
 
-        {/* Contenido del chat - solo se muestra si no está minimizado */}
+        {/* Chat content - only shown if not minimized */}
         {!isMinimized && (
           <>
-            {/* Área de mensajes */}
+            {/* Messages area */}
             <div className="flex-1 p-4 overflow-y-auto" style={{ maxHeight: size.height - 120 }}>
               {messages.map((message) => (
                 <ChatMessage
@@ -282,7 +282,7 @@ const FloatingChat = () => {
         )}
       </div>
 
-      {/* Encuesta de satisfacción */}
+      {/* Satisfaction survey */}
       {showSurvey && (
         <SatisfactionSurvey
           onClose={handleSurveyClose}
@@ -290,7 +290,7 @@ const FloatingChat = () => {
         />
       )}
 
-      {/* Visor full-screen */}
+      {/* Full-screen viewer */}
       <FullScreenViewer
         isOpen={showFullScreen}
         onClose={() => setShowFullScreen(false)}

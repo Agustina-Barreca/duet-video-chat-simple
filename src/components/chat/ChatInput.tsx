@@ -37,7 +37,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
           value={newMessage}
           onChange={(e) => onMessageChange(e.target.value)}
           onKeyDown={onKeyDown}
-          placeholder="Escribe tu mensaje... 💬"
+          placeholder="Type your message... 💬"
           className={`flex-1 px-3 py-2 text-sm rounded border ${themeClasses.border} ${themeClasses.cardBackground} ${themeClasses.textPrimary} placeholder:${themeClasses.textSecondary} focus:outline-none focus:ring-1 focus:ring-blue-500`}
         />
         <div className="flex items-center gap-1 flex-shrink-0">
