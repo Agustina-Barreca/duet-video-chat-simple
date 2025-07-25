@@ -1,73 +1,99 @@
-# Welcome to your Lovable project
+# Zoom Video Call App 🎥 (In Progress)
 
-## Project info
+A modern and customizable video calling application built using **Zoom Video SDK**, **React**, **Vite**, and **TypeScript**. The app includes video/audio management, real-time remote video tracking, chat integration (WIP), and dynamic UI theming
 
-**URL**: https://lovable.dev/projects/5e63855e-44af-4114-943a-7b43524f733e
+⚠️ **This project is currently under active development. Some features are incomplete or experimental.**
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🚀 Features
 
-**Use Lovable**
+- 📹 Join Zoom video sessions with real-time audio and video
+- 🎛️ Local/remote video and audio controls
+- 🎭 Background blur support
+- 💬 Floating in-call chat (WIP)
+- 🎨 Theme selector (light/dark/custom themes)
+- 📱 Responsive, modern UI with Radix UI primitives
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/5e63855e-44af-4114-943a-7b43524f733e) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+![alt text](image-1.png)
 
-**Use your preferred IDE**
+## 🧠 Core Component: `VideoCall.tsx`
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+The `VideoCall` component handles:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Initializing the Zoom Video SDK client
+- Joining sessions with parameters from `window` globals:
+  ```ts
+  window.sessionName = 'your-session-name';
+  window.accesstoken = 'your-access-token';
+  window.sessionPassword = 'your-session-password';
+  window.userIdentity = 'your-user-id';
+Managing video/audio state for local and remote users
 
-Follow these steps:
+Rendering:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+LocalVideoContainer
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+RemoteVideo
 
-# Step 3: Install the necessary dependencies.
-npm i
+CallControls
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+ThemeSelector
+
+FloatingChat
+
+📦 Tech Stack
+
+Framework:	React 18
+Build Tool:	Vite
+Language:	TypeScript
+Styling:	TailwindCSS, shadcn/ui
+Component UI:	Radix UI
+Video Engine:	Zoom Video SDK
+
+🛠️ Installation
+
+git clone https://github.com/your-org/zoom-video-app
+cd zoom-video-app
+npm install
+
+🧪 Development
+To run the app locally:
+
 npm run dev
-```
 
-**Edit a file directly in GitHub**
+To build for production:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+npm run build
 
-**Use GitHub Codespaces**
+To preview the production build:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+npm run preview
 
-## What technologies are used for this project?
+🧰 Available Scripts
 
-This project is built with:
+npm run dev         # Start dev server
+npm run build       # Build for production
+npm run preview     # Preview production build
+npm run lint        # Lint codebase
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+⚙️ Environment Setup
+You must configure your Zoom Video SDK credentials and session data before starting a call. These values are expected as global variables (e.g., injected via script):
 
-## How can I deploy this project?
+window.sessionName = 'session-name';
+window.accesstoken = 'access-token';
+window.sessionPassword = 'session-password';
+window.userIdentity = 'user-identity';
 
-Simply open [Lovable](https://lovable.dev/projects/5e63855e-44af-4114-943a-7b43524f733e) and click on Share -> Publish.
+📋 To-Do (Planned)
 
-## Can I connect a custom domain to my Lovable project?
+- Implement call end handling
+- Enable real-time chat functionality
+- Add support for custom virtual backgrounds
+- Improve error handling & connection recovery
+- Unit and integration tests
+- Backend service to generate TOKEN
+- Screenshots and demo GIFs
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
