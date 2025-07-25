@@ -156,8 +156,8 @@ const RemoteVideo = forwardRef<HTMLDivElement, RemoteVideoProps>(({ isVideoOff }
                 <div className={`w-32 h-32 bg-gradient-to-br ${themeClasses.accent} rounded-full flex items-center justify-center mx-auto mb-4`}>
                   <User className="w-16 h-16 text-white" />
                 </div>
-                <h3 className={`text-2xl font-semibold ${themeClasses.textPrimary}`}>Usuario Remoto</h3>
-                <p className={`${themeClasses.textSecondary}`}>Video desactivado</p>
+                <h3 className={`text-2xl font-semibold ${themeClasses.textPrimary}`}>Remote User</h3>
+                <p className={`${themeClasses.textSecondary}`}>Video off</p>
               </div>
             </div>
           )}
